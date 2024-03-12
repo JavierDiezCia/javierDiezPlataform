@@ -250,7 +250,7 @@ if ($_SESSION["user"]["usu_rol"] && ($_SESSION["user"]["usu_rol"] == 2 || $_SESS
                                                         <?php if (empty($detallesSinRegistro)) : ?>
                                                             <a href="validaciones/odRevisar.php?id=<?= $orden["od_id"] ?>" class="btn btn-success mb-2">ENVIAR PARA APROBAR</a>
                                                         <?php else : ?>
-                                                            <a href="#" class="btn btn-danger mb-2">AÚN FALTAN ACTIVIDADES POR COMPLETAR!</a>
+                                                            <a href="actividadesFaltantes.php?id=<?= $orden["od_id"] ?>" class="btn btn-danger mb-2">AÚN FALTAN ACTIVIDADES POR COMPLETAR!</a>
                                                         <?php endif ?>
                                                     </td>
                                                     <td>

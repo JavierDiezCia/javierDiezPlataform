@@ -22,13 +22,28 @@ if ($_SESSION["user"]["usu_rol"] && ($_SESSION["user"]["usu_rol"] == 2 || $_SESS
         if (empty($_POST["detalle"])) {
             $error = "POR FAVOR RELLENA TODOS LOS CAMPOS.";
         } else {
-            // Insertar una nueva actividad relacionada con la orden de diseño
-            $statement = $conn->prepare("INSERT INTO od_actividades (od_id, odAct_detalle, odAct_fechaEntrega) VALUES (:od_id, :detalle, :fechaEntrega)");
+            // Convertir el detalle a mayúsculas
+            $detalle = strtoupper($_POST["detalle"]);
+
+            // Verificar si el detalle ya existe en la base de datos
+            $statement = $conn->prepare("SELECT COUNT(*) FROM od_actividades WHERE od_id = :od_id AND odAct_estado = 0 AND UPPER(odAct_detalle) = :detalle");
             $statement->execute([
                 ":od_id" => $id,
-                ":detalle" => $_POST["detalle"],
-                ":fechaEntrega" => $_POST["fechaEntrega"]
+                ":detalle" => $detalle
             ]);
+            $count = $statement->fetchColumn();
+
+            if ($count > 0) {
+                $error = "El detalle de la actividad ya existe.";
+            } else {
+                // Insertar una nueva actividad relacionada con la orden de diseño
+                $statement = $conn->prepare("INSERT INTO od_actividades (od_id, odAct_detalle, odAct_fechaEntrega) VALUES (:od_id, :detalle, :fechaEntrega)");
+                $statement->execute([
+                    ":od_id" => $id,
+                    ":detalle" => $detalle,
+                    ":fechaEntrega" => $_POST["fechaEntrega"]
+                ]);
+            }
         }
     }
 
@@ -64,7 +79,10 @@ if ($_SESSION["user"]["usu_rol"] && ($_SESSION["user"]["usu_rol"] == 2 || $_SESS
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-12">
-                        <h2>Actividades para la Orden de Diseño <?php echo $orden['od_detalle']; ?></h2>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h2>Actividades para la Orden de Diseño <?php echo $orden['od_detalle']; ?></h2>
+                            <a href="./od.php" class="btn btn-secondary"><i class="bi bi-arrow-90deg-left"></i></a>
+                        </div>
                         <?php if ($error): ?>
                             <p class="text-danger"><?php echo $error; ?></p>
                         <?php endif; ?>

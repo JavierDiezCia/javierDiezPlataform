@@ -600,8 +600,8 @@ if ($_SESSION["user"]["usu_rol"] == 2) {
                     $monthNameSpanish
                   );
 
-                  echo "<h2>$monthNameSpanish</h2>";
-                  echo "<table style='border-collapse: collapse;'>";
+                  echo "<h2>$monthNameSpanish <i class='bi bi-calendar-date'></i></h2>";
+                  echo "<table style='border-collapse: collapse; text-align: center;'>";
                   echo "<tr><th style='padding: 5px;'>Dom</th><th style='padding: 5px;'>Lun</th><th style='padding: 5px;'>Mar</th><th style='padding: 5px;'>Mié</th><th style='padding: 5px;'>Jue</th><th style='padding: 5px;'>Vie</th><th style='padding: 5px;'>Sáb</th></tr>";
                   echo "<tr>";
 
@@ -617,7 +617,7 @@ if ($_SESSION["user"]["usu_rol"] == 2) {
                   for ($day = 1; $day <= $daysInMonth; $day++) {
                     // Comprueba si estamos al principio de la semana
                     if ($firstDayOfMonth == 0) {
-                      echo "<tr>";
+                      echo "<tr style='text-align: center;'>";
                     }
 
                     // Comprueba si la fecha tiene una actividad
