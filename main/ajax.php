@@ -74,7 +74,7 @@ if (isset($_GET['cedula'])) {
     $od_id = $_POST["od_id"];
 
     // Consulta SQL para obtener las actividades basadas en el od_id seleccionado
-    $query = "SELECT id, odAct_detalle, odAct_fechaEntrega FROM od_actividades WHERE od_id = :od_id AND odAct_estado = 0";
+    $query = "SELECT odAct_id, odAct_detalle, odAct_fechaEntrega FROM od_actividades WHERE od_id = :od_id AND odAct_estado = 0";
     $statement = $conn->prepare($query);
     $statement->bindParam(':od_id', $od_id); 
     $statement->execute();
@@ -82,6 +82,24 @@ if (isset($_GET['cedula'])) {
 
     // Formatear los datos como JSON y devolverlos
     echo json_encode($actividades);
+} elseif (isset($_GET['odAct_id'])) {
+    // Handle the request to get the date
+    $odAct_id = $_GET['odAct_id'];
+
+    // Query the database to get the date data
+    $statement = $conn->prepare("SELECT odAct_fechaEntrega FROM od_actividades WHERE odAct_id = :odAct_id");
+    $statement->bindParam(":odAct_id", $odAct_id);
+    $statement->execute();
+    $result = $statement->fetch(PDO::FETCH_ASSOC);
+
+    // Check if the query was successful before accessing the array value
+    if ($result !== false) {
+        // Return the date data as the response
+        echo $result['odAct_fechaEntrega'];
+    } else {
+        // Handle the case where the query was not successful
+        echo "NO SE ENCONTRÓ LA FECHA DE ENTREGA.";
+    }
 } else {
     // Si no se recibió ningún parámetro válido en la solicitud, devolver un mensaje de error
     echo json_encode(array('error' => 'No se recibió ningún parámetro válido'));
