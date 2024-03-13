@@ -44,8 +44,8 @@ if ($_SESSION["user"]["usu_rol"] && ($_SESSION["user"]["usu_rol"] == 2 || $_SESS
             if ($id) {
                 $statement = $conn->prepare("UPDATE orden_disenio SET od_detalle = :detalle, od_cliente = :cliente WHERE od_id = :id");
                 $statement->execute([
-                    ":detalle" => $_POST["detalle"],
-                    ":cliente" => $_POST["cliente"],
+                    ":detalle" => strtoupper($_POST["detalle"]),
+                    ":cliente" => strtoupper($_POST["cliente"]),
                     ":id" => $id
                 ]);
 
@@ -60,10 +60,11 @@ if ($_SESSION["user"]["usu_rol"] && ($_SESSION["user"]["usu_rol"] == 2 || $_SESS
                 $statement->execute([
                     ":responsable" => $_SESSION["user"]["cedula"],
                     ":comercial" => $_POST["cedula"],
-                    ":detalle" => $_POST["detalle"],
-                    ":cliente" => $_POST["cliente"],
+                    ":detalle" => strtoupper($_POST["detalle"]),
+                    ":cliente" => strtoupper($_POST["cliente"]),
                     ":estado" => $state
                 ]);
+            
 
                 registrarEnKardex($_SESSION["user"]["cedula"], "CREÓ", 'ÓRDENES DE DISEÑO', $_POST["detalle"]);
 

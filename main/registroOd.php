@@ -175,20 +175,30 @@ $error = null;
 
 <script>
     document.getElementById('od_actividades').addEventListener('change', function() {
-        var odAct_id = this.value; // Get the selected odAct_id
-        console.log('odAct_id:', odAct_id); // Log the value of odAct_id
+        var odAct_id = this.value; // Obtén el odAct_id seleccionado
+        console.log('odAct_id:', odAct_id); // Muestra el valor de odAct_id
         
-        // Make an AJAX request to get the date based on the selected odAct_id
+        // Realiza una petición AJAX para obtener la fecha basada en el odAct_id seleccionado
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'Ajax.php?odAct_id=' + odAct_id); // Path to the PHP file that handles the AJAX request
+        xhr.open('GET', 'Ajax.php?odAct_id=' + odAct_id); // Ruta al archivo PHP que maneja la solicitud AJAX
         xhr.onload = function() {
             if (xhr.status === 200) {
-                var fechaEntrega = xhr.responseText; // Get the date from the response
-                console.log('fechaEntrega:', fechaEntrega); // Log the response
-                // Display the date in the input
-                document.getElementById('fecha_entrega').value = fechaEntrega;
+                var fechaEntrega = xhr.responseText; // Obtiene la fecha de la respuesta
+                console.log('fechaEntrega:', fechaEntrega); // Muestra la respuesta
+                // Formatea la fecha en el formato deseado
+                var formattedDate = new Date(fechaEntrega).toLocaleString('es-ES', {
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    hour12: false,
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
+                // Muestra la fecha en el campo de entrada
+                document.getElementById('fecha_entrega').value = formattedDate;
             } else {
-                console.error('Error in the AJAX request');
+                console.error('Error en la petición AJAX');
             }
         };
         xhr.send();

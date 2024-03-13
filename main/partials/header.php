@@ -3,14 +3,8 @@ $dataUser = $conn->query("SELECT * FROM personas WHERE cedula = {$_SESSION["user
 $data = $dataUser->fetch(PDO::FETCH_ASSOC);
 $totalNotificaciones = NULL; 
 
-
 date_default_timezone_set('America/Lima'); 
-
-
 ?>
-
-
-
 
 <!DOCTYPE html>
 <html lang="es">
@@ -47,7 +41,6 @@ date_default_timezone_set('America/Lima');
   <script refer src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
   <script refer src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
   <script refer src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-
 
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
@@ -146,21 +139,18 @@ date_default_timezone_set('America/Lima');
             <li class="dropdown-header">
               <h6><?= $data["per_apellidos"] . " " . $data["per_nombres"] ?></h6>
               <span>
-              <?php if( $_SESSION ["user"]["usu_rol"] == 1): ?>
-                                        Super Administrador
-                                    <?php elseif( $_SESSION ["user"]["usu_rol"] == 2): ?>
-                                        Admi Diseño
-                                    <?php elseif( $_SESSION ["user"]["usu_rol"] == 3): ?>
-                                        Diseñadores
-                                    <?php elseif( $_SESSION ["user"]["usu_rol"] == 4): ?>
-                                        Admi Producción
-                                    <?php elseif( $_SESSION ["user"]["usu_rol"] == 5): ?>
-                                        Producción
-                                    <?php elseif( $_SESSION ["user"]["usu_rol"] == 6): ?>
-                                        Personal
-                                    <?php elseif( $_SESSION ["user"]["usu_rol"] == 7): ?>
-                                        Presentacion
-                                    <?php endif ?>
+              <?php 
+                $roles = [
+                  1 => "Super Administrador",
+                  2 => "Admi Diseño",
+                  3 => "Diseñadores",
+                  4 => "Admi Producción",
+                  5 => "Producción",
+                  6 => "Personal",
+                  7 => "Presentacion"
+                ];
+                echo $roles[$_SESSION["user"]["usu_rol"]];
+              ?>
               </span>
               <span><?= "| " . $data["per_areaTrabajo"] ?></span>
             </li> 
