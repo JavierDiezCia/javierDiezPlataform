@@ -23,7 +23,7 @@ if (empty($id) || empty($od_id)) {
 }
 
 // Eliminar la actividad con el ID proporcionado
-$statement = $conn->prepare("UPDATE od_actividades SET odAct_estado = :estado WHERE id = :id AND od_id = :od_id");
+$statement = $conn->prepare("UPDATE od_actividades SET odAct_estado = :estado WHERE odAct_id = :id AND od_id = :od_id");
 $statement->execute([":id" => $id, ":od_id" => $od_id, ":estado" => $estado]);
 
 // Redirigir al usuario de regreso a la página de actividades

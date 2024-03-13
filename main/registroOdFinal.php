@@ -17,9 +17,10 @@ if ($_SESSION["user"]["usu_rol"] == 3||$_SESSION["user"]["usu_rol"] == 1) {
     $diseniador = $_SESSION["user"]["cedula"];
 
     // Consultar el registro actual del diseñador
-    $registroQuery = $conn->prepare("SELECT registros_disenio.*, orden_disenio.od_detalle
+    $registroQuery = $conn->prepare("SELECT registros_disenio.*, orden_disenio.od_detalle, od_actividades.odAct_detalle
     FROM registros_disenio
     JOIN orden_disenio ON registros_disenio.od_id = orden_disenio.od_id
+    JOIN od_actividades ON registros_disenio.od_id = od_actividades.od_id
     WHERE registros_disenio.rd_diseniador = :diseniador
     AND registros_disenio.rd_hora_fin IS NULL
     LIMIT 1;
@@ -80,7 +81,7 @@ if ($_SESSION["user"]["usu_rol"] == 3||$_SESSION["user"]["usu_rol"] == 1) {
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3">
-                                <input value="<?= $registro["rd_detalle"] ?>" class="form-control" id="od_detalle" name="od_detalle" placeholder="od_detalle" required readonly></input>
+                                <input value="<?= $registro["odAct_detalle"] ?>" class="form-control" id="od_detalle" name="od_detalle" placeholder="od_detalle" required readonly></input>
                                 <label for="od_detalle">ACTIVIDAD</label>
                             </div>
                         </div>
