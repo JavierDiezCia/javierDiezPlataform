@@ -70,7 +70,7 @@ CREATE TABLE od_actividades (
     od_id INT UNSIGNED NOT NULL,
     odAct_detalle VARCHAR(255) NOT NULL,
     odAct_estado BOOLEAN DEFAULT 0,
-    odAct_fechaEntrega DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    odAct_fechaEntrega DATETIME NULL,
     Foreign Key (od_id) REFERENCES orden_disenio(od_id)
         ON UPDATE RESTRICT
         ON DELETE RESTRICT
@@ -133,6 +133,7 @@ CREATE TABLE planos (
     pla_id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     op_id INT UNSIGNED NOT NULL,
     pla_numero INT UNSIGNED NOT NULL,
+    pla_descripcion VARCHAR(255) NOT NULL, 
     pla_estado ENUM("ACTIVO", "PAUSADO", "ANULADO", "CONCLUIDO") NOT NULL,
     pla_reproceso BOOLEAN NOT NULL, /* 0 no es reproceso, 1 si es reproceso */
     pla_porcentaje DECIMAL(5, 2) UNSIGNED NOT NULL,
@@ -140,6 +141,17 @@ CREATE TABLE planos (
         ON UPDATE RESTRICT
         ON DELETE RESTRICT,
     CHECK (pla_porcentaje <= 100)
+);
+
+CREATE TABLE pla_actividades (
+    id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+    pla_id INT UNSIGNED NOT NULL,
+    plaAct_detalle VARCHAR(255) NOT NULL,
+    plaAct_estado BOOLEAN NOT NULL,
+    plaAct_fechaEntrega DATETIME NOT NULL,
+    Foreign Key (pla_id) REFERENCES planos(pla_id)
+        ON UPDATE RESTRICT
+        ON DELETE RESTRICT
 );
 
     /* observaciones */
