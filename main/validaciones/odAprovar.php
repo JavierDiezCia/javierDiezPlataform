@@ -14,6 +14,9 @@ if (($_SESSION["user"]["usu_rol"] != 2)) {
     return;
 }
 
+// Obtener el ID de la orden de diseño
+$id = $_GET["id"];
+
 // Verificamos si se proporcionó un ID válido en la URL
 if (!isset($_GET["id"]) || empty($_GET["id"])) {
     // Si no se proporcionó un ID, redirigimos a alguna página de error o a la página principal
@@ -21,8 +24,7 @@ if (!isset($_GET["id"]) || empty($_GET["id"])) {
     return;
 }
 
-// Obtener el ID de la orden de diseño
-$id = $_GET["id"];
+
 
 // Verificamos si la orden de diseño existe en la base de datos
 $statement = $conn->prepare("SELECT oa.*
@@ -33,11 +35,11 @@ $statement = $conn->prepare("SELECT oa.*
 $statement->execute([":id" => $id]);
 $orden_diseño = $statement->fetch(PDO::FETCH_ASSOC);
 
-if (!$orden_diseño) {
-    // Si no se encuentra la orden de diseño, redirigimos a alguna página de error o a la página principal
-    header("Location: ../od.php");
-    return;
-}
+// if (!$orden_diseño) {
+//     // Si no se encuentra la orden de diseño, redirigimos a alguna página de error o a la página principal
+//     header("Location: ../od.php");
+//     return;
+// }
 
 // Actualizar el estado de la orden de diseño a "Revisando" (código de estado 4)
 $conn->prepare("UPDATE orden_disenio SET od_estado = 'OP' WHERE od_id = :id")->execute([

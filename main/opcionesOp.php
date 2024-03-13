@@ -63,10 +63,10 @@ if ($_SESSION["user"]["usu_rol"] == 1 || $_SESSION["user"]["usu_rol"] == 2) {
                         <button class="nav-link active" id="estado-tab" data-bs-toggle="tab" data-bs-target="#estado" type="button" role="tab" aria-controls="estado" aria-selected="true">CAMBIO DE LOS ESTADOS DE LA OP</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="finalizada-tab" data-bs-toggle="tab" data-bs-target="#finalizado" type="button" role="tab" aria-controls="finalizado" aria-selected="false" tabindex="-1">OP'S FINALIZADAS</button>
+                        <button class="nav-link" id="finalizada-tab" data-bs-toggle="tab" data-bs-target="#finalizado" type="button" role="tab" aria-controls="finalizado" aria-selected="false" tabindex="-1">OP FINALIZADAS</button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="anulado-tab" data-bs-toggle="tab" data-bs-target="#anulado" type="button" role="tab" aria-controls="anulado" aria-selected="false" tabindex="-2">OP'S ANULADOS</button>
+                        <button class="nav-link" id="anulado-tab" data-bs-toggle="tab" data-bs-target="#anulado" type="button" role="tab" aria-controls="anulado" aria-selected="false" tabindex="-2">OP ANULADAS</button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="op-tab" data-bs-toggle="tab" data-bs-target="#op" type="button" role="tab" aria-controls="op" aria-selected="false" tabindex="-3">OP</button>
@@ -160,7 +160,7 @@ if ($_SESSION["user"]["usu_rol"] == 1 || $_SESSION["user"]["usu_rol"] == 2) {
                                                             </td>
                                                             <td>
                                                                 <?php if ($op["op_estado"] != "OP PAUSADA") : ?>
-                                                                    <button type="button" class="btn btn-success mb-2" onclick="openPausarModal(<?= $op["op_id"] ?>)">Pausar</button>
+                                                                    <button type="button" class="btn btn-success mb-2" onclick="openPausarModal(<?= $op["op_id"] ?>)">PAUSAR</button>
                                                                     <div class="modal fade" id="pausar-<?= $op["op_id"] ?>" tabindex="-1" style="display: none;" aria-modal="true" role="dialog">
                                                                         <div class="modal-dialog modal-dialog-centered">
                                                                             <div class="modal-content">
@@ -194,7 +194,7 @@ if ($_SESSION["user"]["usu_rol"] == 1 || $_SESSION["user"]["usu_rol"] == 2) {
                                                                                 </div>
                                                                                 <div class="modal-footer">
                                                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                                    <a href="./cambiosEstadoOp/pausarOp.php?id=<?= $op["op_id"] ?>" class="btn btn-success mb-2">Pausar</a>
+                                                                                    <a href="./cambiosEstadoOp/pausarOp.php?id=<?= $op["op_id"] ?>" class="btn btn-success mb-2">PAUSAR</a>
                                                                                 </div>
                                                                             </div>
                                                                             <script>
@@ -208,7 +208,7 @@ if ($_SESSION["user"]["usu_rol"] == 1 || $_SESSION["user"]["usu_rol"] == 2) {
                                                                                             </div>
                                                                                         </div>
                                                                                     <?php else : ?>
-                                                                                        <button type="button" class="btn btn-primary mb-2" onclick="openActivarModal(<?= $op["op_id"] ?>)">Activar</button>
+                                                                                        <button type="button" class="btn btn-primary mb-2" onclick="openActivarModal(<?= $op["op_id"] ?>)">ACTIVAR</button>
                                                                                         <div class="modal fade" id="activar-<?= $op["op_id"] ?>" tabindex="-1" style="display: none;" aria-modal="true" role="dialog">
                                                                                             <div class="modal-dialog modal-dialog-centered">
                                                                                                 <div class="modal-content">
@@ -258,7 +258,7 @@ if ($_SESSION["user"]["usu_rol"] == 1 || $_SESSION["user"]["usu_rol"] == 2) {
                                                                                     <?php endif ?>
                                                                                 </td>
                                                                                 <td>
-                                                                                    <button type="button" class="btn btn-danger mb-2" onclick="openAnularModal(<?= $op["op_id"] ?>)">Anular</button>
+                                                                                    <button type="button" class="btn btn-danger mb-2" onclick="openAnularModal(<?= $op["op_id"] ?>)">ANULAR</button>
                                                                                     <div class="modal fade" id="anular-<?= $op["op_id"] ?>" tabindex="-1" style="display: none;" aria-modal="true" role="dialog">
                                                                                         <div class="modal-dialog modal-dialog-centered">
                                                                                             <div class="modal-content">
@@ -325,7 +325,7 @@ if ($_SESSION["user"]["usu_rol"] == 1 || $_SESSION["user"]["usu_rol"] == 2) {
                                         <div class="card-body">
                                             <div class="card-header">
                                                 <div class="d-flex justify-content-between align-items-center">
-                                                    <h5 class="card-title">OP'S FINALIZADAS</h5>
+                                                    <h5 class="card-title">OP FINALIZADAS</h5>
                                                 </div>
                                             </div>
                                             <table class="table datatable">
@@ -360,10 +360,10 @@ if ($_SESSION["user"]["usu_rol"] == 1 || $_SESSION["user"]["usu_rol"] == 2) {
                                                                 $reproseso = $opfinalizada["op_reproceso"];
                                                                 switch ($reproseso) {
                                                                     case 0:
-                                                                        echo " NO ES UN REPROSESO";
+                                                                        echo " NO ES UN REPROCESO";
                                                                         break;
                                                                     case 1:
-                                                                        echo "ES UN REPROSESO";
+                                                                        echo "ES UN REPROCESO";
                                                                         break;
                                                                 }
                                                                 ?>
@@ -389,7 +389,7 @@ if ($_SESSION["user"]["usu_rol"] == 1 || $_SESSION["user"]["usu_rol"] == 2) {
                                             <div class="card-header">
 
                                                 <div class="d-flex justify-content-between align-items-center">
-                                                    <h5 class="card-title">OP'S ANULADAS</h5>
+                                                    <h5 class="card-title">OP ANULADAS</h5>
                                                 </div>
                                             </div>
                                             <table class="table datatable">
@@ -424,10 +424,10 @@ if ($_SESSION["user"]["usu_rol"] == 1 || $_SESSION["user"]["usu_rol"] == 2) {
                                                                 $reproseso = $opanulada["op_reproceso"];
                                                                 switch ($reproseso) {
                                                                     case 0:
-                                                                        echo " NO ES UN REPROSESO";
+                                                                        echo " NO ES UN REPROCESO";
                                                                         break;
                                                                     case 1:
-                                                                        echo "ES UN REPROSESO";
+                                                                        echo "ES UN REPROCESO";
                                                                         break;
                                                                 }
                                                                 ?>
@@ -493,10 +493,10 @@ if ($_SESSION["user"]["usu_rol"] == 1 || $_SESSION["user"]["usu_rol"] == 2) {
                                                                 $reproseso = $optotal["op_reproceso"];
                                                                 switch ($reproseso) {
                                                                     case 0:
-                                                                        echo " NO ES UN REPROSESO";
+                                                                        echo " NO ES UN REPROCESO";
                                                                         break;
                                                                     case 1:
-                                                                        echo "ES UN REPROSESO";
+                                                                        echo "ES UN REPROCESO";
                                                                         break;
                                                                 }
                                                                 ?>
