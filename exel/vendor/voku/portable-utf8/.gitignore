@@ -1,0 +1,13 @@
+# php (composer)
+vendor
+composer.lock
+
+# php (phpunit)
+build/logs/
+.phpunit.result.cache
+
+# php (phpcs fixer)
+.php_cs.cache
+
+# PhpStorm
+.idea/

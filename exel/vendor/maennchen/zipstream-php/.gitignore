@@ -1,0 +1,11 @@
+/composer.lock
+/cov
+/coverage.clover.xml
+/docs
+.idea
+/.php-cs-fixer.cache
+/.phpdoc/cache
+/.phpunit.result.cache
+/phpunit.xml
+/tools
+/vendor
