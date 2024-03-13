@@ -75,7 +75,7 @@ if ($_SESSION["user"]["usu_rol"] && ($_SESSION["user"]["usu_rol"] == 2 || $_SESS
                             </div>
                             <div class="mb-3">
                                 <label for="fechaEntrega" class="form-label">Fecha de Entrega</label>
-                                <input type="datetime-local" class="form-control" id="fechaEntrega" name="fechaEntrega" required>
+                                <input type="datetime-local" class="form-control" id="fechaEntrega" name="fechaEntrega" >
                             </div>
                             <button type="submit" class="btn btn-primary">Agregar Actividad</button>
                         </form>

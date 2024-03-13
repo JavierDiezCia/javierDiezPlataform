@@ -33,14 +33,19 @@ if ($_SESSION["user"]["usu_rol"] == 3||$_SESSION["user"]["usu_rol"] == 1) {
             } else {
                 $od_id = $_POST['od_id'];
     
-                // Insertamos un nuevo registro
+                // Get the detail of the selected activity
+                $od_actividadesQuery = $conn->prepare("SELECT odAct_detalle FROM od_actividades WHERE odAct_id = :od_actividades");
+                $od_actividadesQuery->execute([':od_actividades' => $_POST['od_actividades']]);
+                $od_actividad = $od_actividadesQuery->fetch(PDO::FETCH_ASSOC);
+
+                // Insert a new record
                 $statement = $conn->prepare("INSERT INTO registros_disenio (od_id, rd_diseniador, rd_detalle, rd_hora_ini, rd_hora_fin) 
                                             VALUES (:od_id, :diseniador, :rd_detalle, CURRENT_TIMESTAMP, NULL)");
-    
+
                 $statement->execute([
                     ":od_id" => $od_id,
                     ":diseniador" => $diseniador,
-                    ":rd_detalle" => $_POST['od_actividades']
+                    ":rd_detalle" => $od_actividad['odAct_detalle']
                 ]);
     
                 // Redirigimos a la página principal o a donde desees
