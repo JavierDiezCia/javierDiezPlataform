@@ -243,11 +243,7 @@ if ($_SESSION["user"]["usu_rol"] && ($_SESSION["user"]["usu_rol"] == 2 || $_SESS
                                                         <a href="./od_actividades.php?id=<?= $orden["od_id"] ?>" class="btn btn-secondary mb-2">VER ACTIVIDADES</a>
                                                     </td>
                                                     <td>
-                                                        <?php if ($registrosDisenio < $totalActividades || count($detallesSinRegistro) > 0) : ?>
-                                                            <a href="validaciones/odRevisar.php?id=<?= $orden["od_id"] ?>" class="btn btn-primary mb-2">ENVIAR PARA APROBAR</a>
-                                                        <?php else : ?>
-                                                            <a href="#"></a>
-                                                        <?php endif ?>
+                                                        <a href="validaciones/odRevisar.php?id=<?= $orden["od_id"] ?>" class="btn btn-primary mb-2">ENVIAR PARA APROBAR</a>
                                                     </td>
                                                     <td>
                                                         <a href="od.php?id=<?= $orden["od_id"] ?>" class="btn btn-secondary mb-2">EDITAR</a>
