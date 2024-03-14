@@ -22,18 +22,15 @@ $elementos = $_SESSION["elementos"] ?? [null];
 $diseniador = $_SESSION["user"]["cedula"];
 
 // Obtener el número total de actividades para la orden de diseño actual
-$totalActividades = $conn->prepare("SELECT COUNT(*) FROM od_actividades WHERE od_id = :id");
+$totalActividades = $conn->prepare("SELECT COUNT(*) FROM od_actividades WHERE od_id = :id AND odAct_estado = 0");
 $totalActividades->execute([":id" => $id]);
 $totalActividades = $totalActividades->fetchColumn();
 
 // Obtener el número de registros en registros_disenio para la orden de diseño actual
-$registrosDisenio = $conn->prepare("SELECT COUNT(*) FROM registros_disenio WHERE od_id = :id");
+$registrosDisenio = $conn->prepare("SELECT COUNT(*) FROM registros_disenio WHERE od_id = :id AND rd_hora_fin IS NOT NULL");
 $registrosDisenio->execute([":id" => $id]);
 $registrosDisenio = $registrosDisenio->fetchColumn();
-//VERIFICAR SI HAY REGISTROS SIN ACTIVIDADES
-$detallesSinRegistro = $conn->prepare("SELECT odAct_detalle FROM od_actividades WHERE od_id = :id AND odAct_detalle NOT IN (SELECT rd_detalle FROM registros_disenio WHERE od_id = :id)");
-$detallesSinRegistro->execute([":id" => $id]);
-$detallesSinRegistro = $detallesSinRegistro->fetchAll(PDO::FETCH_ASSOC);
+
 
 
 if ($_SESSION["user"]["usu_rol"] && ($_SESSION["user"]["usu_rol"] == 2 || $_SESSION["user"]["usu_rol"] == 3 || $_SESSION["user"]["usu_rol"] == 1)) {
@@ -131,7 +128,7 @@ if ($_SESSION["user"]["usu_rol"] && ($_SESSION["user"]["usu_rol"] == 2 || $_SESS
                                             <datalist id="nombresList">
                                                 <?php foreach ($personas as $persona) : ?>
                                                     <option value="<?= $persona["per_nombres"] ?>">
-                                                    <?php endforeach ?>
+                                                <?php endforeach ?>
                                             </datalist>
                                         </div>
                                     </div>
@@ -241,10 +238,20 @@ if ($_SESSION["user"]["usu_rol"] && ($_SESSION["user"]["usu_rol"] == 2 || $_SESS
                                                     <td><?= $orden["comercial_nombres"] ?> <?= $orden["comercial_apellidos"] ?></td>
                                                     <td><?= $orden["od_estado"] ?></td>
                                                     <td>
-                                                        <a href="./od_actividades.php?id=<?= $orden["od_id"] ?>" class="btn btn-secondary mb-2">VER ACTIVIDADES</a>
+                                                        <a href="./od_actividades.php?id=<?= $orden["od_id"] ?>" class="btn btn-primary mb-2">VER ACTIVIDADES</a>
                                                     </td>
                                                     <td>
-                                                        <a href="validaciones/odRevisar.php?id=<?= $orden["od_id"] ?>" class="btn btn-primary mb-2">ENVIAR PARA APROBAR</a>
+                                                        <?php
+                                                        //VERIFICAR SI HAY REGISTROS SIN ACTIVIDADES
+                                                        $detallesSinRegistro = $conn->prepare("SELECT odAct_detalle FROM od_actividades WHERE od_id = :id AND odAct_estado = 0 AND odAct_detalle NOT IN (SELECT rd_detalle FROM registros_disenio WHERE od_id = :id AND rd_hora_fin IS NOT NULL)");
+                                                        $detallesSinRegistro->execute([":id" => $orden["od_id"]]);
+                                                        $detallesSinRegistro = $detallesSinRegistro->fetchAll(PDO::FETCH_ASSOC);
+                                                        ?>
+                                                        <?php if (empty($detallesSinRegistro)) : ?>
+                                                            <a href="validaciones/odRevisar.php?id=<?= $orden["od_id"] ?>" class="btn btn-success mb-2">ENVIAR PARA APROBAR</a>
+                                                        <?php else : ?>
+                                                            <a href="#" class="btn btn-danger mb-2">AÚN FALTAN ACTIVIDADES POR COMPLETAR!</a>
+                                                        <?php endif ?>
                                                     </td>
                                                     <td>
                                                         <a href="od.php?id=<?= $orden["od_id"] ?>" class="btn btn-secondary mb-2">EDITAR</a>

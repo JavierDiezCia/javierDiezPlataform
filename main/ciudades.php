@@ -21,6 +21,10 @@ $ciudadEditar = null;
 if ($_SESSION["user"]["usu_rol"] && $_SESSION["user"]["usu_rol"] == 1) {
     // Verificamos el método que usa el formulario con un if
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        // Primero, verifica si el token CSRF es válido
+        if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+            die('Invalid CSRF token JAJA HACKER NO PUEDES XD');
+        }
         // Validamos que no se manden datos vacíos
         if (empty($_POST["ciudad"])) {
             $error = "POR FAVOR RELLENA TODOS LOS CAMPOS.";
@@ -94,6 +98,7 @@ if ($_SESSION["user"]["usu_rol"] && $_SESSION["user"]["usu_rol"] == 1) {
                             </p>
                         <?php endif ?>
                         <form class="row g-3" method="POST" action="ciudades.php">
+                            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                             <div class="col-md-12">
                                 <div class="form-floating mb-3">
                                     <input type="text" class="form-control" id="ciudad" name="ciudad" placeholder="Ciudad" autocomplete="ciudad" required>

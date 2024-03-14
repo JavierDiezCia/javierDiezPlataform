@@ -16,20 +16,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
     $statement->execute();
     //COMPROBAMOS QUE EL ID EXISTA, EN CASO DE QUE EL USUARIO NO SEA UN NAVEGADOR, Y SI NO EXISTE EL ID MANDAMOS UN ERROR
     if ($statement->rowCount() == 0) {
-      $error = "Credenciales invalidas u.";
+      $error = "Credenciales invalidas.";
     } else {
       //obtenemos los datos de usuario y asignamos a una variable user y lo pedimos en fetch assoc para que lo mande en un formato asociativo
       $user = $statement->fetch(PDO::FETCH_ASSOC);
       //comparamos si la contrasenia ingresada en el form es igual a la contrasenia que obtuvimos en la variable user
       if (!password_verify($_POST["password"], $user["usu_password"])) {
-        $error = "Credenciales invalidas p";
+        $error = "Credenciales invalidas.";
       } else {
         //borramos por asi decir la contrasenia del usuario en la secion para que no almacene ese valor y por seguridad
         unset($user["usu_password"]);
         //iniciamos una sesion la cual es una cookie que es como un hash almacenado en el pc usuario para que almacene compruebe el usuario, asi la manera  de acceder a la sesion es por medio de la cockie y si alguien intenta hackear necesita el hash para poder hacer peticiones al servidor en lugar de solo necesitas el id
         session_start();
+
+        // Genera un token CSRF
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+
         //asignamos el usuario que se logueo a la secion iniciada
         $_SESSION["user"] = $user;
+
+        var_dump($_SESSION);
+        die();
         
 
         //redirige al home.php

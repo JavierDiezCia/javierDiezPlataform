@@ -4,12 +4,9 @@ require "../partials/kardex_delete.php";
 require "../partials/session_handler.php"; 
 
 
-// Si la sesión no existe, redirigir al login.php y dejar de ejecutar el resto
-if (!isset($_SESSION["user"])) {
+// Si la sesión no existe o el rol no es 3, redirigir al login.php o al index.php y dejar de ejecutar el resto
+if (!isset($_SESSION["user"]) || $_SESSION["user"]["usu_rol"] != 3) {
     header("Location: ../login-form/login.php");
-    return;
-}
-if (($_SESSION["user"]["usu_rol"] != 3)) {
     header("Location: ../index.php");
     return;
 }
@@ -35,13 +32,21 @@ if (!$orden_diseño) {
     return;
 }
 
-// Actualizar el estado de la orden de diseño a "Revisando" (código de estado 4)
-$conn->prepare("UPDATE orden_disenio SET od_estado = 'MATERIALIDAD' WHERE od_id = :id")->execute([
-    ":id" => $id,
-]);
+//VERIFICAR SI HAY REGISTROS SIN ACTIVIDADES
+$detallesSinRegistro = $conn->prepare("SELECT odAct_detalle FROM od_actividades WHERE od_id = :id AND odAct_estado = 0 AND odAct_detalle NOT IN (SELECT rd_detalle FROM registros_disenio WHERE od_id = :id AND rd_hora_fin IS NOT NULL)");
+$detallesSinRegistro->execute([":id" => $orden["od_id"]]);
+$detallesSinRegistro = $detallesSinRegistro->fetchAll(PDO::FETCH_ASSOC);
 
-// Registramos el movimiento en el kardex
-registrarEnKardex($_SESSION["user"]["ID_USER"], "PASÓ A MATERIALIDAD", 'ORDEN DISEÑO', "PRODUCTO: " . $orden_diseño["od_producto"]);
+if (!empty($detallesSinRegistro)) {
+    // Actualizar el estado de la orden de diseño a "Revisando" (código de estado 4)
+    $conn->prepare("UPDATE orden_disenio SET od_estado = 'MATERIALIDAD' WHERE od_id = :id AND od_estado = 'PROPUESTA'")->execute([
+        ":id" => $id,
+    ]);
+    // Registramos el movimiento en el kardex
+    registrarEnKardex($_SESSION["user"]["ID_USER"], "PASÓ A MATERIALIDAD", 'ORDEN DISEÑO', "PRODUCTO: " . $orden_diseño["od_producto"]);
+}
+
+
 
 // Redirigimos a la página de ordenes de diseño
 header("Location: ../od.php");
