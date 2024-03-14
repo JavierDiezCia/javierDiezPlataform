@@ -6,7 +6,7 @@ require "../../sql/database.php"; // Incluir archivo de configuración de la bas
 require "../partials/kardex.php"; // Incluir otros archivos necesarios
 require "../../exel/vendor/autoload.php"; // Incluir la biblioteca PhpSpreadsheet
 
-session_start(); 
+session_start();
 // Iniciar sesión
 
 // Si la sesión no existe, redirigir al formulario de inicio de sesión y salir del script
@@ -52,14 +52,14 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
     $drawing->setName('Logo');
     $drawing->setDescription('Logo');
     $drawing->setPath($imgPath);
-    $drawing->setHeight(70); // Establecer la altura de la imagen
-    $drawing->setWidth(70); // Establecer el ancho de la imagen
+    $drawing->setHeight(100); // Establecer la altura de la imagen
+    $drawing->setWidth(100); // Establecer el ancho de la imagen
 
     // Añadir la imagen al archivo de Excel
     $drawing->setWorksheet($excel->getActiveSheet());
 
     // Seleccionar la hoja activa y establecer su título
-     $hojaActiva = $excel->getActiveSheet();
+    $hojaActiva = $excel->getActiveSheet();
     $hojaActiva->setTitle("Reporte de las Op");
     $hojaActiva->setCellValue('C3', 'FECHA DEL REPORTE');
     $hojaActiva->setCellValue('C2', 'REPORTE GENERADO POR');
@@ -168,7 +168,7 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
             ],
             'fill' => [
                 'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                'startColor' => ['rgb' => '0000FF'], // Color de relleno azul
+                'startColor' => ['rgb' => '000000'], // Color de relleno azul
             ],
             'alignment' => [
                 'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER, // Centrado horizontal
@@ -186,10 +186,7 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
     $hojaActiva->getStyle('A6:N' . $fila)->getAlignment()->setWrapText(true); // Activar el ajuste de texto en las celdas
     $hojaActiva->getStyle('A6:N' . $fila)->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER); // Centrar verticalmente el texto en las celdas
 
-    // Ajustar automáticamente el tamaño de las columnas y filas
-    foreach (range('A', 'N') as $columnID) {
-        $hojaActiva->getColumnDimension($columnID)->setAutoSize(true);
-    }
+
 
     // Agregar bordes a las celdas
     $styleArray = [
@@ -204,7 +201,25 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
     $hojaActiva->getStyle('A6:N' . $fila)->applyFromArray($styleArray);
 
 
-    
+    $hojaActiva->getColumnDimension('A')->setAutoSize(true);
+    $hojaActiva->getColumnDimension('E')->setAutoSize(true);
+    $hojaActiva->getColumnDimension('G')->setAutoSize(true);
+    $hojaActiva->getColumnDimension('H')->setAutoSize(true);
+    $hojaActiva->getColumnDimension('K')->setAutoSize(true);
+    $hojaActiva->getColumnDimension('L')->setAutoSize(true);
+    $hojaActiva->getColumnDimension('M')->setAutoSize(true);
+    $hojaActiva->getColumnDimension('B')->setWidth(28);
+    $hojaActiva->getColumnDimension('C')->setWidth(28);
+    $hojaActiva->getColumnDimension('F')->setWidth(28);
+    $hojaActiva->getColumnDimension('I')->setWidth(30);
+    $hojaActiva->getColumnDimension('J')->setWidth(30);
+    $hojaActiva->getColumnDimension('D')->setWidth(30);
+    $hojaActiva->getColumnDimension('L')->setWidth(25);
+    $hojaActiva->getColumnDimension('N')->setWidth(28);
+    $hojaActiva->getStyle('A7:N' . $hojaActiva->getHighestRow())
+    ->getAlignment()->setWrapText(true);
+
+
     // Crear un objeto Writer para Xlsx
     $writer = new Xlsx($excel);
 

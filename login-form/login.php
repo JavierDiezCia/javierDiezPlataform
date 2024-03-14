@@ -34,9 +34,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 
         //asignamos el usuario que se logueo a la secion iniciada
         $_SESSION["user"] = $user;
-
-        var_dump($_SESSION);
-        die();
         
 
         //redirige al home.php

@@ -1,7 +1,7 @@
 <?php
 require "../../sql/database.php";
 require "../partials/kardex_delete.php";
-require "../partials/session_handler.php"; 
+require "../partials/session_handler.php";
 
 
 
@@ -9,6 +9,9 @@ require "../partials/session_handler.php";
 if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["usu_rol"]) || ($_SESSION["user"]["usu_rol"] == 1)) {
     // Obtener el ID de la OP desde la URL
     $id = isset($_GET["id"]) ? intval($_GET["id"]) : 0;
+    // Obtener la observación del cuerpo de la solicitud POST
+    $observacion = isset($_POST["observacion"]) ? $_POST["observacion"] : '';
+
     if ($id <= 0) {
         // Manejar error o redirigir a una página de error
         http_response_code(400); // Bad Request
@@ -36,15 +39,18 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["usu_rol"]) || ($_SESS
         ":id" => $id,
         ":estado" => "OP PAUSADA"
     ]);
-    
-    
-    
+    // Registrar la observación en la tabla pla_observaciones
+    $conn->prepare("INSERT INTO op_observaciones (op_id, opOb_estado, opOb_obsevacion, opOb_fecha) VALUES (:id, :estado, :observacion, CURRENT_TIMESTAMP)")->execute([
+        ":id" => $id,
+        ":estado" => "PAUSADO",
+        ":observacion" => $observacion
+    ]);
 
     // Registrar el movimiento en el kardex
     registrarEnKardex($_SESSION["user"]["cedula"], "SE HA PAUSADO UNA OP", 'OP', $id);
 
-     //RERIDIRIGIR A OPCIONESOP.PHP
-     header("Location: ../opcionesOp.php");
+    //RERIDIRIGIR A OPCIONESOP.PHP
+    header("Location: ../opcionesOp.php");
 
     return;
 } else {

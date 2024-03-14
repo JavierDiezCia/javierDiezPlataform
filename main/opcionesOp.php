@@ -106,7 +106,7 @@ if ($_SESSION["user"]["usu_rol"] == 1 || $_SESSION["user"]["usu_rol"] == 2) {
                                                             <td>
                                                                 <?php if ($op["op_reproceso"] != 0) : ?>
                                                                     Es un reproceso
-                                                                <?php elseif ($_SESSION["user"]["usu_rol"] == 1 ||$_SESSION["user"]["usu_rol"] == 2) : ?>
+                                                                <?php elseif ($_SESSION["user"]["usu_rol"] == 1 || $_SESSION["user"]["usu_rol"] == 2) : ?>
                                                                     <button type="button" class="btn btn-warning mb-2" onclick="openReprosesoModal(<?= $op["op_id"] ?>)">REPROCESO</button>
                                                                     <div class="modal fade" id="reproseso-<?= $op["op_id"] ?>" tabindex="-1" style="display: none;" aria-modal="true" role="dialog">
                                                                         <div class="modal-dialog modal-dialog-centered">
@@ -179,11 +179,15 @@ if ($_SESSION["user"]["usu_rol"] == 1 || $_SESSION["user"]["usu_rol"] == 2) {
                                                                                                     </p>
                                                                                                 <?php endif ?>
                                                                                                 <div class="card-body">
-                                                                                                    <form class="row g-3" method="post" action="">
-                                                                                                        <div class="col-md-6">
+                                                                                                    <form class="row g-3" method="post" action="./cambiosEstadoOp/pausarOp.php?id=<?= $op["op_id"] ?>">
+                                                                                                        <div class="col-md-12">
                                                                                                             <div class="form-floating">
-                                                                                                                <input type="text" class="form-control" id="observacio" name="obervacione" placeholder="observacion">
+                                                                                                                <input type="text" class="form-control" id="observacion" name="observacion" placeholder="observacion" required>
                                                                                                                 <label for="observacion">Registre la observacion</label>
+                                                                                                            </div>
+                                                                                                            <div class="modal-footer">
+                                                                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                                                                <button type="submit" class="btn btn-success">PAUSAR</button>
                                                                                                             </div>
                                                                                                         </div>
                                                                                                     </form>
@@ -192,96 +196,96 @@ if ($_SESSION["user"]["usu_rol"] == 1 || $_SESSION["user"]["usu_rol"] == 2) {
                                                                                         </div>
                                                                                     </section>
                                                                                 </div>
-                                                                                <div class="modal-footer">
-                                                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                                    <a href="./cambiosEstadoOp/pausarOp.php?id=<?= $op["op_id"] ?>" class="btn btn-success mb-2">PAUSAR</a>
+                                                                            </div>
+                                                                            <script>
+                                                                                function openPausarModal(idop) {
+                                                                                    // Construye el ID del modal específico basado en el ID de la op
+                                                                                    var modalId = "pausar-" + idop;
+                                                                                    // Abre el modal correspondiente
+                                                                                    $("#" + modalId).modal("show");
+                                                                                }
+                                                                            </script>
+                                                                        </div>
+                                                                    </div>
+                                                                <?php else : ?>
+                                                                    <button type="button" class="btn btn-primary mb-2" onclick="openActivarModal(<?= $op["op_id"] ?>)">ACTIVAR</button>
+                                                                    <div class="modal fade" id="activar-<?= $op["op_id"] ?>" tabindex="-1" style="display: none;" aria-modal="true" role="dialog">
+                                                                        <div class="modal-dialog modal-dialog-centered">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header">
+                                                                                    <h5 class="modal-title">Activar op</h5>
+                                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <p>Esta usted seguro de activar la op <?= $op["op_id"] ?> del cliente <?= $op["od_cliente"] ?></p>
+                                                                                    <section class="section">
+                                                                                        <div class="row">
+                                                                                            <div class="">
+                                                                                                <?php if ($error) : ?>
+                                                                                                    <p class="text_danger">
+                                                                                                        <?= $error ?>
+                                                                                                    </p>
+                                                                                                <?php endif ?>
+                                                                                                <div class="card-body">
+                                                                                                    <form class="row g-3" method="post" action="./cambiosEstadoOp/activarOp.php?id=<?= $op["op_id"] ?>">
+                                                                                                        <div class="col-md-12">
+                                                                                                            <div class="form-floating">
+                                                                                                                <input type="text" class="form-control" id="observaciones" name="observaciones" placeholder="observaciones" required>
+                                                                                                                <label for="observaciones">Registre la obervacion</label>
+                                                                                                            </div>
+                                                                                                            <div class="modal-footer">
+                                                                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                                                                <button type="submit" class="btn btn-primary">ACTIVAR</button>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </form>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </section>
                                                                                 </div>
                                                                             </div>
                                                                             <script>
-                                                                                                    function openPausarModal(idop) {
-                                                                                                        // Construye el ID del modal específico basado en el ID de la op
-                                                                                                        var modalId = "pausar-" + idop;
-                                                                                                        // Abre el modal correspondiente
-                                                                                                        $("#" + modalId).modal("show");
-                                                                                                    }
-                                                                                                </script>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    <?php else : ?>
-                                                                                        <button type="button" class="btn btn-primary mb-2" onclick="openActivarModal(<?= $op["op_id"] ?>)">ACTIVAR</button>
-                                                                                        <div class="modal fade" id="activar-<?= $op["op_id"] ?>" tabindex="-1" style="display: none;" aria-modal="true" role="dialog">
-                                                                                            <div class="modal-dialog modal-dialog-centered">
-                                                                                                <div class="modal-content">
-                                                                                                    <div class="modal-header">
-                                                                                                        <h5 class="modal-title">Activar op</h5>
-                                                                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                                                    </div>
-                                                                                                    <div class="modal-body">
-                                                                                                        <p>Esta usted seguro de activar la op <?= $op["op_id"] ?> del cliente <?= $op["od_cliente"] ?></p>
-                                                                                                        <section class="section">
-                                                                                                            <div class="row">
-                                                                                                                <div class="">
-                                                                                                                    <?php if ($error) : ?>
-                                                                                                                        <p class="text_danger">
-                                                                                                                            <?= $error ?>
-                                                                                                                        </p>
-                                                                                                                    <?php endif ?>
-                                                                                                                    <div class="card-body">
-                                                                                                                        <form class="row g-3" method="post" action="">
-                                                                                                                            <div class="col-md-6">
-                                                                                                                                <div class="form-floating">
-                                                                                                                                    <input type="text" class="form-control" id="observaciones" name="observaciones" placeholder="observaciones">
-                                                                                                                                    <label for="observaciones">Registre la obervacion</label>
-                                                                                                                                </div>
-                                                                                                                            </div>
-                                                                                                                        </form>
-                                                                                                                    </div>
-                                                                                                                </div>
-                                                                                                            </div>
-                                                                                                        </section>
-                                                                                                    </div>
-                                                                                                    <div class="modal-footer">
-                                                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                                                                        <a href="./cambiosEstadoOp/activarOp.php?id=<?= $op["op_id"] ?>" class="btn btn-primary mb-2">Activar</a>
-                                                                                                    </div>
-                                                                                                </div>
-                                                                                                <script>
-                                                                                                    function openActivarModal(idop) {
-                                                                                                        // Construye el ID del modal específico basado en el ID de la op
-                                                                                                        var modalId = "activar-" + idop;
-                                                                                                        // Abre el modal correspondiente
-                                                                                                        $("#" + modalId).modal("show");
-                                                                                                    }
-                                                                                                </script>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    <?php endif ?>
-                                                                                </td>
-                                                                                <td>
-                                                                                    <button type="button" class="btn btn-danger mb-2" onclick="openAnularModal(<?= $op["op_id"] ?>)">ANULAR</button>
-                                                                                    <div class="modal fade" id="anular-<?= $op["op_id"] ?>" tabindex="-1" style="display: none;" aria-modal="true" role="dialog">
-                                                                                        <div class="modal-dialog modal-dialog-centered">
-                                                                                            <div class="modal-content">
-                                                                                                <div class="modal-header">
-                                                                                                    <h5 class="modal-title">Anular Op</h5>
-                                                                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                                                                </div>
-                                                                                                <div class="modal-body">
-                                                                                                    <p>Esta usted seguro que quiere anular la siguiente op <?= $op["op_id"] ?> del cliente <?= $op["od_cliente"] ?></p>
-                                                                                                    <section class="section">
-                                                                                                        <div class="row">
-                                                                                                            <div class="">
-                                                                                                                <?php if ($error) : ?>
-                                                                                                                    <p class="text_danger">
-                                                                                                                        <?= $error ?>
-                                                                                                                    </p>
-                                                                                                                <?php endif ?>
-                                                                                                                <div class="card-body">
-                                                                                                                    <form class="row g-3" method="post" action="">
-                                                                                                                        <div class="col-md-6">
+                                                                                function openActivarModal(idop) {
+                                                                                    // Construye el ID del modal específico basado en el ID de la op
+                                                                                    var modalId = "activar-" + idop;
+                                                                                    // Abre el modal correspondiente
+                                                                                    $("#" + modalId).modal("show");
+                                                                                }
+                                                                            </script>
+                                                                        </div>
+                                                                    </div>
+                                                                <?php endif ?>
+                                                            </td>
+                                                            <td>
+                                                                <button type="button" class="btn btn-danger mb-2" onclick="openAnularModal(<?= $op["op_id"] ?>)">ANULAR</button>
+                                                                <div class="modal fade" id="anular-<?= $op["op_id"] ?>" tabindex="-1" style="display: none;" aria-modal="true" role="dialog">
+                                                                    <div class="modal-dialog modal-dialog-centered">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header">
+                                                                                <h5 class="modal-title">Anular Op</h5>
+                                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                                <p>Esta usted seguro que quiere anular la siguiente op <?= $op["op_id"] ?> del cliente <?= $op["od_cliente"] ?></p>
+                                                                                <section class="section">
+                                                                                    <div class="row">
+                                                                                        <div class="">
+                                                                                            <?php if ($error) : ?>
+                                                                                                <p class="text_danger">
+                                                                                                    <?= $error ?>
+                                                                                                </p>
+                                                                                            <?php endif ?>
+                                                                                            <div class="card-body">
+                                                                                                <form class="row g-3" method="post" action="./cambiosEstadoOp/anularOP.php?id=<?= $op["op_id"] ?>">
+                                                                                                    <div class="col-md-12">
                                                                                                         <div class="form-floating">
-                                                                                                            <input type="text" class="form-control" id="observacion" name="obsevacion" placeholder="obervacion">
-                                                                                                            <label for="obssevacio">Registre la Obervacion</label>
+                                                                                                            <input type="text" class="form-control" id="observacion" name="obsevacion" placeholder="obervacion" required>
+                                                                                                            <label for="obssevacion">Registre la Obervacion</label>
+                                                                                                        </div>
+                                                                                                        <div class="modal-footer">
+                                                                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                                                                                            <button type="submit" class="btn btn-primary">Anular</button>
                                                                                                         </div>
                                                                                                     </div>
                                                                                                 </form>
@@ -290,10 +294,7 @@ if ($_SESSION["user"]["usu_rol"] == 1 || $_SESSION["user"]["usu_rol"] == 2) {
                                                                                     </div>
                                                                                 </section>
                                                                             </div>
-                                                                            <div class="modal-footer">
-                                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                                                                <a href="./cambiosEstadoOp/anularOP.php?id=<?= $op["op_id"] ?>" class="btn btn-primary">Anular</a>
-                                                                            </div>
+
                                                                         </div>
                                                                     </div>
                                                                     <script>

@@ -149,7 +149,7 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
                 ],
                 'fill' => [
                     'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                    'startColor' => ['rgb' => '0000FF'], // Color de relleno azul
+                    'startColor' => ['rgb' => '000000'], // Color de relleno azul
                 ],
                 'alignment' => [
                     'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER, // Centrado horizontal
@@ -206,29 +206,29 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
 
         // Establecer los datos en las celdas especificadas
         $nuevaHoja->setCellValue('C3', 'FECHA DE GENERACION DEL REPORTE');
-        $nuevaHoja->setCellValue('L3', 'FECHA DE GENERACION DEL REPORTE');
-        $nuevaHoja->setCellValue('V3', 'FECHA DE GENERACION DEL REPORTE');
-        $nuevaHoja->setCellValue('AF3', 'FECHA DE GENERACION DEL REPORTE');
-        $nuevaHoja->setCellValue('AP3', 'FECHA DE GENERACION DEL REPORTE');
-        $nuevaHoja->setCellValue('BA3', 'FECHA DE GENERACION DEL REPORTE');
+        $nuevaHoja->setCellValue('M3', 'FECHA DE GENERACION DEL REPORTE');
+        $nuevaHoja->setCellValue('W3', 'FECHA DE GENERACION DEL REPORTE');
+        $nuevaHoja->setCellValue('AG3', 'FECHA DE GENERACION DEL REPORTE');
+        $nuevaHoja->setCellValue('AQ3', 'FECHA DE GENERACION DEL REPORTE');
+        $nuevaHoja->setCellValue('BB3', 'FECHA DE GENERACION DEL REPORTE');
         $nuevaHoja->setCellValue('C2', 'REPORTE GENERADO POR');
-        $nuevaHoja->setCellValue('L2', 'REPORTE GENERADO POR');
-        $nuevaHoja->setCellValue('V2', 'REPORTE GENERADO POR');
-        $nuevaHoja->setCellValue('AF2', 'REPORTE GENERADO POR');
-        $nuevaHoja->setCellValue('AP2', 'REPORTE GENERADO POR');
-        $nuevaHoja->setCellValue('BA2', 'REPORTE GENERADO POR');
+        $nuevaHoja->setCellValue('M2', 'REPORTE GENERADO POR');
+        $nuevaHoja->setCellValue('W2', 'REPORTE GENERADO POR');
+        $nuevaHoja->setCellValue('AG2', 'REPORTE GENERADO POR');
+        $nuevaHoja->setCellValue('AQ2', 'REPORTE GENERADO POR');
+        $nuevaHoja->setCellValue('BB2', 'REPORTE GENERADO POR');
         $nuevaHoja->setCellValue('C4', 'EL REPORTE ES DE LA FECHA');
-        $nuevaHoja->setCellValue('D4', $year . ' - ' . $month);
-        $nuevaHoja->setCellValue('L4', 'EL REPORTE ES DE LA FECHA');
-        $nuevaHoja->setCellValue('M4', $year . ' - ' . $month);
-        $nuevaHoja->setCellValue('V4', 'EL REPORTE ES DE LA FECHA');
-        $nuevaHoja->setCellValue('W4', $year . ' - ' . $month);
-        $nuevaHoja->setCellValue('AF4', 'EL REPORTE ES DE LA FECHA');
-        $nuevaHoja->setCellValue('AG4', $year . ' - ' . $month);
+        $nuevaHoja->setCellValue('E4', $year . ' - ' . $month);
+        $nuevaHoja->setCellValue('M4', 'EL REPORTE ES DE LA FECHA');
+        $nuevaHoja->setCellValue('O4', $year . ' - ' . $month);
+        $nuevaHoja->setCellValue('W4', 'EL REPORTE ES DE LA FECHA');
+        $nuevaHoja->setCellValue('Y4', $year . ' - ' . $month);
+        $nuevaHoja->setCellValue('AG4', 'EL REPORTE ES DE LA FECHA');
+        $nuevaHoja->setCellValue('AI4', $year . ' - ' . $month);
         $nuevaHoja->setCellValue('AQ4', 'EL REPORTE ES DE LA FECHA');
-        $nuevaHoja->setCellValue('D4', $year . ' - ' . $month);
-        $nuevaHoja->setCellValue('BA4', 'EL REPORTE ES DE LA FECHA');
-        $nuevaHoja->setCellValue('BB4', $year . ' - ' . $month);
+        $nuevaHoja->setCellValue('AS4', $year . ' - ' . $month);
+        $nuevaHoja->setCellValue('BB4', 'EL REPORTE ES DE LA FECHA');
+        $nuevaHoja->setCellValue('BD4', $year . ' - ' . $month);
 
         // Verificar si se encontraron resultados
         if ($usuario) {
@@ -237,32 +237,32 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
             $apellidosUsuario = $usuario['per_apellidos'];
 
             // Mostrar los nombres y apellidos del usuario en la celda H6
-            $nuevaHoja->setCellValue('D2', $nombresUsuario . ' ' . $apellidosUsuario);
-            $nuevaHoja->setCellValue('M2', $nombresUsuario . ' ' . $apellidosUsuario);
-            $nuevaHoja->setCellValue('W2', $nombresUsuario . ' ' . $apellidosUsuario);
-            $nuevaHoja->setCellValue('AG2', $nombresUsuario . ' ' . $apellidosUsuario);
-            $nuevaHoja->setCellValue('AQ2', $nombresUsuario . ' ' . $apellidosUsuario);
-            $nuevaHoja->setCellValue('BB2', $nombresUsuario . ' ' . $apellidosUsuario);
+            $nuevaHoja->setCellValue('E2', $nombresUsuario . ' ' . $apellidosUsuario);
+            $nuevaHoja->setCellValue('O2', $nombresUsuario . ' ' . $apellidosUsuario);
+            $nuevaHoja->setCellValue('Y2', $nombresUsuario . ' ' . $apellidosUsuario);
+            $nuevaHoja->setCellValue('AI2', $nombresUsuario . ' ' . $apellidosUsuario);
+            $nuevaHoja->setCellValue('AS2', $nombresUsuario . ' ' . $apellidosUsuario);
+            $nuevaHoja->setCellValue('BD2', $nombresUsuario . ' ' . $apellidosUsuario);
         } else {
             // En caso de no encontrar resultados, mostrar un mensaje alternativo
-            $nuevaHoja->setCellValue('D2', 'Usuario no encontrado');
-            $nuevaHoja->setCellValue('M2', 'Usuario no encontrado');
-            $nuevaHoja->setCellValue('W2', 'Usuario no encontrado');
-            $nuevaHoja->setCellValue('AG2', 'Usuario no encontrado');
-            $nuevaHoja->setCellValue('AQ2', 'Usuario no encontrado');
-            $nuevaHoja->setCellValue('BB2', 'Usuario no encontrado');
+            $nuevaHoja->setCellValue('E2', 'Usuario no encontrado');
+            $nuevaHoja->setCellValue('O2', 'Usuario no encontrado');
+            $nuevaHoja->setCellValue('Y2', 'Usuario no encontrado');
+            $nuevaHoja->setCellValue('AI2', 'Usuario no encontrado');
+            $nuevaHoja->setCellValue('AS2', 'Usuario no encontrado');
+            $nuevaHoja->setCellValue('BD2', 'Usuario no encontrado');
         }
 
         // Obtener la fecha y hora actual
         $fechaHoraActual = date('Y-m-d H:i:s'); // Formato: Año-Mes-Día Hora:Minuto:Segundo
 
         // Añadir la fecha y hora actual en las celdas C3, H3 y Z3
-        $nuevaHoja->setCellValue('D3', $fechaHoraActual);
-        $nuevaHoja->setCellValue('M3', $fechaHoraActual);
-        $nuevaHoja->setCellValue('W3', $fechaHoraActual);
-        $nuevaHoja->setCellValue('AG3', $fechaHoraActual);
-        $nuevaHoja->setCellValue('AQ3', $fechaHoraActual);
-        $nuevaHoja->setCellValue('BB3', $fechaHoraActual);
+        $nuevaHoja->setCellValue('E3', $fechaHoraActual);
+        $nuevaHoja->setCellValue('O3', $fechaHoraActual);
+        $nuevaHoja->setCellValue('Y3', $fechaHoraActual);
+        $nuevaHoja->setCellValue('AI3', $fechaHoraActual);
+        $nuevaHoja->setCellValue('AS3', $fechaHoraActual);
+        $nuevaHoja->setCellValue('BD3', $fechaHoraActual);
         // Definir los estilos una vez para reutilización
         $styles = [
             'font' => ['bold' => true, 'size' => 13],
@@ -273,12 +273,12 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
         ];
 
         // Aplicar los estilos a los diferentes rangos de celdas
-        $nuevaHoja->getStyle('C2:H3')->applyFromArray($styles);
-        $nuevaHoja->getStyle('L2:M3')->applyFromArray($styles);
-        $nuevaHoja->getStyle('V2:W3')->applyFromArray($styles);
-        $nuevaHoja->getStyle('AF2:AG3')->applyFromArray($styles);
-        $nuevaHoja->getStyle('AP2:AQ3')->applyFromArray($styles);
-        $nuevaHoja->getStyle('BA2:BB3')->applyFromArray($styles);
+        $nuevaHoja->getStyle('C2:H6')->applyFromArray($styles);
+        $nuevaHoja->getStyle('L2:O6')->applyFromArray($styles);
+        $nuevaHoja->getStyle('V2:Y6')->applyFromArray($styles);
+        $nuevaHoja->getStyle('AF2:AI6')->applyFromArray($styles);
+        $nuevaHoja->getStyle('AP2:AS6')->applyFromArray($styles);
+        $nuevaHoja->getStyle('BA2:BD6')->applyFromArray($styles);
 
         // Ajustar el alto de la fila 1 después de haber insertado todas las imágenes
         $nuevaHoja->getRowDimension('1')->setRowHeight(20); // Establecer el alto de la fila 1
@@ -407,15 +407,16 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
 
 
 
+        $nuevaHoja->setCellValue('D6', 'REPORTE DEL MES');
         // Establecer encabezados de columnas en la nueva hoja
-        $nuevaHoja->setCellValue('A6', 'DISEÑADOR');
-        $nuevaHoja->setCellValue('B6', 'LUNES');
-        $nuevaHoja->setCellValue('C6', 'MARTES');
-        $nuevaHoja->setCellValue('D6', 'MIERCOLES');
-        $nuevaHoja->setCellValue('E6', 'JUEVES');
-        $nuevaHoja->setCellValue('F6', 'VIERNES');
-        $nuevaHoja->setCellValue('G6', 'SABADO');
-        $nuevaHoja->setCellValue('H6', 'DOMINGO');
+        $nuevaHoja->setCellValue('A7', 'DISEÑADOR');
+        $nuevaHoja->setCellValue('B7', 'LUNES');
+        $nuevaHoja->setCellValue('C7', 'MARTES');
+        $nuevaHoja->setCellValue('D7', 'MIERCOLES');
+        $nuevaHoja->setCellValue('E7', 'JUEVES');
+        $nuevaHoja->setCellValue('F7', 'VIERNES');
+        $nuevaHoja->setCellValue('G7', 'SABADO');
+        $nuevaHoja->setCellValue('H7', 'DOMINGO');
 
 
 
@@ -445,10 +446,11 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
         }
 
         // de la primera semana
-        $nuevaHoja->setCellValue('K6', 'DISEÑADOR');
+        $nuevaHoja->setCellValue('N6', 'REPORTE DE LA PRIMERA SEMANA');
+        $nuevaHoja->setCellValue('K7', 'DISEÑADOR');
         $columna = 'L';
         foreach ($encabezados_primera_semana as $encabezado) {
-            $nuevaHoja->setCellValue($columna . '6', $encabezado);
+            $nuevaHoja->setCellValue($columna . '7', $encabezado);
             $columna++;
         }
 
@@ -474,10 +476,11 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
         }
 
         // SEGUNDA SEMANA
-        $nuevaHoja->setCellValue('U6', 'DISEÑADOR');
+        $nuevaHoja->setCellValue('X6', 'REPORTE DE LA SEGUNDA SEMANA');
+        $nuevaHoja->setCellValue('U7', 'DISEÑADOR');
         $columna1 = 'V';
         foreach ($encabezados_segunda_semana as $encabezado1) {
-            $nuevaHoja->setCellValue($columna1 . '6', $encabezado1);
+            $nuevaHoja->setCellValue($columna1 . '7', $encabezado1);
             $columna1++;
         }
         //TERCERA semana
@@ -503,10 +506,11 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
         }
 
         // Mostrar los encabezados en la tercera semana
-        $nuevaHoja->setCellValue('AE6', 'DISEÑADOR');
+        $nuevaHoja->setCellValue('AH6', 'REPORTE DE LA TERCERA SEMANA');
+        $nuevaHoja->setCellValue('AE7', 'DISEÑADOR');
         $columna2 = 'AF';
         foreach ($encabezados_tercera_semana as $encabezado2) {
-            $nuevaHoja->setCellValue($columna2 . '6', $encabezado2);
+            $nuevaHoja->setCellValue($columna2 . '7', $encabezado2);
             $columna2++;
         }
 
@@ -532,10 +536,11 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
         }
 
         // Mostrar los encabezados en la tercera semana
-        $nuevaHoja->setCellValue('AO6', 'DISEÑADOR');
+        $nuevaHoja->setCellValue('AR6', 'REPORTE DE LA CUARTA SEMANA');
+        $nuevaHoja->setCellValue('AO7', 'DISEÑADOR');
         $columna3 = 'AP';
         foreach ($encabezados_cuarta_semana as $encabezado3) {
-            $nuevaHoja->setCellValue($columna3 . '6', $encabezado3);
+            $nuevaHoja->setCellValue($columna3 . '7', $encabezado3);
             $columna3++;
         }
 
@@ -562,16 +567,17 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
         }
 
         // Mostrar los encabezados en la tercera semana
-        $nuevaHoja->setCellValue('AZ6', 'DISEÑADOR');
+        $nuevaHoja->setCellValue('BC6', 'REPORTE DE LA QUINTA SEMANA');
+        $nuevaHoja->setCellValue('AZ7', 'DISEÑADOR');
         $columna4 = 'BA';
         foreach ($encabezados_quinta_semana as $encabezado4) {
-            $nuevaHoja->setCellValue($columna4 . '6', $encabezado4);
+            $nuevaHoja->setCellValue($columna4 . '7', $encabezado4);
             $columna4++;
         }
 
 
         // Obtener el número de filas inicial para los datos de la hoja nueva
-        $filaNuevaHoja = 7;
+        $filaNuevaHoja = 8;
         // Obtener el número de filas necesario para ambas consultas
         $totalFilas = max($stmPrimeraSemana->rowCount(), $stmPrimeraSemana1->rowCount(), $stmPrimeraSemana2->rowCount(), $stmPrimeraSemana3->rowCount(),  $stmPrimeraSemana4->rowCount(), $stmtNuevaHoja->rowCount());
 
@@ -783,10 +789,34 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
             $filaNuevaHoja++;
         }
 
-        foreach (range('A', 'Z') as $columnID) {
+        /*foreach (range('A', 'Z') as $columnID) {
             $nuevaHoja->getColumnDimension($columnID)->setAutoSize(true);
+        }*/
+        $nuevaHoja->getColumnDimension('A')->setAutoSize(true);
+        $nuevaHoja->getColumnDimension('K')->setAutoSize(true);
+        $nuevaHoja->getColumnDimension('U')->setAutoSize(true);
+        $nuevaHoja->getColumnDimension('AE')->setAutoSize(true);
+        $nuevaHoja->getColumnDimension('AO')->setAutoSize(true);
+        $nuevaHoja->getColumnDimension('AZ')->setAutoSize(true);
+        //$nuevaHoja->getStyle('B1:H'.$nuevaHoja->getHighestRow())->getAlignment()->setWrapText(true);
+        for ($col = 'B'; $col !== 'I'; $col++) {
+            $nuevaHoja->getColumnDimension($col)->setWidth(20);
         }
-
+        for ($col = 'L'; $col !== 'S'; $col++) {
+            $nuevaHoja->getColumnDimension($col)->setWidth(20);
+        }
+        for ($col = 'V'; $col !== 'AC'; $col++) {
+            $nuevaHoja->getColumnDimension($col)->setWidth(20);
+        }
+        for ($col = 'AF'; $col !== 'AM'; $col++) {
+            $nuevaHoja->getColumnDimension($col)->setWidth(20);
+        }
+        for ($col = 'AP'; $col !== 'AW'; $col++) {
+            $nuevaHoja->getColumnDimension($col)->setWidth(20);
+        }
+        for ($col = 'BA'; $col !== 'BD'; $col++) {
+            $nuevaHoja->getColumnDimension($col)->setWidth(20);
+        }
 
 
         // Establecer un ancho específico para las columnas AE, AO y AZ
@@ -800,7 +830,7 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
 
         function applyCommonStylesToRow6($sheet, $startColumn, $endColumn)
         {
-            $columnRange = $startColumn . '6:' . $endColumn . '6';
+            $columnRange = $startColumn . '7:' . $endColumn . '7';
 
             $sheet->getStyle($columnRange)->applyFromArray([
                 'font' => [
@@ -810,7 +840,7 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
                 ],
                 'fill' => [
                     'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                    'startColor' => ['rgb' => '0000FF'],
+                    'startColor' => ['rgb' => '000000'],
                 ],
                 'alignment' => [
                     'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
@@ -819,9 +849,9 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
             ]);
 
             // Ajustar automáticamente el ancho de las columnas al contenido
-            for ($col = $startColumn; $col <= $endColumn; $col++) {
+            /*for ($col = $startColumn; $col <= $endColumn; $col++) {
                 $sheet->getColumnDimension($col)->setAutoSize(true);
-            }
+            }*/
         }
 
 
@@ -835,16 +865,16 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
         applyCommonStylesToRow6($nuevaHoja, 'AZ', 'BC');
 
         //ALICAR  EL BORDE 
-        $nuevaHoja->getStyle('A6:H' . $filaNuevaHoja)->applyFromArray($styleArray);
-        $nuevaHoja->getStyle('K6:R' . $filaNuevaHoja)->applyFromArray($styleArray);
-        $nuevaHoja->getStyle('AE6:AL' . $filaNuevaHoja)->applyFromArray($styleArray);
-        $nuevaHoja->getStyle('U6:AB' . $filaNuevaHoja)->applyFromArray($styleArray);
-        $nuevaHoja->getStyle('AO6:AV' . $filaNuevaHoja)->applyFromArray($styleArray);
-        $nuevaHoja->getStyle('AZ6:BC' . $filaNuevaHoja)->applyFromArray($styleArray);
+        $nuevaHoja->getStyle('A7:H' . $filaNuevaHoja)->applyFromArray($styleArray);
+        $nuevaHoja->getStyle('K7:R' . $filaNuevaHoja)->applyFromArray($styleArray);
+        $nuevaHoja->getStyle('AE8:AL' . $filaNuevaHoja)->applyFromArray($styleArray);
+        $nuevaHoja->getStyle('U7:AB' . $filaNuevaHoja)->applyFromArray($styleArray);
+        $nuevaHoja->getStyle('AO7:AV' . $filaNuevaHoja)->applyFromArray($styleArray);
+        $nuevaHoja->getStyle('AZ7:BC' . $filaNuevaHoja)->applyFromArray($styleArray);
 
 
         // Establecer el alto de la fila 6
-        $nuevaHoja->getRowDimension('6')->setRowHeight(70);
+        $nuevaHoja->getRowDimension('7')->setRowHeight(70);
         $hojaHora = $excel->createSheet()->setTitle('REPORTE POR TIEMPO DE REGITROS');
         // Añadir la imagen al archivo de Excel
         $imgPath = '../../exel/logo_icon.jpeg'; // Ruta de la imagen
@@ -1012,15 +1042,16 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
         $stmtHora->bindParam(':month', $month);
         $stmtHora->execute();
 
+        $hojaHora->setCellValue('C6', 'REPORTE DEL MES');
         // Establecer encabezados de columnas en la nueva hoja
-        $hojaHora->setCellValue('A6', 'DISEÑADOR');
-        $hojaHora->setCellValue('B6', 'LUNES');
-        $hojaHora->setCellValue('C6', 'MARTES');
-        $hojaHora->setCellValue('D6', 'MIERCOLES');
-        $hojaHora->setCellValue('E6', 'JUEVES');
-        $hojaHora->setCellValue('F6', 'VIERNES');
-        $hojaHora->setCellValue('G6', 'SABADO');
-        $hojaHora->setCellValue('H6', 'DOMINGO');
+        $hojaHora->setCellValue('A7', 'DISEÑADOR');
+        $hojaHora->setCellValue('B7', 'LUNES');
+        $hojaHora->setCellValue('C7', 'MARTES');
+        $hojaHora->setCellValue('D7', 'MIERCOLES');
+        $hojaHora->setCellValue('E7', 'JUEVES');
+        $hojaHora->setCellValue('F7', 'VIERNES');
+        $hojaHora->setCellValue('G7', 'SABADO');
+        $hojaHora->setCellValue('H7', 'DOMINGO');
 
         // Crear un array para almacenar las fechas de la primera semana
         $fechas_primera_semanaHora = array();
@@ -1045,10 +1076,11 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
         }
 
         // de la primera semana
-        $hojaHora->setCellValue('K6', 'DISEÑADOR');
+        $hojaHora->setCellValue('L6', 'REPORTE DE LA PRIMERA SEMANA');
+        $hojaHora->setCellValue('K7', 'DISEÑADOR');
         $columna = 'L';
         foreach ($encabezados_primera_semanaHora as $encabezado) {
-            $hojaHora->setCellValue($columna . '6', $encabezado);
+            $hojaHora->setCellValue($columna . '7', $encabezado);
             $columna++;
         }
 
@@ -1074,10 +1106,11 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
         }
 
         // SEGUNDA SEMANA
-        $hojaHora->setCellValue('U6', 'DISEÑADOR');
+        $hojaHora->setCellValue('V6', 'REPORTE DE LA SEGUNDA SEMANA');
+        $hojaHora->setCellValue('U7', 'DISEÑADOR');
         $columna1 = 'V';
         foreach ($encabezados_segunda_semanaHora as $encabezado1) {
-            $hojaHora->setCellValue($columna1 . '6', $encabezado1);
+            $hojaHora->setCellValue($columna1 . '7', $encabezado1);
             $columna1++;
         }
         //TERCERA semana
@@ -1103,10 +1136,11 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
         }
 
         // Mostrar los encabezados en la tercera semana
-        $hojaHora->setCellValue('AE6', 'DISEÑADOR');
+        $hojaHora->setCellValue('AF6', 'REPORTE DE LA TERCERA SEMANA');
+        $hojaHora->setCellValue('AE7', 'DISEÑADOR');
         $columna2 = 'AF';
         foreach ($encabezados_tercera_semanaHora as $encabezado2) {
-            $hojaHora->setCellValue($columna2 . '6', $encabezado2);
+            $hojaHora->setCellValue($columna2 . '7', $encabezado2);
             $columna2++;
         }
 
@@ -1132,10 +1166,11 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
         }
 
         // Mostrar los encabezados en la tercera semana
-        $hojaHora->setCellValue('AO6', 'DISEÑADOR');
+        $hojaHora->setCellValue('AP6', 'REPORTE DE LA CUARTA SEMANA');
+        $hojaHora->setCellValue('AO7', 'DISEÑADOR');
         $columna3 = 'AP';
         foreach ($encabezados_cuarta_semanaHora as $encabezado3) {
-            $hojaHora->setCellValue($columna3 . '6', $encabezado3);
+            $hojaHora->setCellValue($columna3 . '7', $encabezado3);
             $columna3++;
         }
 
@@ -1162,15 +1197,16 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
         }
 
         // Mostrar los encabezados en la tercera semana
-        $hojaHora->setCellValue('AZ6', 'DISEÑADOR');
+        $hojaHora->setCellValue('BA6', 'REPORTE DE LA QUINTA SEMANA');
+        $hojaHora->setCellValue('AZ7', 'DISEÑADOR');
         $columna4 = 'BA';
         foreach ($encabezados_quinta_semanaHora as $encabezado4) {
-            $hojaHora->setCellValue($columna4 . '6', $encabezado4);
+            $hojaHora->setCellValue($columna4 . '7', $encabezado4);
             $columna4++;
         }
 
         // Obtener el número de filas inicial para los datos de la hoja nueva
-        $filahojaHora = 7;
+        $filahojaHora = 8;
         // Obtener el número de filas necesario para ambas consultas
         $totalFilasHora = max($stmPrimeraSemHora->rowCount(), $stmPrimeraSemHora1->rowCount(), $stmPrimeraSemHora2->rowCount(), $stmPrimeraSemHora3->rowCount(),  $stmPrimeraSemHora4->rowCount(), $stmtHora->rowCount());
 
@@ -1394,16 +1430,16 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
         applyCommonStylesToRow6($hojaHora, 'AO', 'AV');
         applyCommonStylesToRow6($hojaHora, 'AZ', 'BC');
         //ALICAR  EL BORDE 
-        $hojaHora->getStyle('A6:H' . $filahojaHora)->applyFromArray($styleArray);
-        $hojaHora->getStyle('K6:R' . $filahojaHora)->applyFromArray($styleArray);
-        $hojaHora->getStyle('AE6:AL' . $filahojaHora)->applyFromArray($styleArray);
-        $hojaHora->getStyle('U6:AB' . $filahojaHora)->applyFromArray($styleArray);
-        $hojaHora->getStyle('AO6:AV' . $filahojaHora)->applyFromArray($styleArray);
-        $hojaHora->getStyle('AZ6:BC' . $filahojaHora)->applyFromArray($styleArray);
+        $hojaHora->getStyle('A7:H' . $filahojaHora)->applyFromArray($styleArray);
+        $hojaHora->getStyle('K7:R' . $filahojaHora)->applyFromArray($styleArray);
+        $hojaHora->getStyle('AE7:AL' . $filahojaHora)->applyFromArray($styleArray);
+        $hojaHora->getStyle('U7:AB' . $filahojaHora)->applyFromArray($styleArray);
+        $hojaHora->getStyle('AO7:AV' . $filahojaHora)->applyFromArray($styleArray);
+        $hojaHora->getStyle('AZ7:BC' . $filahojaHora)->applyFromArray($styleArray);
 
 
         // Establecer el alto de la fila 6
-        $hojaHora->getRowDimension('6')->setRowHeight(70);
+        $hojaHora->getRowDimension('7')->setRowHeight(70);
 
 
 

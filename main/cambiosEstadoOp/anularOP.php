@@ -1,13 +1,15 @@
 <?php
 require "../../sql/database.php";
 require "../partials/kardex_delete.php";
-require "../partials/session_handler.php"; 
+require "../partials/session_handler.php";
 
 // Verificar si la sesión está iniciada correctamente y el rol es 1 o 2
 if (!isset($_SESSION["user"]) && !isset($_SESSION["user"]["usu_rol"]) && ($_SESSION["user"]["usu_rol"] == 1 || $_SESSION["user"]["usu_rol"] == 2)) {
 
     // Obtener el ID de la OP desde la URL
     $id = isset($_GET["id"]) ? intval($_GET["id"]) : 0;
+    $observacion = isset($_POST["observacion"]) ? $_POST["observacion"] : '';
+
     if ($id <= 0) {
         // Manejar error o redirigir a una página de error
         http_response_code(400); // Bad Request
@@ -70,6 +72,12 @@ if (!isset($_SESSION["user"]) && !isset($_SESSION["user"]["usu_rol"]) && ($_SESS
         http_response_code(403); // Forbidden
         exit("No tienes permisos para anular la OP");
     }
+    // Registrar la observación en la tabla pla_observaciones
+    $conn->prepare("INSERT INTO op_observaciones (op_id, opOb_estado, opOb_obsevacion, opOb_fecha) VALUES (:id, :estado, :observacion, CURRENT_TIMESTAMP)")->execute([
+        ":id" => $id,
+        ":estado" => "ANULADO",
+        ":observacion" => $observacion
+    ]);
 
     // Update the op table
     $updateOpStatement = $conn->prepare("UPDATE op SET op_estado = 'OP ANULADA', op_fechaFinalizacion = NOW() WHERE op_id = :id");

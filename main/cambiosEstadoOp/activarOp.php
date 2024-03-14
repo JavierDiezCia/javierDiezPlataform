@@ -9,6 +9,8 @@ require "../partials/session_handler.php";
 if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["usu_rol"]) || ($_SESSION["user"]["usu_rol"] == 1)) {
     // Obtener el ID de la OP desde la URL
     $id = isset($_GET["id"]) ? intval($_GET["id"]) : 0;
+    $observacion = isset($_POST["observacion"]) ? $_POST["observacion"] : '';
+
     if ($id <= 0) {
         // Manejar error o redirigir a una página de error
         http_response_code(400); // Bad Request
@@ -33,6 +35,12 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["usu_rol"]) || ($_SESS
 
         ":id" => $id,
         ":estado" => "EN PRODUCCION"
+    ]);
+     // Registrar la observación en la tabla pla_observaciones
+     $conn->prepare("INSERT INTO op_observaciones (op_id, opOb_estado, opOb_obsevacion, opOb_fecha) VALUES (:id, :estado, :observacion, CURRENT_TIMESTAMP)")->execute([
+        ":id" => $id,
+        ":estado" => "ACTIVO",
+        ":observacion" => $observacion
     ]);
     //REGISTRA EL MOVIEMIENTO EN EL KARDEX
     registrarEnKardex($_SESSION["user"]["cedula"], "SE ACTIVO UNA OP", 'OP', $id);

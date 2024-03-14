@@ -127,7 +127,7 @@ if (isset($_GET['cedula'])) {
         case 'CARPINTERÍA':
             $actividades = $actividades_carpinteria;
             break;
-        case 'METALMECÁNICA':
+        case 'METALMECÁNICA': 
             $actividades = $actividades_metal;
             break;
         case 'ACM':
