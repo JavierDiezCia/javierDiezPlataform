@@ -2,9 +2,10 @@
 require "../../sql/database.php"; // Incluir archivo de configuración de la base de datos
 require "../partials/kardex.php"; // Incluir otros archivos necesarios
 require "../../exel/vendor/autoload.php"; // Incluir la biblioteca PhpSpreadsheet
-require "../partials/session_handler.php"; 
+
 
  // Iniciar sesión
+ session_start(); 
 
 // Si la sesión no existe, redirigir al formulario de inicio de sesión y salir del script
 if (!isset($_SESSION["user"])) {

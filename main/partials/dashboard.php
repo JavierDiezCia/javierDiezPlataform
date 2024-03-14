@@ -173,6 +173,10 @@
                 <i class="bi bi-circle"></i><span>Nuevo Registro</span>
               </a>
             </li>
+            <li>
+              <a href="registroEmpleadoAyuda.php">
+                <i class="bi bi-circle"></i><span>Ayuda</span>
+              </a>
           </ul>
         </li>
 

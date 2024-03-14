@@ -1,10 +1,13 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 require "../../sql/database.php"; // Incluir archivo de configuración de la base de datos
 require "../partials/kardex.php"; // Incluir otros archivos necesarios
 require "../../exel/vendor/autoload.php"; // Incluir la biblioteca PhpSpreadsheet
-require "../partials/session_handler.php"; 
 
- // Iniciar sesión
+session_start(); 
+// Iniciar sesión
 
 // Si la sesión no existe, redirigir al formulario de inicio de sesión y salir del script
 if (!isset($_SESSION["user"])) {
@@ -56,7 +59,7 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
     $drawing->setWorksheet($excel->getActiveSheet());
 
     // Seleccionar la hoja activa y establecer su título
-    $hojaActiva = $excel->getActiveSheet();
+     $hojaActiva = $excel->getActiveSheet();
     $hojaActiva->setTitle("Reporte de las Op");
     $hojaActiva->setCellValue('C3', 'FECHA DEL REPORTE');
     $hojaActiva->setCellValue('C2', 'REPORTE GENERADO POR');
@@ -201,6 +204,7 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
     $hojaActiva->getStyle('A6:N' . $fila)->applyFromArray($styleArray);
 
 
+    
     // Crear un objeto Writer para Xlsx
     $writer = new Xlsx($excel);
 
@@ -211,8 +215,9 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
 
     // Guardar el archivo en la salida (output)
     $writer->save('php://output');
+
     // Registrar el movimiento en el kardex
-    registrarEnKardex($_SESSION["user"]["cedula"], "Se a generado un reporte", 'OP', "Reporte");
+    //registrarEnKardex($_SESSION["user"]["cedula"], "Se a generado un reporte", 'OP', "Reporte");
 
     exit;
 } else {
