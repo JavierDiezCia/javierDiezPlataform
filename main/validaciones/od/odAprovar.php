@@ -1,7 +1,7 @@
 <?php
-require "../../sql/database.php";
-require "../partials/kardex_delete.php";
-require "../partials/session_handler.php"; 
+require "../../../sql/database.php";
+require "../../partials/kardex_delete.php";
+require "../../partials/session_handler.php"; 
 
 
 // Si la sesión no existe, redirigir al login.php y dejar de ejecutar el resto
@@ -14,6 +14,9 @@ if (($_SESSION["user"]["usu_rol"] != 2)) {
     return;
 }
 
+// Obtener el ID de la orden de diseño
+$id = $_GET["id"];
+
 // Verificamos si se proporcionó un ID válido en la URL
 if (!isset($_GET["id"]) || empty($_GET["id"])) {
     // Si no se proporcionó un ID, redirigimos a alguna página de error o a la página principal
@@ -21,22 +24,24 @@ if (!isset($_GET["id"]) || empty($_GET["id"])) {
     return;
 }
 
-// Obtener el ID de la orden de diseño
-$id = $_GET["id"];
+
 
 // Verificamos si la orden de diseño existe en la base de datos
-$statement = $conn->prepare("SELECT * FROM orden_disenio WHERE od_id = :id");
+$statement = $conn->prepare("SELECT od_estado 
+                            FROM orden_disenio 
+                            WHERE od_estado = 'MATERIALIDAD' AND od_id = :id;"
+                            );
 $statement->execute([":id" => $id]);
 $orden_diseño = $statement->fetch(PDO::FETCH_ASSOC);
 
 if (!$orden_diseño) {
     // Si no se encuentra la orden de diseño, redirigimos a alguna página de error o a la página principal
-    header("Location: ../pages-error-404.html");
+    header("Location: ../od.php");
     return;
 }
 
 // Actualizar el estado de la orden de diseño a "Revisando" (código de estado 4)
-$conn->prepare("UPDATE orden_disenio SET od_estado = 'PROPUESTA' WHERE od_id = :id")->execute([
+$conn->prepare("UPDATE orden_disenio SET od_estado = 'OP' WHERE od_id = :id")->execute([
     ":id" => $id,
 ]);
 
@@ -44,5 +49,5 @@ $conn->prepare("UPDATE orden_disenio SET od_estado = 'PROPUESTA' WHERE od_id = :
 registrarEnKardex($_SESSION["user"]["cedula"], "APROBÓ", 'ORDEN DISEÑO', "Producto: " . $orden_diseño["od_producto"]);
 
 // Redirigimos a la página de ordenes de diseño
-header("Location: ../historialOd.php");
+header("Location: ../../historialOd.php#content2");
 ?>

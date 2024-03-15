@@ -50,7 +50,7 @@ $ordenes_disenio = $conn->query($query);
                         <div class="card">
                             <div class="card-body">
                                 <div class="card-header">
-                                    <h5 class="card-tittle">ORDENES DE DISEÑO</h5>
+                                    <h5 class="card-tittle">ORDENES DE DISEÑO EN MATERIALIDAD</h5>
                                 </div>
                                 <?php if ($ordenes_disenio->rowCount() == 0) : ?>
                                     <div class="col-md-4 mx-auto mb-3">
@@ -67,7 +67,8 @@ $ordenes_disenio = $conn->query($query);
                                                 <th>PRODUCTO</th>
                                                 <th>RESPONSABLE</th>
                                                 <th>CLIENTE</th>
-                                                <th>ESTADO</th>
+                                                <th></th>
+                                                <th></th>
                                                 <th></th>
                                                 <th></th>
                                             </tr>
@@ -79,12 +80,17 @@ $ordenes_disenio = $conn->query($query);
                                                     <th><?= $orden["od_detalle"] ?></th>
                                                     <th><?= $orden["responsable_nombres"] ?> <?= $orden["responsable_apellidos"] ?></th>
                                                     <th><?= $orden["od_cliente"] ?></th>
-                                                    <th><?= $orden["od_estado"] ?></th>
                                                     <td>
-                                                        <a href="validaciones/odAprovar.php?id=<?= $orden["od_id"] ?>" class="btn btn-primary mb-2">APROBAR OD</a>
+                                                        <a href="validaciones/od/odAprovar.php?id=<?= $orden["od_id"] ?>" class="btn btn-success mb-2">APROBAR OD</a>
                                                     </td>
                                                     <td>
-                                                        <a href="validaciones/odPropuesta.php?id=<?= $orden["od_id"] ?>" class="btn btn-primary mb-2">VOLVER A PROPUESTA</a>
+                                                        <a href="validaciones/od/odPropuesta.php?id=<?= $orden["od_id"] ?>" class="btn btn-primary mb-2">VOLVER A PROPUESTA</a>
+                                                    </td>
+                                                    <td>
+                                                        <a href="validaciones/od/odRechazar.php?id=<?= $orden["od_id"] ?>" class="btn btn-danger mb-2">DESAPROBAR OD</a>
+                                                    </td>
+                                                    <td>
+                                                        <a href="validaciones/od/odEnCobranza.php?id=<?= $orden["od_id"] ?>" class="btn btn-secondary mb-2">EN COBRANZA</a>
                                                     </td>
                                                 </tr>
                                             <?php endforeach ?>

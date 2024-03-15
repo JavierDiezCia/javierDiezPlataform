@@ -1,6 +1,6 @@
 <?php
-require "../../sql/database.php";
-require "../partials/session_handler.php"; 
+require "../../../sql/database.php";
+require "../../partials/session_handler.php"; 
 
 // Iniciar sesión para identificar las sesiones
 

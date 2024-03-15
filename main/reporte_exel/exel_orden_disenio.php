@@ -108,7 +108,7 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
                                 FROM registros_disenio R 
                                 JOIN orden_disenio O ON R.od_id = O.od_id 
                                 JOIN personas P ON R.rd_diseniador = P.cedula
-                                WHERE R.od_id = :id
+                                WHERE R.od_id = :id AND R.rd_delete = 0
                                 ORDER BY R.rd_id DESC";
         $stmtRegi = $conn->prepare($registro);
         $stmtRegi->bindParam(':id', $id_orden_disenio);

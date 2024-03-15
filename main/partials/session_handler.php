@@ -2,6 +2,11 @@
 
 session_start();
 
+if (!isset($_SESSION['user'])){
+    header("Location: ../../login-form/login.php");
+    exit();
+}
+
 
 // Establecer el tiempo de inactividad en segundos
 $inactive = 10000;

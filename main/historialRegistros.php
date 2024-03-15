@@ -28,7 +28,7 @@ if ($_SESSION["user"]["usu_rol"] == 2||$_SESSION["user"]["usu_rol"] == 1) {
     JOIN orden_disenio O ON R.od_id = O.od_id 
     JOIN personas P ON R.rd_diseniador = P.cedula
     JOIN usuarios U ON P.cedula = U.cedula
-    WHERE U.usu_rol = 3
+    WHERE U.usu_rol = 3 AND R.rd_delete = 0
     ORDER BY R.rd_id DESC
     ");
     $registros->execute();
@@ -94,7 +94,7 @@ if ($_SESSION["user"]["usu_rol"] == 2||$_SESSION["user"]["usu_rol"] == 1) {
                                 FROM registros_disenio R 
                                 JOIN orden_disenio O ON R.od_id = O.od_id 
                                 JOIN personas P ON R.rd_diseniador = P.cedula
-                                WHERE R.rd_diseniador = :usuario
+                                WHERE R.rd_diseniador = :usuario AND R.rd_delete = 0
                                 ORDER BY R.rd_id DESC");
     $registros->bindParam(":usuario", $usuario);
     $registros->execute();
@@ -250,6 +250,7 @@ if ($_SESSION["user"]["usu_rol"] == 2||$_SESSION["user"]["usu_rol"] == 1) {
                                                     <th>HORA INICIO</th>
                                                     <th>HORA FINAL</th>
                                                     <th>OBSERVACIONES</th>
+                                                    <th></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -266,6 +267,9 @@ if ($_SESSION["user"]["usu_rol"] == 2||$_SESSION["user"]["usu_rol"] == 1) {
                                                         <td><?= $registros["rd_hora_ini"] ?></td>
                                                         <td><?= $registros["rd_hora_fin"] ?></td>
                                                         <td><?= $registros["rd_observaciones"] ?></td>
+                                                        <td>
+                                                            <a href="delete/registroDisenio.php?id=<?= $registros["rd_id"] ?>" class="btn btn-danger mb-2">ELIMINAR</a>
+                                                        </td>
                                                     </tr>
                                                 <?php endforeach ?>
                                             </tbody>

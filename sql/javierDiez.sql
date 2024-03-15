@@ -60,7 +60,7 @@ CREATE TABLE orden_disenio(
     od_detalle VARCHAR(255) NOT NULL,
     od_cliente VARCHAR(255) NOT NULL,
     od_fechaRegistro DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    od_estado ENUM("PROPUESTA", "DESAPROBADA", "MATERIALIDAD", "OP" , "OP CREADA") NOT NULL, 
+    od_estado ENUM("PROPUESTA", "DESAPROBADA", "MATERIALIDAD", "OP" , "OP CREADA", "EN COBRANZA") NOT NULL, 
     Foreign Key (od_responsable) REFERENCES personas(cedula)
         ON UPDATE RESTRICT
         ON DELETE RESTRICT
@@ -84,6 +84,7 @@ CREATE TABLE registros_disenio(
     rd_hora_ini DATETIME NOT NULL,
     rd_hora_fin DATETIME NULL,
     rd_observaciones VARCHAR(255) NULL,
+    rd_delete BOOLEAN DEFAULT 0,
     Foreign Key (od_id) REFERENCES orden_disenio(od_id)
         ON UPDATE RESTRICT
         ON DELETE RESTRICT

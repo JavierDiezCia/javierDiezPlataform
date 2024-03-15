@@ -195,7 +195,7 @@
             </li>
             <li>
               <a href="validarOd.php">
-                <i class="bi bi-circle"></i><span>Aprobar ordenes de diseño</span>
+                <i class="bi bi-circle"></i><span>MATERIALIDAD</span>
               </a>
             </li>
             <li>

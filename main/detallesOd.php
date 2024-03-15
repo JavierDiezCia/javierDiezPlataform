@@ -32,7 +32,7 @@ $registros = $conn->prepare("SELECT R.*, O.od_cliente, P.per_nombres, P.per_apel
                                 FROM registros_disenio R 
                                 JOIN orden_disenio O ON R.od_id = O.od_id 
                                 JOIN personas P ON R.rd_diseniador = P.cedula
-                                WHERE R.od_id = :id
+                                WHERE R.od_id = :id AND R.rd_delete = 0
                                 ORDER BY R.rd_id DESC");
 $registros->execute([":id" => $id_orden_disenio]);
 

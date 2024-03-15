@@ -121,15 +121,17 @@ if (($_SESSION["user"]["usu_rol"]) && ($_SESSION["user"]["usu_rol"] == 1)) {
                                 EDITAR EMPLEADO
                             </button>
                         </h5>
+                        <?php $collapsed = '' ?>
                     <?php else : ?>
                         <h5 class="card-title accordion-header" id="headingOne">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                                 NUEVO EMPLEADO
                             </button>
                         </h5>
+                        <?php $collapsed = 'collapse' ?>
                     <?php endif ?>
 
-                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                    <div id="collapseOne" class="accordion-collapse <?= $collapsed ?>" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
                         <div class="accordion-body">
                             <!-- si hay un error mandar un danger -->
                             <?php if ($error) : ?>

@@ -18,36 +18,6 @@ if ($_SESSION["user"]["usu_rol"] != 2) {
     return;
 }
 
-// Obtener el od_estado del filtro si está presente
-$estado_filter = isset($_GET['od_estado']) ? intval($_GET['od_estado']) : null;
-
-// Preparar la consulta base
-$query = "SELECT od.*, 
-                  persona_responsable.per_nombres AS responsable_nombres, 
-                  persona_responsable.per_apellidos AS responsable_apellidos, 
-                  persona_comercial.per_nombres AS comercial_nombres, 
-                  persona_comercial.per_apellidos AS comercial_apellidos
-          FROM orden_disenio od
-          LEFT JOIN personas persona_responsable ON od.od_responsable = persona_responsable.cedula
-          LEFT JOIN personas persona_comercial ON od.od_comercial = persona_comercial.cedula
-          ORDER BY od.od_id DESC";
-
-
-// Si hay un od_estado filtrado, agregarlo a la consulta
-if ($estado_filter !== null) {
-    $query .= " WHERE od_estado = :estado";
-}
-
-// Preparar y ejecutar la consulta
-$ordenes_disenio = $conn->prepare($query);
-
-// Si hay un od_estado filtrado, bindear el parámetro y ejecutar la consulta
-if ($estado_filter !== null) {
-    $ordenes_disenio->bindParam(':estado', $estado_filter, PDO::PARAM_INT);
-}
-
-$ordenes_disenio->execute();
-
 ?>
 
 
@@ -64,48 +34,54 @@ $ordenes_disenio->execute();
                             <div class="card-body">
                                 <div class="card-header">
                                     <h5 class="card-tittle">ORDENES DE DISEÑO</h5>
-                                    
+                                    <ul class="nav nav-tabs" id="myTabs" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="tab1" data-toggle="tab" href="#content1" role="tab" aria-controls="content1" aria-selected="true">HISTORIAL</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="tab7" data-toggle="tab" href="#content7" role="tab" aria-controls="content7" aria-selected="false">PROPUESTA</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="tab2" data-toggle="tab" href="#content2" role="tab" aria-controls="content2" aria-selected="false">APROBADA SIN OP</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="tab3" data-toggle="tab" href="#content3" role="tab" aria-controls="content3" aria-selected="false">OP CREADA</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="tab4" data-toggle="tab" href="#content4" role="tab" aria-controls="content4" aria-selected="false">MATERIALIDAD</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="tab5" data-toggle="tab" href="#content5" role="tab" aria-controls="content5" aria-selected="false">DESAPROBADA</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="tab6" data-toggle="tab" href="#content6" role="tab" aria-controls="content6" aria-selected="false">EN COBRAZNA</a>
+                                        </li>
+                                    </ul>
                                 </div>
 
-                                <?php if ($ordenes_disenio->rowCount() == 0) : ?>
-                                    <div class="col-md-4 mx-auto mb-3">
-                                        <div class="card card-body text-center">
-                                            <p>NO HAY ÓRDENES DE DISEÑO AÚN.</p>
-                                        </div>
+                                <div class="tab-content" id="myTabContent">
+                                    <div class="tab-pane fade show active" id="content1" role="tabpanel" aria-labelledby="tab1">
+                                        <?php require "./partials/tables/od/odAll.php"; ?>
                                     </div>
-                                <?php else : ?>
-                                    <!-- Table with stripped rows -->
-                                    <table class="table datatable">
-                                        <thead>
-                                            <tr>
-                                                <th># OD</th>
-                                                <th>RESPONSABLE</th>
-                                                <th>DETALLE</th>
-                                                <th>CLIENTE</th>
-                                                <th>COMERCIAL</th>
-                                                <th>FECHA DE REGISTRO</th>
-                                                <th>ESTADO</th>
-                                                <th></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php foreach ($ordenes_disenio as $orden) : ?>
-                                                <tr>
-                                                    <th><?= $orden["od_id"] ?></th>
-                                                    <td><?= $orden["responsable_nombres"] ?> <?= $orden["responsable_apellidos"] ?></td>
-                                                    <th><?= $orden["od_detalle"] ?></th>
-                                                    <th><?= $orden["od_cliente"] ?></th>
-                                                    <td><?= $orden["comercial_nombres"] ?> <?= $orden["comercial_apellidos"] ?></td>
-                                                    <th><?= $orden["od_fechaRegistro"] ?></th>
-                                                    <th><?= $orden["od_estado"] ?></th>
-                                                    <td>
-                                                        <a href="detallesOd.php?id=<?= $orden["od_id"] ?>" class="btn btn-primary mb-2">VER REGISTROS</a>
-                                                    </td>
-                                                </tr>
-                                            <?php endforeach ?>
-                                        </tbody>
-                                    </table>
-                                <?php endif ?>
+                                    <div class="tab-pane fade" id="content7" role="tabpanel" aria-labelledby="tab7">
+                                        <?php require "./partials/tables/od/odPropuesta.php"; ?>
+                                    </div>
+                                    <div class="tab-pane fade" id="content2" role="tabpanel" aria-labelledby="tab2">
+                                        <?php require "./partials/tables/od/odOp.php"; ?>
+                                    </div>
+                                    <div class="tab-pane fade" id="content3" role="tabpanel" aria-labelledby="tab3">
+                                        <?php require "./partials/tables/od/opCreada.php"; ?>
+                                    </div>
+                                    <div class="tab-pane fade" id="content4" role="tabpanel" aria-labelledby="tab4">
+                                        <?php require "./partials/tables/od/odMaterialidad.php"; ?>
+                                    </div>
+                                    <div class="tab-pane fade" id="content5" role="tabpanel" aria-labelledby="tab5">
+                                        <?php require "./partials/tables/od/odDesaprobada.php"; ?>
+                                    </div>
+                                    <div class="tab-pane fade" id="content6" role="tabpanel" aria-labelledby="tab6">
+                                        <?php require "./partials/tables/od/odEnCobranza.php"; ?>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

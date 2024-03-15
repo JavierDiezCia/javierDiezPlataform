@@ -41,7 +41,7 @@ if ($_SESSION["user"]["usu_rol"] == 2) {
   JOIN orden_disenio O ON R.od_id = O.od_id 
   JOIN personas P ON R.rd_diseniador = P.cedula
   JOIN usuarios U ON P.cedula = U.cedula
-  WHERE U.usu_rol = 3
+  WHERE U.usu_rol = 3 AND R.rd_delete = 0
   ORDER BY R.rd_id DESC
   LIMIT 6");
   $registros->execute();
@@ -104,7 +104,7 @@ if ($_SESSION["user"]["usu_rol"] == 2) {
   JOIN orden_disenio O ON R.od_id = O.od_id 
   JOIN personas P ON R.rd_diseniador = P.cedula
   JOIN usuarios U ON P.cedula = U.cedula
-  WHERE U.usu_rol = 3 AND P.cedula = :cedula
+  WHERE U.usu_rol = 3 AND P.cedula = :cedula AND R.rd_delete = 0
   ORDER BY R.rd_id DESC
   LIMIT 6");
   $registros->execute([":cedula" => $_SESSION["user"]["cedula"]]);

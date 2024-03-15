@@ -243,12 +243,12 @@ if ($_SESSION["user"]["usu_rol"] && ($_SESSION["user"]["usu_rol"] == 2 || $_SESS
                                                     <td>
                                                         <?php
                                                         //VERIFICAR SI HAY REGISTROS SIN ACTIVIDADES
-                                                        $detallesSinRegistro = $conn->prepare("SELECT odAct_detalle FROM od_actividades WHERE od_id = :id AND odAct_estado = 0 AND odAct_detalle NOT IN (SELECT rd_detalle FROM registros_disenio WHERE od_id = :id AND rd_hora_fin IS NOT NULL)");
+                                                        $detallesSinRegistro = $conn->prepare("SELECT odAct_detalle FROM od_actividades WHERE od_id = :id AND odAct_estado = 0 AND odAct_detalle NOT IN (SELECT rd_detalle FROM registros_disenio WHERE od_id = :id AND rd_hora_fin IS NOT NULL AND rd_delete = 0)");
                                                         $detallesSinRegistro->execute([":id" => $orden["od_id"]]);
                                                         $detallesSinRegistro = $detallesSinRegistro->fetchAll(PDO::FETCH_ASSOC);
                                                         ?>
                                                         <?php if (empty($detallesSinRegistro)) : ?>
-                                                            <a href="validaciones/odRevisar.php?id=<?= $orden["od_id"] ?>" class="btn btn-success mb-2">ENVIAR PARA APROBAR</a>
+                                                            <a href="validaciones/od/odRevisar.php?id=<?= $orden["od_id"] ?>" class="btn btn-success mb-2">ENVIAR PARA APROBAR</a>
                                                         <?php else : ?>
                                                             <a href="actividadesFaltantes.php?id=<?= $orden["od_id"] ?>" class="btn btn-danger mb-2">AÚN FALTAN ACTIVIDADES POR COMPLETAR!</a>
                                                         <?php endif ?>
