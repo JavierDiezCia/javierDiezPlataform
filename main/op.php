@@ -100,7 +100,7 @@ if (($_SESSION["user"]["usu_rol"]) || ($_SESSION["user"]["usu_rol"] == 1) || ($_
             } else {
                 // Obtener el od_id correspondiente al od_detalle seleccionado
                 $od_detalle = $_POST["od_detalle"];
-                $od_id_query = $conn->prepare("SELECT od_id FROM orden_disenio WHERE od_detalle = :od_detalle AND od_estado = 'OP'");
+                $od_id_query = $conn->prepare("SELECT od_id FROM orden_disenio WHERE od_detalle = :od_detalle AND od_estado = 'OP' LIMIT 1");
                 $od_id_query->bindParam(":od_detalle", $od_detalle);
                 $od_id_query->execute();
                 $od_id_result = $od_id_query->fetch(PDO::FETCH_ASSOC);

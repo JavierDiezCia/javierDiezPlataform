@@ -37,7 +37,7 @@ $detallesSinRegistro = $conn->prepare("SELECT odAct_detalle FROM od_actividades 
 $detallesSinRegistro->execute([":id" => $orden["od_id"]]);
 $detallesSinRegistro = $detallesSinRegistro->fetchAll(PDO::FETCH_ASSOC);
 
-if (!empty($detallesSinRegistro)) {
+if (empty($detallesSinRegistro)) {
     // Actualizar el estado de la orden de diseño a "Revisando" (código de estado 4)
     $conn->prepare("UPDATE orden_disenio SET od_estado = 'MATERIALIDAD' WHERE od_id = :id AND od_estado = 'PROPUESTA'")->execute([
         ":id" => $id,
