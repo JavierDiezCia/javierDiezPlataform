@@ -31,8 +31,8 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
         $drawing->setName('Logo');
         $drawing->setDescription('Logo');
         $drawing->setPath($imgPath);
-        $drawing->setHeight(110); // Establecer la altura de la imagen
-        $drawing->setWidth(110); // Establecer el ancho de la imagen
+        $drawing->setHeight(130); // Establecer la altura de la imagen
+        $drawing->setWidth(130); // Establecer el ancho de la imagen
 
         // Añadir la imagen al archivo de Excel
         $drawing->setWorksheet($excel->getActiveSheet());
@@ -44,7 +44,7 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
         $hojaActiva->setTitle("Reporte de la Orden de Diseño");
         $hojaActiva->setCellValue('C3', 'FECHA DE GENERACION DEL REPORTE');
         $hojaActiva->setCellValue('C2', 'REPORTE GENERADO POR');
-        $hojaActiva->getStyle('C2:C3')->getFont()->setBold(true)->setSize(13);
+        $hojaActiva->getStyle('C2:E10')->getFont()->setBold(true)->setSize(13);
 
         // Obtener la cédula del usuario actualmente logueado
         $cedulaUsuario = $_SESSION["user"]["cedula"];
@@ -63,18 +63,17 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
             $apellidosUsuario = $usuario['per_apellidos'];
 
             // Mostrar los nombres y apellidos del usuario en la celda D3
-            $hojaActiva->setCellValue('D2', $nombresUsuario . ' ' . $apellidosUsuario);
+            $hojaActiva->setCellValue('E2', $nombresUsuario . ' ' . $apellidosUsuario);
         } else {
             // En caso de no encontrar resultados, mostrar un mensaje alternativo
-            $hojaActiva->setCellValue('D2', 'Usuario no encontrado');
+            $hojaActiva->setCellValue('E2', 'Usuario no encontrado');
         }
 
         // Obtener la fecha y hora actual
         $fechaHoraActual = date('Y-m-d H:i:s'); // Formato: Año-Mes-Día Hora:Minuto:Segundo
 
         // Añadir la fecha y hora actual en la celda D4
-        $hojaActiva->setCellValue('D3', $fechaHoraActual);
-        $hojaActiva->getStyle('D2:D3')->getFont()->setBold(true)->setSize(13);
+        $hojaActiva->setCellValue('E3', $fechaHoraActual);
 
         // Obtener el rd_id de la orden de diseño desde la URL
         $id_orden_disenio = $_GET["id"];
@@ -98,12 +97,12 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
         $hojaActiva->setCellValue('C10', 'ESTADO');
         
 
-        $hojaActiva->setCellValue('D6', $orden_disenio['od_id']);
-        $hojaActiva->setCellValue('D7', $orden_disenio['od_detalle']);
-        $hojaActiva->setCellValue('D8', $orden_disenio['per_nombres'] . ' ' . $orden_disenio['per_apellidos']);
-        $hojaActiva->setCellValue('D9', $orden_disenio['od_cliente']);
+        $hojaActiva->setCellValue('E6', $orden_disenio['od_id']);
+        $hojaActiva->setCellValue('E7', $orden_disenio['od_detalle']);
+        $hojaActiva->setCellValue('E8', $orden_disenio['per_nombres'] . ' ' . $orden_disenio['per_apellidos']);
+        $hojaActiva->setCellValue('E9', $orden_disenio['od_cliente']);
        
-        $hojaActiva->setCellValue('D10', $orden_disenio['od_estado']);
+        $hojaActiva->setCellValue('E10', $orden_disenio['od_estado']);
 
         $registro = "SELECT R.*, O.od_cliente, P.per_nombres, P.per_apellidos
                                 FROM registros_disenio R 
@@ -144,7 +143,7 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
                 ],
                 'fill' => [
                     'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                    'startColor' => ['rgb' => '0000FF'], // Color de relleno azul
+                    'startColor' => ['rgb' => '000000'], // Color de relleno azul
                 ],
                 'alignment' => [
                     'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER, // Centrado horizontal
@@ -159,24 +158,53 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
             $contador++; // Incrementar el contador
         }
 
-        // Ajustar automáticamente el tamaño de las columnas y filas
-        foreach (range('A', 'G') as $columnID) {
-            $hojaActiva->getColumnDimension($columnID)->setAutoSize(true);
-        }
+        // Establecer estilos y ajustes de tamaño de celdas
+    $hojaActiva->getStyle('A13:N' . $fila)->getAlignment()->setWrapText(true); // Activar el ajuste de texto en las celdas
+    $hojaActiva->getStyle('A13:N' . $fila)->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER); // Centrar verticalmente el texto en las celdas
 
-        // Agregar bordes a las celdas
-        $styleArray = [
-            'borders' => [
-                'allBorders' => [
-                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                    'color' => ['rgb' => '000000'], // Color del borde (en este caso, negro)
-                ],
+
+    $styleArray2 = [
+        'font' => [
+            'bold' => false,
+        ],
+    ];
+
+    $hojaActiva->getStyle('D2:E11')->applyFromArray($styleArray2);
+    // Establecer el alto de las filas 2 y 3
+    $hojaActiva->getRowDimension('2')->setRowHeight(30);
+    $hojaActiva->getRowDimension('3')->setRowHeight(30);
+
+    // Centrar horizontalmente el texto en las filas 2 y 3
+    $hojaActiva->getStyle('2:10')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+    $hojaActiva->getStyle('2:10')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+
+    // Agregar bordes a las celdas
+    $styleArray = [
+        'borders' => [
+            'allBorders' => [
+                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                'color' => ['rgb' => '000000'], // Color del borde (en este caso, negro)
             ],
-        ];
+        ],
+    ];
 
-        $hojaActiva->getStyle('A13:G' . $fila)->applyFromArray($styleArray);
-        $hojaActiva->getStyle('C2:D3')->applyFromArray($styleArray);
-        $hojaActiva->getStyle('C6:D10')->applyFromArray($styleArray);
+    $hojaActiva->getStyle('A13:G' . $fila)->applyFromArray($styleArray);
+
+
+    $hojaActiva->getColumnDimension('A')->setAutoSize(true);
+    $hojaActiva->getColumnDimension('E')->setWidth(30);
+    
+    $hojaActiva->getColumnDimension('K')->setAutoSize(true);
+    $hojaActiva->getColumnDimension('L')->setAutoSize(true);
+    $hojaActiva->getColumnDimension('M')->setAutoSize(true);
+    $hojaActiva->getColumnDimension('B')->setWidth(28);
+    $hojaActiva->getColumnDimension('C')->setWidth(28);
+    $hojaActiva->getColumnDimension('F')->setWidth(35);
+
+    $hojaActiva->getColumnDimension('D')->setWidth(30);
+    $hojaActiva->getColumnDimension('L')->setWidth(25);
+    $hojaActiva->getStyle('A13:G' . $hojaActiva->getHighestRow())
+        ->getAlignment()->setWrapText(true);
         // Guardar el archivo de Excel y enviarlo como descarga
         $writer = new Xlsx($excel);
 

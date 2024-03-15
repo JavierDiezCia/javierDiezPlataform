@@ -52,8 +52,8 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
     $drawing->setName('Logo');
     $drawing->setDescription('Logo');
     $drawing->setPath($imgPath);
-    $drawing->setHeight(100); // Establecer la altura de la imagen
-    $drawing->setWidth(100); // Establecer el ancho de la imagen
+    $drawing->setHeight(120); // Establecer la altura de la imagen
+    $drawing->setWidth(120); // Establecer el ancho de la imagen
 
     // Añadir la imagen al archivo de Excel
     $drawing->setWorksheet($excel->getActiveSheet());
@@ -63,7 +63,7 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
     $hojaActiva->setTitle("Reporte de las Op");
     $hojaActiva->setCellValue('C3', 'FECHA DEL REPORTE');
     $hojaActiva->setCellValue('C2', 'REPORTE GENERADO POR');
-    $hojaActiva->getStyle('C2:C3')->getFont()->setBold(true)->setSize(13);
+    $hojaActiva->getStyle('C2:E3')->getFont()->setBold(true)->setSize(13);
     // Obtener la cédula del usuario actualmente logueado
     $cedulaUsuario = $_SESSION["user"]["cedula"];
 
@@ -81,10 +81,10 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
         $apellidosUsuario = $usuario['per_apellidos'];
 
         // Mostrar los nombres y apellidos del usuario en la celda D3
-        $hojaActiva->setCellValue('D2', $nombresUsuario . ' ' . $apellidosUsuario);
+        $hojaActiva->setCellValue('E2', $nombresUsuario . ' ' . $apellidosUsuario);
     } else {
         // En caso de no encontrar resultados, mostrar un mensaje alternativo
-        $hojaActiva->setCellValue('D2', 'Usuario no encontrado');
+        $hojaActiva->setCellValue('E2', 'Usuario no encontrado');
     }
     // Obtener la fecha y hora actual
     $fechaHoraActual = date('Y-m-d H:i:s'); // Formato: Año-Mes-Día Hora:Minuto:Segundo
@@ -187,6 +187,20 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
     $hojaActiva->getStyle('A6:N' . $fila)->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER); // Centrar verticalmente el texto en las celdas
 
 
+    $styleArray2 = [
+        'font' => [
+            'bold' => false,
+        ],
+    ];
+
+    $hojaActiva->getStyle('D2:E3')->applyFromArray($styleArray2);
+    // Establecer el alto de las filas 2 y 3
+    $hojaActiva->getRowDimension('2')->setRowHeight(30);
+    $hojaActiva->getRowDimension('3')->setRowHeight(30);
+
+    // Centrar horizontalmente el texto en las filas 2 y 3
+    $hojaActiva->getStyle('2:3')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+    $hojaActiva->getStyle('2:3')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
 
     // Agregar bordes a las celdas
     $styleArray = [
@@ -202,7 +216,7 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
 
 
     $hojaActiva->getColumnDimension('A')->setAutoSize(true);
-    $hojaActiva->getColumnDimension('E')->setAutoSize(true);
+    $hojaActiva->getColumnDimension('E')->setWidth(25);
     $hojaActiva->getColumnDimension('G')->setAutoSize(true);
     $hojaActiva->getColumnDimension('H')->setAutoSize(true);
     $hojaActiva->getColumnDimension('K')->setAutoSize(true);
@@ -217,7 +231,7 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
     $hojaActiva->getColumnDimension('L')->setWidth(25);
     $hojaActiva->getColumnDimension('N')->setWidth(28);
     $hojaActiva->getStyle('A7:N' . $hojaActiva->getHighestRow())
-    ->getAlignment()->setWrapText(true);
+        ->getAlignment()->setWrapText(true);
 
 
     // Crear un objeto Writer para Xlsx

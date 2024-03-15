@@ -4,8 +4,8 @@ require "../partials/kardex.php"; // Incluir otros archivos necesarios
 require "../../exel/vendor/autoload.php"; // Incluir la biblioteca PhpSpreadsheet
 
 
- // Iniciar sesión
- session_start(); 
+// Iniciar sesión
+session_start();
 
 // Si la sesión no existe, redirigir al formulario de inicio de sesión y salir del script
 if (!isset($_SESSION["user"])) {
@@ -53,8 +53,8 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
         $drawing->setName('Logo');
         $drawing->setDescription('Logo');
         $drawing->setPath($imgPath);
-        $drawing->setHeight(70); // Establecer la altura de la imagen
-        $drawing->setWidth(70); // Establecer el ancho de la imagen
+        $drawing->setHeight(120); // Establecer la altura de la imagen
+        $drawing->setWidth(120); // Establecer el ancho de la imagen
 
         // Añadir la imagen al archivo de Excel
         $drawing->setWorksheet($excel->getActiveSheet());
@@ -65,9 +65,9 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
         $hojaActiva->setCellValue('C3', 'FECHA DE GENERACION DEL REPORTE');
         $hojaActiva->setCellValue('C2', 'REPORTE GENERADO POR');
         $hojaActiva->setCellValue('C4', 'EL REPORTE ES DE LA FECHA');
-        $hojaActiva->setCellValue('D4', $year . ' - ' . $month);
-        $hojaActiva->getStyle('C2:C4')->getFont()->setBold(true)->setSize(13);
-        
+        $hojaActiva->setCellValue('E4', $year . ' - ' . $month);
+        $hojaActiva->getStyle('C2:E4')->getFont()->setBold(true)->setSize(13);
+
         // Obtener la cédula del usuario actualmente logueado
         $cedulaUsuario = $_SESSION["user"]["cedula"];
 
@@ -85,19 +85,17 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
             $apellidosUsuario = $usuario['per_apellidos'];
 
             // Mostrar los nombres y apellidos del usuario en la celda D3
-            $hojaActiva->setCellValue('D2', $nombresUsuario . ' ' . $apellidosUsuario);
+            $hojaActiva->setCellValue('E2', $nombresUsuario . ' ' . $apellidosUsuario);
         } else {
             // En caso de no encontrar resultados, mostrar un mensaje alternativo
-            $hojaActiva->setCellValue('D2', 'Usuario no encontrado');
+            $hojaActiva->setCellValue('E2', 'Usuario no encontrado');
         }
 
         // Obtener la fecha y hora actual
         $fechaHoraActual = date('Y-m-d H:i:s'); // Formato: Año-Mes-Día Hora:Minuto:Segundo
 
         // Añadir la fecha y hora actual en la celda D4
-        $hojaActiva->setCellValue('D3', $fechaHoraActual);
-        $hojaActiva->getStyle('D2:D3')->getFont()->setBold(true)->setSize(13);
-
+        $hojaActiva->setCellValue('E3', $fechaHoraActual);
         // Establecer encabezados de columnas
         $hojaActiva->setCellValue('A6', 'N0.');
         $hojaActiva->setCellValue('B6', 'ORDEN DE DISEÑO');
@@ -162,15 +160,35 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
 
             $fila++;
         }
-
         // Establecer estilos y ajustes de tamaño de celdas
         $hojaActiva->getStyle('A6:I' . $fila)->getAlignment()->setWrapText(true); // Activar el ajuste de texto en las celdas
         $hojaActiva->getStyle('A6:I' . $fila)->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER); // Centrar verticalmente el texto en las celdas
 
-        // Ajustar automáticamente el tamaño de las columnas y filas
-        foreach (range('A', 'I') as $columnID) {
-            $hojaActiva->getColumnDimension($columnID)->setAutoSize(true);
-        }
+        // Centrar horizontalmente el texto en las filas 2 y 3
+        $hojaActiva->getStyle('2:4')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $hojaActiva->getStyle('2:4')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+
+
+        $styleArray2 = [
+            'font' => [
+                'bold' => false,
+            ],
+        ];
+
+        $hojaActiva->getStyle('D2:E4')->applyFromArray($styleArray2);
+        // Establecer el alto de las filas 2 y 3
+        $hojaActiva->getRowDimension('2')->setRowHeight(30);
+        $hojaActiva->getRowDimension('3')->setRowHeight(30);
+        $hojaActiva->getRowDimension('4')->setRowHeight(30);
+        $hojaActiva->getColumnDimension('B')->setWidth(15);
+        $hojaActiva->getColumnDimension('C')->setWidth(28);
+        $hojaActiva->getColumnDimension('D')->setWidth(18);
+        $hojaActiva->getColumnDimension('E')->setWidth(28);
+        $hojaActiva->getColumnDimension('F')->setWidth(16);
+        $hojaActiva->getColumnDimension('G')->setWidth(16);
+        $hojaActiva->getColumnDimension('H')->setWidth(13);
+        $hojaActiva->getColumnDimension('I')->setWidth(28);
+
 
         // Agregar bordes a las celdas
         $styleArray = [
@@ -198,8 +216,8 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
             $drawingNuevaHoja->setName('Logo');
             $drawingNuevaHoja->setDescription('Logo');
             $drawingNuevaHoja->setPath($imgPath); // Ruta de la imagen
-            $drawingNuevaHoja->setHeight(100); // Establecer la altura de la imagen
-            $drawingNuevaHoja->setWidth(100); // Establecer el ancho de la imagen
+            $drawingNuevaHoja->setHeight(120); // Establecer la altura de la imagen
+            $drawingNuevaHoja->setWidth(120); // Establecer el ancho de la imagen
             $drawingNuevaHoja->setCoordinates($coordenada); // Establecer la coordenada de la celda
             $drawingNuevaHoja->setWorksheet($nuevaHoja);
         }
@@ -872,6 +890,24 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
         $nuevaHoja->getStyle('AO7:AV' . $filaNuevaHoja)->applyFromArray($styleArray);
         $nuevaHoja->getStyle('AZ7:BC' . $filaNuevaHoja)->applyFromArray($styleArray);
 
+        // Establecer estilos y ajustes de tamaño de celdas
+        $nuevaHoja->getStyle('A6:I' . $filaNuevaHoja)->getAlignment()->setWrapText(true); // Activar el ajuste de texto en las celdas
+        $nuevaHoja->getStyle('A6:I' . $filaNuevaHoja)->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER); // Centrar verticalmente el texto en las celdas
+
+        // Centrar horizontalmente el texto en las filaNuevaHojas 2 y 3
+        $nuevaHoja->getStyle('2:4')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $nuevaHoja->getStyle('2:4')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+
+        $nuevaHoja->getStyle('D2:E4')->applyFromArray($styleArray2);
+        $nuevaHoja->getStyle('O2:O4')->applyFromArray($styleArray2);
+        $nuevaHoja->getStyle('Y2:Y4')->applyFromArray($styleArray2);
+        $nuevaHoja->getStyle('AI2:AI4')->applyFromArray($styleArray2);
+        $nuevaHoja->getStyle('AS2:AS4')->applyFromArray($styleArray2);
+        $nuevaHoja->getStyle('BD2:BD4')->applyFromArray($styleArray2);
+        $nuevaHoja->getRowDimension('2')->setRowHeight(30);
+        $nuevaHoja->getRowDimension('3')->setRowHeight(30);
+        $nuevaHoja->getRowDimension('4')->setRowHeight(30);
+        $nuevaHoja->getRowDimension('6')->setRowHeight(30);
 
         // Establecer el alto de la fila 6
         $nuevaHoja->getRowDimension('7')->setRowHeight(70);
@@ -887,36 +923,36 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
             $drawingHojaHora->setName('Logo');
             $drawingHojaHora->setDescription('Logo');
             $drawingHojaHora->setPath($imgPath); // Ruta de la imagen
-            $drawingHojaHora->setHeight(100); // Establecer la altura de la imagen
-            $drawingHojaHora->setWidth(100); // Establecer el ancho de la imagen
+            $drawingHojaHora->setHeight(120); // Establecer la altura de la imagen
+            $drawingHojaHora->setWidth(120); // Establecer el ancho de la imagen
             $drawingHojaHora->setCoordinates($coordenada1); // Establecer la coordenada de la celda
             $drawingHojaHora->setWorksheet($hojaHora);
         }
         // Establecer los datos en las celdas especificadas
         $hojaHora->setCellValue('C3', 'FECHA DE GENERACION DEL REPORTE');
-        $hojaHora->setCellValue('L3', 'FECHA DE GENERACION DEL REPORTE');
-        $hojaHora->setCellValue('V3', 'FECHA DE GENERACION DEL REPORTE');
-        $hojaHora->setCellValue('AF3', 'FECHA DE GENERACION DEL REPORTE');
-        $hojaHora->setCellValue('AP3', 'FECHA DE GENERACION DEL REPORTE');
-        $hojaHora->setCellValue('BA3', 'FECHA DE GENERACION DEL REPORTE');
+        $hojaHora->setCellValue('M3', 'FECHA DE GENERACION DEL REPORTE');
+        $hojaHora->setCellValue('W3', 'FECHA DE GENERACION DEL REPORTE');
+        $hojaHora->setCellValue('AG3', 'FECHA DE GENERACION DEL REPORTE');
+        $hojaHora->setCellValue('AQ3', 'FECHA DE GENERACION DEL REPORTE');
+        $hojaHora->setCellValue('BB3', 'FECHA DE GENERACION DEL REPORTE');
         $hojaHora->setCellValue('C2', 'REPORTE GENERADO POR');
-        $hojaHora->setCellValue('L2', 'REPORTE GENERADO POR');
-        $hojaHora->setCellValue('V2', 'REPORTE GENERADO POR');
-        $hojaHora->setCellValue('AF2', 'REPORTE GENERADO POR');
-        $hojaHora->setCellValue('AP2', 'REPORTE GENERADO POR');
-        $hojaHora->setCellValue('BA2', 'REPORTE GENERADO POR');
+        $hojaHora->setCellValue('M2', 'REPORTE GENERADO POR');
+        $hojaHora->setCellValue('W2', 'REPORTE GENERADO POR');
+        $hojaHora->setCellValue('AG2', 'REPORTE GENERADO POR');
+        $hojaHora->setCellValue('AQ2', 'REPORTE GENERADO POR');
+        $hojaHora->setCellValue('BB2', 'REPORTE GENERADO POR');
         $hojaHora->setCellValue('C4', 'EL REPORTE ES DE LA FECHA');
-        $hojaHora->setCellValue('D4', $year . ' - ' . $month);
-        $hojaHora->setCellValue('L4', 'EL REPORTE ES DE LA FECHA');
-        $hojaHora->setCellValue('M4', $year . ' - ' . $month);
-        $hojaHora->setCellValue('V4', 'EL REPORTE ES DE LA FECHA');
-        $hojaHora->setCellValue('W4', $year . ' - ' . $month);
-        $hojaHora->setCellValue('AF4', 'EL REPORTE ES DE LA FECHA');
-        $hojaHora->setCellValue('AG4', $year . ' - ' . $month);
+        $hojaHora->setCellValue('E4', $year . ' - ' . $month);
+        $hojaHora->setCellValue('M4', 'EL REPORTE ES DE LA FECHA');
+        $hojaHora->setCellValue('O4', $year . ' - ' . $month);
+        $hojaHora->setCellValue('W4', 'EL REPORTE ES DE LA FECHA');
+        $hojaHora->setCellValue('Y4', $year . ' - ' . $month);
+        $hojaHora->setCellValue('AG4', 'EL REPORTE ES DE LA FECHA');
+        $hojaHora->setCellValue('AI4', $year . ' - ' . $month);
         $hojaHora->setCellValue('AQ4', 'EL REPORTE ES DE LA FECHA');
-        $hojaHora->setCellValue('D4', $year . ' - ' . $month);
-        $hojaHora->setCellValue('BA4', 'EL REPORTE ES DE LA FECHA');
-        $hojaHora->setCellValue('BB4', $year . ' - ' . $month);
+        $hojaHora->setCellValue('AS4', $year . ' - ' . $month);
+        $hojaHora->setCellValue('BB4', 'EL REPORTE ES DE LA FECHA');
+        $hojaHora->setCellValue('BD4', $year . ' - ' . $month);
         // Verificar si se encontraron resultados
         if ($usuario) {
             // Obtener nombres y apellidos del usuario
@@ -924,42 +960,42 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
             $apellidosUsuario = $usuario['per_apellidos'];
 
             // Mostrar los nombres y apellidos del usuario en la celda H6
-            $hojaHora->setCellValue('D2', $nombresUsuario . ' ' . $apellidosUsuario);
-            $hojaHora->setCellValue('M2', $nombresUsuario . ' ' . $apellidosUsuario);
-            $hojaHora->setCellValue('W2', $nombresUsuario . ' ' . $apellidosUsuario);
-            $hojaHora->setCellValue('AG2', $nombresUsuario . ' ' . $apellidosUsuario);
-            $hojaHora->setCellValue('AQ2', $nombresUsuario . ' ' . $apellidosUsuario);
-            $hojaHora->setCellValue('BB2', $nombresUsuario . ' ' . $apellidosUsuario);
+            $hojaHora->setCellValue('E2', $nombresUsuario . ' ' . $apellidosUsuario);
+            $hojaHora->setCellValue('O2', $nombresUsuario . ' ' . $apellidosUsuario);
+            $hojaHora->setCellValue('Y2', $nombresUsuario . ' ' . $apellidosUsuario);
+            $hojaHora->setCellValue('AI2', $nombresUsuario . ' ' . $apellidosUsuario);
+            $hojaHora->setCellValue('AS2', $nombresUsuario . ' ' . $apellidosUsuario);
+            $hojaHora->setCellValue('BD2', $nombresUsuario . ' ' . $apellidosUsuario);
         } else {
             // En caso de no encontrar resultados, mostrar un mensaje alternativo
-            $hojaHora->setCellValue('D2', 'Usuario no encontrado');
-            $hojaHora->setCellValue('M2', 'Usuario no encontrado');
-            $hojaHora->setCellValue('W2', 'Usuario no encontrado');
-            $hojaHora->setCellValue('AG2', 'Usuario no encontrado');
-            $hojaHora->setCellValue('AQ2', 'Usuario no encontrado');
-            $hojaHora->setCellValue('BB2', 'Usuario no encontrado');
+            $hojaHora->setCellValue('E2', 'Usuario no encontrado');
+            $hojaHora->setCellValue('O2', 'Usuario no encontrado');
+            $hojaHora->setCellValue('Y2', 'Usuario no encontrado');
+            $hojaHora->setCellValue('AI2', 'Usuario no encontrado');
+            $hojaHora->setCellValue('AS2', 'Usuario no encontrado');
+            $hojaHora->setCellValue('BD2', 'Usuario no encontrado');
         }
 
         // Obtener la fecha y hora actual
         $fechaHoraActual = date('Y-m-d H:i:s'); // Formato: Año-Mes-Día Hora:Minuto:Segundo
 
         // Añadir la fecha y hora actual en las celdas C3, H3 y Z3
-        $hojaHora->setCellValue('D3', $fechaHoraActual);
-        $hojaHora->setCellValue('M3', $fechaHoraActual);
-        $hojaHora->setCellValue('W3', $fechaHoraActual);
-        $hojaHora->setCellValue('AG3', $fechaHoraActual);
-        $hojaHora->setCellValue('AQ3', $fechaHoraActual);
-        $hojaHora->setCellValue('BB3', $fechaHoraActual);
+        $hojaHora->setCellValue('E3', $fechaHoraActual);
+        $hojaHora->setCellValue('O3', $fechaHoraActual);
+        $hojaHora->setCellValue('Y3', $fechaHoraActual);
+        $hojaHora->setCellValue('AI3', $fechaHoraActual);
+        $hojaHora->setCellValue('AS3', $fechaHoraActual);
+        $hojaHora->setCellValue('BD3', $fechaHoraActual);
         // Definir los estilos una vez para reutilización
 
 
         // Aplicar los estilos a los diferentes rangos de celdas
-        $hojaHora->getStyle('C2:H3')->applyFromArray($styles);
-        $hojaHora->getStyle('L2:M3')->applyFromArray($styles);
-        $hojaHora->getStyle('V2:W3')->applyFromArray($styles);
-        $hojaHora->getStyle('AF2:AG3')->applyFromArray($styles);
-        $hojaHora->getStyle('AP2:AQ3')->applyFromArray($styles);
-        $hojaHora->getStyle('BA2:BB3')->applyFromArray($styles);
+        $hojaHora->getStyle('C2:H6')->applyFromArray($styles);
+        $hojaHora->getStyle('L2:O6')->applyFromArray($styles);
+        $hojaHora->getStyle('V2:Y6')->applyFromArray($styles);
+        $hojaHora->getStyle('AF2:AI6')->applyFromArray($styles);
+        $hojaHora->getStyle('AP2:AS6')->applyFromArray($styles);
+        $hojaHora->getStyle('BA2:BD6')->applyFromArray($styles);
 
         // Ajustar el alto de la fila 1 después de haber insertado todas las imágenes
         $hojaHora->getRowDimension('1')->setRowHeight(20); // Establecer el alto de la fila 1
@@ -1042,7 +1078,7 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
         $stmtHora->bindParam(':month', $month);
         $stmtHora->execute();
 
-        $hojaHora->setCellValue('C6', 'REPORTE DEL MES');
+        $hojaHora->setCellValue('D6', 'REPORTE DEL MES');
         // Establecer encabezados de columnas en la nueva hoja
         $hojaHora->setCellValue('A7', 'DISEÑADOR');
         $hojaHora->setCellValue('B7', 'LUNES');
@@ -1076,7 +1112,7 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
         }
 
         // de la primera semana
-        $hojaHora->setCellValue('L6', 'REPORTE DE LA PRIMERA SEMANA');
+        $hojaHora->setCellValue('N6', 'REPORTE DE LA PRIMERA SEMANA');
         $hojaHora->setCellValue('K7', 'DISEÑADOR');
         $columna = 'L';
         foreach ($encabezados_primera_semanaHora as $encabezado) {
@@ -1106,7 +1142,7 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
         }
 
         // SEGUNDA SEMANA
-        $hojaHora->setCellValue('V6', 'REPORTE DE LA SEGUNDA SEMANA');
+        $hojaHora->setCellValue('X6', 'REPORTE DE LA SEGUNDA SEMANA');
         $hojaHora->setCellValue('U7', 'DISEÑADOR');
         $columna1 = 'V';
         foreach ($encabezados_segunda_semanaHora as $encabezado1) {
@@ -1136,7 +1172,7 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
         }
 
         // Mostrar los encabezados en la tercera semana
-        $hojaHora->setCellValue('AF6', 'REPORTE DE LA TERCERA SEMANA');
+        $hojaHora->setCellValue('AH6', 'REPORTE DE LA TERCERA SEMANA');
         $hojaHora->setCellValue('AE7', 'DISEÑADOR');
         $columna2 = 'AF';
         foreach ($encabezados_tercera_semanaHora as $encabezado2) {
@@ -1166,7 +1202,7 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
         }
 
         // Mostrar los encabezados en la tercera semana
-        $hojaHora->setCellValue('AP6', 'REPORTE DE LA CUARTA SEMANA');
+        $hojaHora->setCellValue('AR6', 'REPORTE DE LA CUARTA SEMANA');
         $hojaHora->setCellValue('AO7', 'DISEÑADOR');
         $columna3 = 'AP';
         foreach ($encabezados_cuarta_semanaHora as $encabezado3) {
@@ -1197,7 +1233,7 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
         }
 
         // Mostrar los encabezados en la tercera semana
-        $hojaHora->setCellValue('BA6', 'REPORTE DE LA QUINTA SEMANA');
+        $hojaHora->setCellValue('BC6', 'REPORTE DE LA QUINTA SEMANA');
         $hojaHora->setCellValue('AZ7', 'DISEÑADOR');
         $columna4 = 'BA';
         foreach ($encabezados_quinta_semanaHora as $encabezado4) {
@@ -1417,11 +1453,35 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
             }
             $filahojaHora++;
         }
-        foreach (range('A', 'Z') as $columnID) {
-            $hojaHora->getColumnDimension($columnID)->setAutoSize(true);
-        }
+        
         $hojaHora->getColumnDimension('AA')->setWidth(25);
         $hojaHora->getColumnDimension('AB')->setWidth(25);
+        $hojaHora->getColumnDimension('A')->setAutoSize(true);
+        $hojaHora->getColumnDimension('K')->setAutoSize(true);
+        $hojaHora->getColumnDimension('U')->setAutoSize(true);
+        $hojaHora->getColumnDimension('AE')->setAutoSize(true);
+        $hojaHora->getColumnDimension('AO')->setAutoSize(true);
+        $hojaHora->getColumnDimension('AZ')->setAutoSize(true);
+        //$hojaHora->getStyle('B1:H'.$hojaHora->getHighestRow())->getAlignment()->setWrapText(true);
+        for ($col = 'B'; $col !== 'I'; $col++) {
+            $hojaHora->getColumnDimension($col)->setWidth(20);
+        }
+        for ($col = 'L'; $col !== 'S'; $col++) {
+            $hojaHora->getColumnDimension($col)->setWidth(20);
+        }
+        for ($col = 'V'; $col !== 'AC'; $col++) {
+            $hojaHora->getColumnDimension($col)->setWidth(20);
+        }
+        for ($col = 'AF'; $col !== 'AM'; $col++) {
+            $hojaHora->getColumnDimension($col)->setWidth(20);
+        }
+        for ($col = 'AP'; $col !== 'AW'; $col++) {
+            $hojaHora->getColumnDimension($col)->setWidth(20);
+        }
+        for ($col = 'BA'; $col !== 'BD'; $col++) {
+            $hojaHora->getColumnDimension($col)->setWidth(20);
+        }
+
         // Llamar a la función para cada rango de columnas
         applyCommonStylesToRow6($hojaHora, 'A', 'H');
         applyCommonStylesToRow6($hojaHora, 'K', 'R');
@@ -1437,6 +1497,24 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
         $hojaHora->getStyle('AO7:AV' . $filahojaHora)->applyFromArray($styleArray);
         $hojaHora->getStyle('AZ7:BC' . $filahojaHora)->applyFromArray($styleArray);
 
+        // Establecer estilos y ajustes de tamaño de celdas
+        $hojaHora->getStyle('A6:I' . $filahojaHora)->getAlignment()->setWrapText(true); // Activar el ajuste de texto en las celdas
+        $hojaHora->getStyle('A6:I' . $filahojaHora)->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER); // Centrar verticalmente el texto en las celdas
+
+        // Centrar horizontalmente el texto en las filaNuevaHojas 2 y 3
+        $hojaHora->getStyle('2:4')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $hojaHora->getStyle('2:4')->getAlignment()->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+
+        $hojaHora->getStyle('D2:E4')->applyFromArray($styleArray2);
+        $hojaHora->getStyle('O2:O4')->applyFromArray($styleArray2);
+        $hojaHora->getStyle('Y2:Y4')->applyFromArray($styleArray2);
+        $hojaHora->getStyle('AI2:AI4')->applyFromArray($styleArray2);
+        $hojaHora->getStyle('AS2:AS4')->applyFromArray($styleArray2);
+        $hojaHora->getStyle('BD2:BD4')->applyFromArray($styleArray2);
+        $hojaHora->getRowDimension('2')->setRowHeight(30);
+        $hojaHora->getRowDimension('3')->setRowHeight(30);
+        $hojaHora->getRowDimension('4')->setRowHeight(30);
+        $hojaHora->getRowDimension('6')->setRowHeight(30);
 
         // Establecer el alto de la fila 6
         $hojaHora->getRowDimension('7')->setRowHeight(70);
