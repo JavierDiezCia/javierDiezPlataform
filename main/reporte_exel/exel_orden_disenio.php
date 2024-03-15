@@ -200,7 +200,7 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
     $hojaActiva->getColumnDimension('B')->setWidth(28);
     $hojaActiva->getColumnDimension('C')->setWidth(28);
     $hojaActiva->getColumnDimension('F')->setWidth(35);
-
+    $hojaActiva->getColumnDimension('G')->setWidth(20);
     $hojaActiva->getColumnDimension('D')->setWidth(30);
     $hojaActiva->getColumnDimension('L')->setWidth(25);
     $hojaActiva->getStyle('A13:G' . $hojaActiva->getHighestRow())
