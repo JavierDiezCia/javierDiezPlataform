@@ -13,7 +13,6 @@ if (!isset($_SESSION["user"])) {
 $error = null;
 $reproseso = "0";
 $state = "OP CREADA";
-//$state = 1;
 $id = isset($_GET["id"]) ? $_GET["id"] : null;
 $opEditar = null;
 if (($_SESSION["user"]["usu_rol"]) || ($_SESSION["user"]["usu_rol"] == 1) || ($_SESSION["user"]["usu_rol"] == 2) || ($_SESSION["user"]["usu_rol"] == 3)) {
@@ -39,6 +38,7 @@ if (($_SESSION["user"]["usu_rol"]) || ($_SESSION["user"]["usu_rol"] == 1) || ($_
     
 
 
+
     // Buscar od_productos existentes
     $od_productosQuery = $conn->prepare("SELECT od_detalle, od_cliente FROM orden_disenio WHERE od_estado = 'OP'");
     $od_productosQuery->execute();
@@ -53,6 +53,8 @@ if (($_SESSION["user"]["usu_rol"]) || ($_SESSION["user"]["usu_rol"] == 1) || ($_
     $planoCountStatement->execute([":id" => $id]);
     $planoCountResult = $planoCountStatement->fetch(PDO::FETCH_ASSOC);
     $totalPlanos = $planoCountResult['total_planos'];
+
+
     //VERFIFICAMOS EL METODOD QUE SE USA EL FORM CON UN IF 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -69,12 +71,7 @@ if (($_SESSION["user"]["usu_rol"]) || ($_SESSION["user"]["usu_rol"] == 1) || ($_
         } elseif (!preg_match('/^[0-9]{10}$/', $_POST["telefono"])) {
             $error = "EL TELÉFONO DEBE TENER 10 NÚMEROS";
         } else {
-            //VERIFICAMOS SI YA EXISTE UN REGISTRO PARA  op ACTUAL
-            $existingStament = $conn->prepare("SELECT * FROM op  WHERE op_id=:id");
-            $existingStament->execute([":id" => $id]);
-            $existingDiseniador = $existingStament->fetch(PDO::FETCH_ASSOC);
-
-            if ($existingDiseniador) {
+            if ($id) {
                 // Verifica que el usuario tenga el rol necesario para actualizar
                 if ($_SESSION["user"]["usu_rol"] == 1) {
                     // Actualiza la op
@@ -82,7 +79,7 @@ if (($_SESSION["user"]["usu_rol"]) || ($_SESSION["user"]["usu_rol"] == 1) || ($_
                         op_ciudad=:ciudad,
                         op_direccionLocal=:dirrecion,
                         op_personaContacto=:contacto,
-                        op_telefono=:telefono,
+                        op_telefono=:telefono
                         WHERE op_id=:id");
                     $stament->execute([
                         ":ciudad" => $_POST["ciudad"],
@@ -91,6 +88,21 @@ if (($_SESSION["user"]["usu_rol"]) || ($_SESSION["user"]["usu_rol"] == 1) || ($_
                         ":telefono" => $_POST["telefono"],
                         ":id" => $id
                     ]);
+                    //registrar notificacion por si se edita para rol 2
+                    $conn->prepare("INSERT INTO notificaciones (noti_cedula, noti_destinatario, noti_detalle, noti_fecha) VALUES (:cedula, :destinatario, :detalle, :fecha)")->execute([
+                        ":cedula" => $_SESSION["user"]["cedula"],
+                        ":destinatario" => 2,
+                        ":detalle" => "Se ha editado la OP " . "#" . $id,
+                        ":fecha" => date("Y-m-d H:i:s"),
+                    ]);
+                    //registrar notificacion por si se edita para rol 4
+                    $conn->prepare("INSERT INTO notificaciones (noti_cedula, noti_destinatario, noti_detalle, noti_fecha) VALUES (:cedula, :destinatario, :detalle, :fecha)")->execute([
+                        ":cedula" => $_SESSION["user"]["cedula"],
+                        ":destinatario" => 4,
+                        ":detalle" => "Se ha editado la OP " . "#" . $id,
+                        ":fecha" => date("Y-m-d H:i:s"),
+                    ]);
+
                     // Registra el movimiento en el kardex
                     registrarEnKardex($_SESSION["user"]["cedula"], "EDITÓ", 'OP', $id);
                 } else {
@@ -120,6 +132,23 @@ if (($_SESSION["user"]["usu_rol"]) || ($_SESSION["user"]["usu_rol"] == 1) || ($_
                     ":estado" => $state,
                     ":reproseso" => $reproseso
                 ]);
+
+                // registramos las notificaciones para ADMIN DISENIO
+                $conn->prepare("INSERT INTO notificaciones (noti_cedula, noti_destinatario, noti_detalle, noti_fecha) VALUES (:cedula, :destinatario, :detalle, :fecha)")->execute([
+                    ":cedula" => $_SESSION["user"]["cedula"],
+                    ":destinatario" => 2,
+                    ":detalle" => "Se ha creado una nueva OP para la orden de diseño " . "#" . $od_id . " " . $od_detalle,
+                    ":fecha" => date("Y-m-d H:i:s"),
+                ]);
+
+                // registramos las notificaciones para PRODUCCION
+                $conn->prepare("INSERT INTO notificaciones (noti_cedula, noti_destinatario, noti_detalle, noti_fecha) VALUES (:cedula, :destinatario, :detalle, :fecha)")->execute([
+                    ":cedula" => $_SESSION["user"]["cedula"],
+                    ":destinatario" => 4,
+                    ":detalle" => "Se ha creado una nueva OP para la orden de diseño " . "#" . $od_id . " " . $od_detalle,
+                    ":fecha" => date("Y-m-d H:i:s"),
+                ]);
+
 
                 // Registramos el movimiento en el kardex
                 // Obtenemos el último op_id insertado o actualizado
@@ -254,7 +283,11 @@ if (($_SESSION["user"]["usu_rol"]) || ($_SESSION["user"]["usu_rol"] == 1) || ($_
                 </div>
             <?php else : ?>
                 <?php
-                $statement = $conn->prepare("SELECT O.*, P.* FROM op O INNER JOIN personas P ON O.cedula = P.cedula WHERE O.op_id = :id");
+                $statement = $conn->prepare("SELECT OP.*,OD.*, P.per_nombres AS diseniador_nombres, P.per_apellidos AS diseniador_apellidos 
+                                                FROM op OP 
+                                                INNER JOIN orden_disenio OD ON OP.od_id = OD.od_id
+                                                INNER JOIN personas P ON OD.od_responsable = P.cedula 
+                                                WHERE OP.op_id = :id");
                 $statement->bindParam(":id", $id);
                 $statement->execute();
                 $opEditar = $statement->fetch(PDO::FETCH_ASSOC);
@@ -283,7 +316,7 @@ if (($_SESSION["user"]["usu_rol"]) || ($_SESSION["user"]["usu_rol"] == 1) || ($_
                             <div class="col-md-6">
                                 <div class="form-floating">
                                     <input value="<?= $opEditar["op_ciudad"] ?>" type="text" class="form-control" id="ciudad" name="ciudad" placeholder="Ciudad">
-                                    <label for="ciudad">CUIDAD</label>
+                                    <label for="ciudad">CUIDAD DE ENTREGA</label>
                                 </div>
                             </div>
                             <div class="col-md-6">

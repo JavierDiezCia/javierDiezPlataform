@@ -43,6 +43,19 @@ if ($_SESSION["user"]["usu_rol"] && ($_SESSION["user"]["usu_rol"] == 2 || $_SESS
                     ":detalle" => $detalle,
                     ":fechaEntrega" => $_POST["fechaEntrega"]
                 ]);
+
+                $stmt = $conn->prepare("SELECT od_detalle FROM orden_disenio WHERE od_id = :id LIMIT 1");
+                $stmt->bindParam(":id", $id);
+                $stmt->execute();
+                $orden = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                // notificaciones para lso diseniadores rol 2
+                $conn->prepare("INSERT INTO notificaciones (noti_cedula, noti_destinatario, noti_detalle, noti_fecha) VALUES (:cedula, :destinatario, :detalle, :fecha)")->execute([
+                    ":cedula" => $_SESSION["user"]["cedula"],
+                    ":destinatario" => 3,
+                    ":detalle" => "Se ha agregado una nueva actividad " . "<b>$detalle</b>." . " a la orden de diseño " . "#" . $id . " " . $orden["od_detalle"],
+                    ":fecha" => date("Y-m-d H:i:s"),
+                ]);
             }
         }
     }

@@ -5,6 +5,8 @@ $database = "javierdiez";
 $user = "root";
 $password = "";
 
+date_default_timezone_set('America/Lima'); // Configuración de la zona horaria
+
 try {
   $conn = new PDO("mysql:host=$host;dbname=$database", $user, $password);
   $conn->setAttribute(PDO::MYSQL_ATTR_INIT_COMMAND, "SET NAMES utf8"); // Configuración de la codificación de caracteres

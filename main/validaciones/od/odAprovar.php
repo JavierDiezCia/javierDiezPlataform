@@ -27,12 +27,13 @@ if (!isset($_GET["id"]) || empty($_GET["id"])) {
 
 
 // Verificamos si la orden de diseño existe en la base de datos
-$statement = $conn->prepare("SELECT od_estado 
+$statement = $conn->prepare("SELECT od_estado, od_detalle
                             FROM orden_disenio 
                             WHERE od_estado = 'MATERIALIDAD' AND od_id = :id;"
                             );
 $statement->execute([":id" => $id]);
 $orden_diseño = $statement->fetch(PDO::FETCH_ASSOC);
+$detalle = $orden_diseño['od_detalle'];
 
 if (!$orden_diseño) {
     // Si no se encuentra la orden de diseño, redirigimos a alguna página de error o a la página principal
@@ -43,6 +44,14 @@ if (!$orden_diseño) {
 // Actualizar el estado de la orden de diseño a "Revisando" (código de estado 4)
 $conn->prepare("UPDATE orden_disenio SET od_estado = 'OP' WHERE od_id = :id")->execute([
     ":id" => $id,
+]);
+
+// registramos la notificacion
+$conn->prepare("INSERT INTO notificaciones (noti_cedula, noti_destinatario, noti_detalle, noti_fecha) VALUES (:cedula, :destinatario, :detalle, :fecha)")->execute([
+    ":cedula" => $_SESSION["user"]["cedula"],
+    ":destinatario" => 3,
+    ":detalle" => "La orden de diseño " . "#" . $id . " " . "<b>$detalle</b>" . " ha sido aprobada. Puedes crear una OP.",
+    ":fecha" => date("Y-m-d H:i:s"),
 ]);
 
 // Registramos el movimiento en el kardex

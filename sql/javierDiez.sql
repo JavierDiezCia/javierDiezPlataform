@@ -242,6 +242,7 @@ CREATE TABLE notificaciones (
     noti_fecha DATETIME NOT NULL,
     noti_detalle VARCHAR(255) NOT NULL,
     noti_destinatario INT NOT NULL, /* usando los roles como destinatarios */
+    noti_vista BOOLEAN DEFAULT 0 NOT NULL, /* 0 sin ver, 1 vista */
     Foreign Key (noti_cedula) REFERENCES personas(cedula)
         ON UPDATE RESTRICT
         ON DELETE RESTRICT

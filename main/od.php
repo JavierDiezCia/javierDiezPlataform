@@ -46,6 +46,14 @@ if ($_SESSION["user"]["usu_rol"] && ($_SESSION["user"]["usu_rol"] == 2 || $_SESS
                     ":id" => $id
                 ]);
 
+                //registrar la notificacion
+                $conn->prepare("INSERT INTO notificaciones (noti_cedula, noti_destinatario, noti_detalle, noti_fecha) VALUES (:cedula, :destinatario, :detalle, :fecha)")->execute([
+                    ":cedula" => $_SESSION["user"]["cedula"],
+                    ":destinatario" => 2,
+                    ":detalle" => "La orden de diseño " . "#" . $id . " " . $_POST["detalle"] . " ha sido editada.",
+                    ":fecha" => date("Y-m-d H:i:s"),
+                ]);
+
                 registrarEnKardex($_SESSION["user"]["cedula"], "EDITÓ", 'ÓRDENES DE DISEÑO', $_POST["detalle"]);
 
                 header("Location: od.php");
@@ -61,11 +69,22 @@ if ($_SESSION["user"]["usu_rol"] && ($_SESSION["user"]["usu_rol"] == 2 || $_SESS
                     ":cliente" => strtoupper($_POST["cliente"]),
                     ":estado" => $state
                 ]);
+
+                $nuevaOrdenId = $conn->lastInsertId();
             
 
                 registrarEnKardex($_SESSION["user"]["cedula"], "CREÓ", 'ÓRDENES DE DISEÑO', $_POST["detalle"]);
+                
+                $notiDetalle  = "Nueva orden de diseño creada por " . $_SESSION["user"]["cedula"] . " para " . $_POST["cliente"] . " con el detalle " . $_POST["detalle"] . ".";
 
-                $nuevaOrdenId = $conn->lastInsertId();
+                //notificaciones
+                $notificacion = $conn->prepare("INSERT INTO notificaciones (noti_cedula, noti_fecha, noti_detalle, noti_destinatario) VALUES (:cedula, :fecha, :detalle, :destinatario)");
+                $notificacion->execute([
+                    ":cedula" => $_SESSION["user"]["cedula"],
+                    ":fecha" => date("Y-m-d H:i:s"),
+                    ":detalle" => $notiDetalle,
+                    ":destinatario" => 2
+                ]);
 
                 header("Location: od_actividades.php?id=$nuevaOrdenId");
                 exit;

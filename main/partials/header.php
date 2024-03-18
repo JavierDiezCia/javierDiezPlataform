@@ -1,7 +1,29 @@
 <?php
 $dataUser = $conn->query("SELECT * FROM personas WHERE cedula = {$_SESSION["user"]["cedula"]} LIMIT 1");
 $data = $dataUser->fetch(PDO::FETCH_ASSOC);
-$totalNotificaciones = NULL; 
+
+$totalNotificaciones = 0;
+
+$notis = [];
+
+$tiempoTranscurrido = new DateTime('2022-01-01 00:00:00');
+$tiempoTranscurrido->modify('-1 day');
+
+// Prepara la consulta SQL
+$stmt = $conn->prepare("SELECT * FROM notificaciones WHERE noti_destinatario = :destinatario ORDER BY noti_fecha DESC LIMIT 50");
+$stmt->bindParam(":destinatario", $_SESSION['user']['usu_rol']);
+$stmt->execute();
+$resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+if ($resultado) {
+  $notis = $resultado;
+  $totalNotificaciones = 0;
+  foreach ($notis as $noti) {
+      if ($noti['noti_vista'] == 0) {
+          $totalNotificaciones++;
+      }
+  }
+}
 
 date_default_timezone_set('America/Lima'); 
 ?>
@@ -63,62 +85,52 @@ date_default_timezone_set('America/Lima');
     <nav class="header-nav ms-auto">
       <ul class="d-flex align-items-center">
 
-        <li class="nav-item dropdown">
-          <?php if(!empty($totalNotificaciones)) : ?>
+      <li class="nav-item dropdown">
+        <?php if(!empty($totalNotificaciones)) : ?>
             <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-              <i class="bi bi-bell"></i>
-              <span class="badge bg-danger badge-number"><?= $totalNotificaciones ?></span>
+                <i class="bi bi-bell"></i>
+                <span class="badge bg-danger badge-number"><?= $totalNotificaciones ?></span>
             </a><!-- End Notification Icon -->
-          <?php else : ?>
+        <?php else : ?>
             <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
-              <i class="bi bi-bell"></i>
-              <span class="badge badge-number"></span>
+                <i class="bi bi-bell"></i>
+                <span class="badge badge-number"></span>
             </a><!-- End Notification Icon -->
-          <?php endif ?>
+        <?php endif ?>
 
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications" style='width: 300px;'>
             <?php if(empty($notis)) : ?>
             <?php endif ?>
 
             <li class="dropdown-header">
-              Tienes <?= $totalNotificaciones ?> notificaciones
+                Tienes <?= $totalNotificaciones ?> notificaciones sin ver.
+            </li>
+            
+            <li class="text-center mb-1">
+                <a href="historialNotis.php" class='btn btn-secondary'>Ver todas las notificaciones</a>
             </li>
             
             <li>
-              <hr class="dropdown-divider">
+                <hr class="dropdown-divider">
             </li>
 
             <?php foreach($notis as $noti) : ?>
-              <?php
-              // Obtén la fecha de la notificación
-              $fechaNotificacion = new DateTime($noti["PLAFECHANOTI"]);
-
-              // Calcula la diferencia entre la fecha actual y la fecha de la notificación
-              $tiempoTranscurrido = $fechaNotificacion->diff(new DateTime());
-
-              // utilizar $tiempoTranscurrido para mostrar el tiempo transcurrido 
-              ?>
-              <li class="notification-item">
-                <i class="bi bi-x-circle text-danger"></i>
+                <li class="notification-item <?= $noti['noti_vista'] == 0 ? 'not-viewed' : '' ?>">
+                
                 <div>
-                  <h4>Contactarse con Producción</h4>
-                  <p>Error en la OP # <?= $noti["IDOP"] ?> <br> Plano # <?= $noti["PLANNUMERO"] ?></p>
-                  <p><?= $tiempoTranscurrido->format('%h hrs. %i mins. ago') ?></p>
+                    <h4><?= date('l j \d\e F \|\ H:i', strtotime($noti['noti_fecha'])) ?></h4>
+                    <h4><?= $noti['noti_detalle'] ?></h4>
+                    <?php if ($noti['noti_vista'] == 0) : ?>
+                        <a href="validaciones/notificacionVisual.php?id=<?= $noti['noti_id'] ?>" class="btn btn-secondary">Marcar como vista</a>
+                    <?php endif ?>
                 </div>
-              </li>
+                </li>
+                <hr>
             <?php endforeach ?>
-
-
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li class="dropdown-footer">
-              <a href="#">Show all notifications</a>
-            </li>
 
           </ul><!-- End Notification Dropdown Items -->
 
-          </li><!-- End Notification Nav -->
+        </li><!-- End Notification Nav -->
         
 
         <li class="nav-item dropdown pe-3">

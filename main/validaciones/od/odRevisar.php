@@ -38,12 +38,22 @@ $detallesSinRegistro->execute([":id" => $orden["od_id"]]);
 $detallesSinRegistro = $detallesSinRegistro->fetchAll(PDO::FETCH_ASSOC);
 
 if (empty($detallesSinRegistro)) {
+
     // Actualizar el estado de la orden de diseño a "Revisando" (código de estado 4)
     $conn->prepare("UPDATE orden_disenio SET od_estado = 'MATERIALIDAD' WHERE od_id = :id AND od_estado = 'PROPUESTA'")->execute([
         ":id" => $id,
     ]);
+
+    // registramos la notificacion
+    $conn->prepare("INSERT INTO notificaciones (noti_cedula, noti_destinatario, noti_detalle, noti_fecha) VALUES (:cedula, :destinatario, :detalle, :fecha)")->execute([
+        ":cedula" => $_SESSION["user"]["cedula"],
+        ":destinatario" => 2,
+        ":detalle" => "La orden de diseño " . "#" . $orden_diseño["od_id"] . " " . $orden_diseño["od_detalle"] . " ha pasado a materialidad.",
+        ":fecha" => date("Y-m-d H:i:s"),
+    ]);
+
     // Registramos el movimiento en el kardex
-    registrarEnKardex($_SESSION["user"]["ID_USER"], "PASÓ A MATERIALIDAD", 'ORDEN DISEÑO', "PRODUCTO: " . $orden_diseño["od_producto"]);
+    registrarEnKardex($_SESSION["user"]["ID_USER"], "PASÓ A MATERIALIDAD", 'ORDEN DISEÑO', "PRODUCTO: " . $orden_diseño["od_detalle"]);
 }
 
 
