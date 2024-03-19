@@ -40,6 +40,14 @@ $conn->prepare("UPDATE orden_disenio SET od_estado = 'PROPUESTA' WHERE od_id = :
     ":id" => $id,
 ]);
 
+// registramos la notificacion
+$conn->prepare("INSERT INTO notificacion (noti_cedula, noti_fecha, noti_detalle, noti_destinatario) VALUES (:cedula, :fecha, :detalle, :destinatario)")->execute([
+    ":cedula" => $_SESSION["user"]["cedula"],
+    ":fecha" => date("Y-m-d H:i:s"),
+    ":detalle" => "La orden de diseño # " . $id . " regresa a propuesta.",
+    ":destinatario" => 3,
+]);
+
 // Registramos el movimiento en el kardex
 registrarEnKardex($_SESSION["user"]["cedula"], "APROBÓ", 'ORDEN DISEÑO', "Producto: " . $orden_diseño["od_producto"]);
 

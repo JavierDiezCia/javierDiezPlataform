@@ -13,7 +13,7 @@ if (!isset($_SESSION["user"])) {
 $error = null;
 $reproseso = "0";
 $state = "OP CREADA";
-$id = isset($_GET["id"]) ? $_GET["id"] : null;
+$id = $_GET["id"] ?? null;
 $opEditar = null;
 if (($_SESSION["user"]["usu_rol"]) || ($_SESSION["user"]["usu_rol"] == 1) || ($_SESSION["user"]["usu_rol"] == 2) || ($_SESSION["user"]["usu_rol"] == 3)) {
     //llamr las op de la base de datos y especificar que sean los que tengan la op_id de la funcion seccion_start
@@ -24,6 +24,7 @@ if (($_SESSION["user"]["usu_rol"]) || ($_SESSION["user"]["usu_rol"] == 1) || ($_
         orden.od_comercial,
         comercial.per_nombres AS comercial_nombres,
         comercial.per_apellidos AS comercial_apellidos,
+        ciudad_produccion.lu_ciudad,
         orden.od_detalle,
         orden.od_cliente,
         COUNT(planos.pla_id) AS total_planos
@@ -31,6 +32,7 @@ if (($_SESSION["user"]["usu_rol"]) || ($_SESSION["user"]["usu_rol"] == 1) || ($_
     LEFT JOIN orden_disenio AS orden ON op.od_id = orden.od_id
     LEFT JOIN personas AS responsable ON orden.od_responsable = responsable.cedula
     LEFT JOIN personas AS comercial ON orden.od_comercial = comercial.cedula
+    LEFT JOIN ciudad_produccion ON op.lu_id = ciudad_produccion.lu_id
     LEFT JOIN planos ON op.op_id = planos.op_id
     WHERE op.op_estado = 'OP CREADA'
     GROUP BY op.op_id");
@@ -40,7 +42,9 @@ if (($_SESSION["user"]["usu_rol"]) || ($_SESSION["user"]["usu_rol"] == 1) || ($_
 
 
     // Buscar od_productos existentes
-    $od_productosQuery = $conn->prepare("SELECT od_detalle, od_cliente FROM orden_disenio WHERE od_estado = 'OP'");
+    $od_productosQuery = $conn->prepare("SELECT od_detalle, od_cliente 
+                                            FROM orden_disenio 
+                                            WHERE od_estado = 'OP'");
     $od_productosQuery->execute();
     $od_productos = $od_productosQuery->fetchAll(PDO::FETCH_ASSOC);
 
@@ -76,12 +80,14 @@ if (($_SESSION["user"]["usu_rol"]) || ($_SESSION["user"]["usu_rol"] == 1) || ($_
                 if ($_SESSION["user"]["usu_rol"] == 1) {
                     // Actualiza la op
                     $stament = $conn->prepare("UPDATE op SET
+                        lu_id=:lu_idproduccion,
                         op_ciudad=:ciudad,
                         op_direccionLocal=:dirrecion,
                         op_personaContacto=:contacto,
                         op_telefono=:telefono
                         WHERE op_id=:id");
                     $stament->execute([
+                        ":lu_idproduccion" => $_POST["lu_idproduccion"],
                         ":ciudad" => $_POST["ciudad"],
                         ":dirrecion" => strtoupper($_POST["direccion"]),
                         ":contacto" => strtoupper($_POST["contacto"]),
@@ -155,26 +161,6 @@ if (($_SESSION["user"]["usu_rol"]) || ($_SESSION["user"]["usu_rol"] == 1) || ($_
                 $lastInsertId = $conn->lastInsertId();
                 registrarEnKardex($_SESSION["user"]["cedula"], "CREÓ", 'OP', $lastInsertId);
 
-                // Obtenemos la cantidad de planos ingresados
-                $cantidadPlanos = isset($_POST["planos"]) ? intval($_POST["planos"]) : 0;
-
-                // Verificamos si la cantidad de planos es válida (mayor que cero)
-                if ($cantidadPlanos > 0) {
-
-
-                    // Iteramos sobre la cantidad de planos e insertamos un registro en la tabla planos por cada uno
-                    for ($i = 1; $i <= $cantidadPlanos; $i++) {
-                        $planoNumero = $i;
-
-                        // Insertamos el registro en la tabla planos
-                        $stmt = $conn->prepare("INSERT INTO planos (op_id, pla_numero, pla_estado, pla_reproceso, pla_porcentaje) VALUES (:idop, :plannumero, 'ACTIVO', 0, 0)");
-                        $stmt->execute([
-                            ":idop" => $lastInsertId,
-                            ":plannumero" => $planoNumero
-                        ]);
-                    }
-                }
-
                 $estadoOd = "OP CREADA";
 
                 //SINO AY UN REGISTRO ACTUALIZARME
@@ -234,12 +220,6 @@ if (($_SESSION["user"]["usu_rol"]) || ($_SESSION["user"]["usu_rol"] == 1) || ($_
                                         <label for="od_cliente">CLIENTE</label>
                                     </div>
                                 </div>
-                                    <div class="col-md-6">
-                                        <div class="form-floating">
-                                            <input type="number" class="form-control" id="planos" name="planos" placeholder="">
-                                            <label for="planos"> PLANOS</label>
-                                        </div>
-                                    </div>
                                     <div class="col-md-6">
                                         <label for="lu_idproduccion" class="form-label">LUGAR DE PRODUCCIÓN</label>
                                         <select class="form-select" id="lu_idproduccion" name="lu_idproduccion">
@@ -302,7 +282,7 @@ if (($_SESSION["user"]["usu_rol"]) || ($_SESSION["user"]["usu_rol"] == 1) || ($_
                             </p>
                         <?php endif ?>
 
-                        <form class="row g-3" method="POST" action="op.php">
+                        <form class="row g-3" method="POST" action="op.php?id=<?= $id ?>">
                             <div class="col-md-6">
                                 <label for="lu_idproduccion" class="form-label">CIUDAD DE PRODUCCIÓN</label>
                                 <select class="form-select" id="lu_idproduccion" name="lu_idproduccion">
@@ -370,6 +350,7 @@ if (($_SESSION["user"]["usu_rol"]) || ($_SESSION["user"]["usu_rol"] == 1) || ($_
                                                 <th>OP</th>
                                                 <th>DISEÑADOR</th>
                                                 <th>PLANOS</th>
+                                                <th>PRODUCCIÓN</th>
                                                 <th>CLIENTE</th>
                                                 <th>DETALLE</th>
                                                 <th>REGISTRO</th>
@@ -390,6 +371,7 @@ if (($_SESSION["user"]["usu_rol"]) || ($_SESSION["user"]["usu_rol"] == 1) || ($_
                                                     <th><?= $op["op_id"] ?></th>
                                                     <td><?= $op["responsable_nombres"] . " " . $op["responsable_apellidos"] ?></td>
                                                     <th><?= $op["total_planos"] ?></th>
+                                                    <td><?= $op["lu_ciudad"] ?></td>
                                                     <td><?= $op["od_cliente"] ?></td>
                                                     <td><?= $op["od_detalle"] ?></td>
                                                     <td><?= $op["op_registro"] ?></td>

@@ -4,7 +4,7 @@ require "../partials/kardex_delete.php";
 require "../partials/session_handler.php";
 
 // Verificar si la sesión está iniciada correctamente y el rol es 1 o 2
-if (!isset($_SESSION["user"]) && !isset($_SESSION["user"]["usu_rol"]) && ($_SESSION["user"]["usu_rol"] == 1 || $_SESSION["user"]["usu_rol"] == 2)) {
+if (isset($_SESSION["user"]) && isset($_SESSION["user"]["usu_rol"]) && ($_SESSION["user"]["usu_rol"] == 1 || $_SESSION["user"]["usu_rol"] == 2)) {
 
     // Obtener el ID de la OP desde la URL
     $id = isset($_GET["id"]) ? intval($_GET["id"]) : 0;
