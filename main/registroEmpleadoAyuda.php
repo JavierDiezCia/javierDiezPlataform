@@ -12,20 +12,10 @@ $error = null;
 // Validar si el usuario es un empleado
 if ($_SESSION["user"]["usu_rol"] == 6 || $_SESSION["user"]["usu_rol"] == 1) {
     $empleado = $_SESSION["user"]["cedula"];
-    $area = $_POST['area'];
+    $area = null;
+    $ops = null;
 
-    // Buscar las OP disponibles para el área de trabajo del empleado
-    $opQuery = $conn->prepare("SELECT DISTINCT op.op_id 
-                                FROM op 
-                                INNER JOIN planos p ON op.op_id = p.op_id 
-                                INNER JOIN produccion pro ON p.pla_id = pro.pla_id 
-                                INNER JOIN pro_areas pa ON pro.pro_id = pa.pro_id 
-                                WHERE pa.proAre_detalle = :area_trabajo 
-                                AND pro.pro_id IS NOT NULL 
-                                AND pa.proAre_porcentaje < 100
-                                AND op.op_estado = 'EN PRODUCCION'");
-    $opQuery->execute(array(':area_trabajo' => $area));
-    $ops = $opQuery->fetchAll(PDO::FETCH_ASSOC);
+
     // Verificar si ya hay un registro activo para el diseñador actual
     $registroQuery = $conn->prepare("SELECT *
     FROM registro
@@ -124,15 +114,13 @@ if ($_SESSION["user"]["usu_rol"] == 6 || $_SESSION["user"]["usu_rol"] == 1) {
                     <form class="row g-3" method="POST" action="registroEmpleadoAyuda.php">
                         <div class="col-md-6">
                             <div class="form-floating mb-3">
-                                <select class="form-select" id="op_id" name="op_id" required>
-                                    <option selected disabled value="">SELECIONE LA ORDEN DE PRODUCCION</option>
-                                    <?php foreach ($ops as $op) : ?>
-                                        <option value="<?= $op["op_id"] ?>"><?= $op["op_id"] ?></option>
-                                    <?php endforeach ?>
+                                <select class="form-select" id="op_id" name="op_id" required onchange="cargarPlanos(document.getElementById('area').value, this.value)">
+                                    <option selected disabled value="">SELECCIONE LA ORDEN DE PRODUCCION</option>
                                 </select>
                                 <label for="op_id">Orden de Producción</label>
                             </div>
                         </div>
+
                         <div class="col-md-6">
                             <div class="form-floating mb-3">
                                 <select class="form-select" id="pla_id" name="pla_id" required>
@@ -143,7 +131,7 @@ if ($_SESSION["user"]["usu_rol"] == 6 || $_SESSION["user"]["usu_rol"] == 1) {
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3">
-                                <select class="form-select" id="area" name="area" required onchange="obtenerActividades(this.value)" >
+                                <select class="form-select" id="area" name="area" required onchange="obtenerActividades(this.value)">
                                     <option selected disabled value="">SELECIONE EL AREA</option>
                                     <option value="ACM">ACM</option>
                                     <option value="ACRÍLICOS Y ACABADOS">ACRÍLICOS Y ACABADOS</option>
@@ -176,11 +164,57 @@ if ($_SESSION["user"]["usu_rol"] == 6 || $_SESSION["user"]["usu_rol"] == 1) {
                                 xhr.onreadystatechange = function() {
                                     if (this.readyState == 4 && this.status == 200) {
                                         document.getElementById("actividades").innerHTML = this.responseText;
+
+                                        // Aquí agregamos el código para cargar las órdenes de producción
+                                        cargarOrdenesProduccion(area);
+
+                                    }
+                                };
+                                xhr.send();
+                            }
+
+                            function cargarOrdenesProduccion(area) {
+                                var xhr = new XMLHttpRequest();
+                                xhr.open("GET", "ajax.php?areaOP=" + area, true);
+                                xhr.onreadystatechange = function() {
+                                    if (this.readyState == 4) {
+                                        if (this.status == 200) {
+                                            if (this.responseText.trim() !== "") {
+                                                document.getElementById("op_id").innerHTML = this.responseText;
+                                                console.log("Respuesta del servidor:", this.responseText);
+                                            } else {
+                                                console.error("La respuesta del servidor está vacía.");
+                                            }
+                                        } else {
+                                            console.error("Error en la solicitud AJAX: " + this.status);
+                                        }
+                                    }
+                                };
+                                xhr.send();
+                            }
+
+                            function cargarPlanos(area, op_id) {
+                                var xhr = new XMLHttpRequest();
+                                xhr.open("GET", "ajax.php?areaPlano=" + area + "&op_id=" + op_id, true);
+                                xhr.onreadystatechange = function() {
+                                    if (this.readyState == 4) {
+                                        if (this.status == 200) {
+                                            if (this.responseText.trim() !== "") {
+                                                document.getElementById("pla_id").innerHTML = this.responseText;
+                                                console.log("Respuesta del servidor:", this.responseText);
+                                            } else {
+                                                console.error("La respuesta del servidor está vacía.");
+                                            }
+                                            
+                                        } else {
+                                            console.error("Error en la solicitud AJAX: " + this.status);
+                                        }
                                     }
                                 };
                                 xhr.send();
                             }
                         </script>
+
                         <div class="text-center">
                             <button type="submit" class="btn btn-primary">REGISTRAR</button>
                             <button type="reset" class="btn btn-secondary">LIMPIAR</button>
@@ -192,36 +226,3 @@ if ($_SESSION["user"]["usu_rol"] == 6 || $_SESSION["user"]["usu_rol"] == 1) {
 
 </section>
 <?php require "./partials/footer.php"; ?>
-<script>
-    // Obtener el área de trabajo del empleado
-    var areaTrabajoEmpleado = "<?php echo $area; ?>";
-
-    // Escucha el cambio en la selección de la orden de producción
-    document.getElementById('op_id').addEventListener('change', function() {
-        var opId = this.value; // Obtén el valor seleccionado de la orden de producción
-
-        // Realiza una petición AJAX para obtener los planos basados en la orden de producción seleccionada
-        var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'validaciones/obtener_planos.php'); // Ruta al archivo PHP que maneja la solicitud AJAX
-        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                var planos = JSON.parse(xhr.responseText); // Parsea la respuesta JSON
-                // Elimina todos los elementos de opción actuales del select de planos
-                var selectPlano = document.getElementById('pla_id');
-                selectPlano.innerHTML = ''; // Limpia el select
-                // Crea opciones para cada plano devuelto por la consulta AJAX
-                planos.forEach(function(plano) {
-                    var option = document.createElement('option');
-                    option.value = plano.pla_id;
-                    option.text = plano.pla_numero;
-                    selectPlano.appendChild(option);
-                });
-            } else {
-                console.error('Error en la petición AJAX');
-            }
-        };
-        // Envía el ID de la orden de producción y el área de trabajo al servidor
-        xhr.send('op_id=' + opId + '&area_trabajo=' + areaTrabajoEmpleado);
-    });
-</script>

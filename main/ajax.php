@@ -122,8 +122,72 @@ if (isset($_GET['cedula'])) {
             echo '</div>';
         }
     }
+} elseif (isset($_GET['areaOP'])) {
+    $area = $_GET['areaOP'];
+    $opQuery = $conn->prepare("SELECT DISTINCT op.op_id 
+    FROM op 
+    INNER JOIN planos p ON op.op_id = p.op_id 
+    INNER JOIN produccion pro ON p.pla_id = pro.pla_id 
+    INNER JOIN pro_areas pa ON pro.pro_id = pa.pro_id 
+    WHERE pa.proAre_detalle = :area_trabajo
+    AND pro.pro_id IS NOT NULL 
+    AND pa.proAre_porcentaje < 100
+    AND op.op_estado = 'EN PRODUCCION'");
 
+    // Ejecuta la consulta con el parámetro :area_trabajo
+    $opQuery->execute(array(':area_trabajo' => $area));
+
+    // Obtiene el número de filas afectadas por la consulta
+    $rowCount = $opQuery->rowCount();
+
+    // Si la consulta devuelve al menos una fila, genera el HTML del select con las opciones
+    if ($rowCount > 0) {
+        echo '<select id="op_id">';
+        echo '<option selected disabled value="">Seleccione una orden de producción</option>';
+        while ($row = $opQuery->fetch(PDO::FETCH_ASSOC)) {
+            echo '<option value="' . $row['op_id'] . '">' . $row['op_id'] . '</option>';
+        }
+        echo '</select>';
+    } else {
+        // Si la consulta no devuelve filas, genera un mensaje indicando que no hay órdenes de producción disponibles
+        echo '<select id="op_id">';
+        echo '<option selected disabled value="">No hay órdenes de producción disponibles</option>';
+        echo '</select>';
+    }
+} elseif (isset($_GET['areaPlano'])) {
+    $area = $_GET['areaPlano'];
+    $op_id = $_GET['op_id']; // Asegúrate de obtener el valor de op_id
+    // Consulta SQL para obtener los datos de los planos asociados al área de trabajo del empleado
+    $plaQuery = $conn->prepare("SELECT p.pla_id, p.pla_numero, pro.pro_id 
+                FROM planos p 
+                INNER JOIN produccion pro ON p.pla_id = pro.pla_id 
+                INNER JOIN pro_areas pa ON pro.pro_id = pa.pro_id
+                WHERE pa.proAre_detalle = :area_trabajo 
+                AND pro.pro_id IS NOT NULL 
+                AND pa.proAre_porcentaje < 100 
+                AND p.pla_estado = 'ACTIVO'
+                AND p.op_id = :op_id"); // Agregando la condición para op_id
+    // Preparar la consulta
+    $plaQuery->execute(array(':area_trabajo' => $area, ':op_id' => $op_id)); // Pasando el valor de op_id
+
+    // Obtener los resultados de la consulta
+    $rowCount1 = $plaQuery->rowCount();
+    // Si la consulta devuelve al menos una fila, genera el HTML del select con las opciones
+    // Si la consulta no devuelve filas, genera un mensaje indicando que no hay órdenes de producción disponibles
+    if ($rowCount1 > 0) {
+        echo '<select id="pla_id">';
+        echo '<option selected disabled value="">Seleccione una orden de producción</option>';
+        while ($row1 = $plaQuery->fetch(PDO::FETCH_ASSOC)) {
+            echo '<option value="' . $row1['pla_id'] . '">' . $row1['pla_numero'] . '</option>';
+        }
+        echo '</select>';
+    } else {
+        // Si la consulta no devuelve filas, genera un mensaje indicando que no hay órdenes de producción disponibles
+        echo '<select id="pla_id">';
+        echo '<option selected disabled value="">No hay órdenes de producción disponibles</option>';
+        echo '</select>';
+    }
 } else {
     // Si no se recibió ningún parámetro válido en la solicitud, devolver un mensaje de error
-    echo json_encode(array('error' => 'No se recibió ningún parámetro válido'));
+    //echo json_encode(array('error' => 'No se recibió ningún parámetro válido'));
 }
