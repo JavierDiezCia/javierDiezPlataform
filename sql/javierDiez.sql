@@ -242,11 +242,24 @@ CREATE TABLE notificaciones (
     noti_fecha DATETIME NOT NULL,
     noti_detalle VARCHAR(255) NOT NULL,
     noti_destinatario INT NOT NULL, /* usando los roles como destinatarios */
-    noti_vista BOOLEAN DEFAULT 0 NOT NULL, /* 0 sin ver, 1 vista */
     Foreign Key (noti_cedula) REFERENCES personas(cedula)
         ON UPDATE RESTRICT
         ON DELETE RESTRICT
 );
+
+CREATE TABLE noti_visualizaciones (
+    noti_id INT UNSIGNED NOT NULL,
+    notiVis_cedula VARCHAR(255) NOT NULL, /* cedula */
+    notiVis_fecha DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    notiVis_vista BOOLEAN DEFAULT 0 NOT NULL, /* 0 sin ver, 1 vista */
+    Foreign Key (noti_id) REFERENCES notificaciones(noti_id)
+        ON UPDATE RESTRICT
+        ON DELETE RESTRICT,
+    Foreign Key (notiVis_cedula) REFERENCES personas(cedula)
+        ON UPDATE RESTRICT
+        ON DELETE RESTRICT
+);
+
 CREATE TABLE notificaciones_accionales (
     noti_id INT UNSIGNED NOT NULL,
     notiAc_estado BOOLEAN NOT NULL,  /* 0 sin notificacion, 1 con notificacion */

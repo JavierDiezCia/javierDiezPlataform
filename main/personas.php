@@ -142,7 +142,12 @@ if (($_SESSION["user"]["usu_rol"]) && ($_SESSION["user"]["usu_rol"] == 1)) {
                             <form class="row g-3" method="POST" action="personas.php<?= $id ? "?id=$id" : "" ?>">
                                 <div class="col-md-6">
                                     <div class="form-floating">
-                                        <input type="number" class="form-control" id="cedula" name="cedula" placeholder="Cedula" value="<?= $personaEditar ? $personaEditar["cedula"] : "" ?>" autocomplete="cedula" required>
+                                        <input type="number" class="form-control" id="cedula" name="cedula" placeholder="Cedula" value="<?= $personaEditar ? $personaEditar["cedula"] : "" ?>" autocomplete="cedula" required
+                                        <?php if($id) : ?>
+                                            readonly>
+                                        <?php else : ?>
+                                            >
+                                        <?php endif ?>
                                         <label for="cedula">CÉDULA</label>
                                     </div>
                                 </div>

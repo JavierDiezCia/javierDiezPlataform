@@ -86,6 +86,21 @@ if ($_SESSION["user"]["usu_rol"] && ($_SESSION["user"]["usu_rol"] == 2 || $_SESS
                     ":destinatario" => 2
                 ]);
 
+                // crear un row en la tabla noti_visualizaciones por cada usuario que tenga el rol 2
+                $notiId = $conn->lastInsertId();
+                $usuarios = $conn->prepare("SELECT P.cedula FROM personas P
+                                            JOIN usuarios U ON P.cedula = U.cedula
+                                            WHERE usu_rol = 2");
+                $usuarios->execute();
+                $usuarios = $usuarios->fetchAll(PDO::FETCH_ASSOC);
+                foreach ($usuarios as $usuario) {
+                    $notiVisualizacion = $conn->prepare("INSERT INTO noti_visualizaciones (noti_id, notiVis_cedula) VALUES (:noti_id, :cedula)");
+                    $notiVisualizacion->execute([
+                        ":noti_id" => $notiId,
+                        ":cedula" => $usuario["cedula"]
+                    ]);
+                }
+
                 header("Location: od_actividades.php?id=$nuevaOrdenId");
                 exit;
             }
@@ -100,7 +115,8 @@ if ($_SESSION["user"]["usu_rol"] && ($_SESSION["user"]["usu_rol"] == 2 || $_SESS
         FROM orden_disenio od
         JOIN personas personas_responsable ON od.od_responsable = personas_responsable.cedula
         JOIN personas personas_comercial ON od.od_comercial = personas_comercial.cedula
-        WHERE od.od_responsable = :diseniador AND od.od_estado = 'PROPUESTA'");
+        WHERE od.od_responsable = :diseniador AND od.od_estado = 'PROPUESTA'
+        ORDER BY od.od_id DESC");
     $ordenes->bindParam(":diseniador", $diseniador);
     $ordenes->execute();
 

@@ -10,8 +10,12 @@ $tiempoTranscurrido = new DateTime('2022-01-01 00:00:00');
 $tiempoTranscurrido->modify('-1 day');
 
 // Prepara la consulta SQL
-$stmt = $conn->prepare("SELECT * FROM notificaciones WHERE noti_destinatario = :destinatario ORDER BY noti_fecha DESC LIMIT 50");
-$stmt->bindParam(":destinatario", $_SESSION['user']['usu_rol']);
+$stmt = $conn->prepare("SELECT N.*, NV.* FROM notificaciones N
+                        JOIN noti_visualizaciones NV ON N.noti_id = NV.noti_id
+                        WHERE noti_destinatario = :destinatario AND notiVis_cedula = :cedula
+                        ORDER BY noti_fecha DESC LIMIT 50");
+$stmt->bindParam(':destinatario', $_SESSION['user']['usu_rol']);
+$stmt->bindParam(':cedula', $_SESSION["user"]["cedula"]);
 $stmt->execute();
 $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -19,9 +23,9 @@ if ($resultado) {
   $notis = $resultado;
   $totalNotificaciones = 0;
   foreach ($notis as $noti) {
-      if ($noti['noti_vista'] == 0) {
-          $totalNotificaciones++;
-      }
+    if ($noti['notiVis_vista'] == 0) {
+      $totalNotificaciones++;
+    }
   }
 }
 
@@ -115,13 +119,13 @@ date_default_timezone_set('America/Lima');
             </li>
 
             <?php foreach($notis as $noti) : ?>
-                <li class="notification-item <?= $noti['noti_vista'] == 0 ? 'not-viewed' : '' ?>">
+                <li class="notification-item <?= $noti['notiVis_vista'] == 0 ? 'not-viewed' : '' ?>">
                 
                 <div>
                     <h4><?= date('l j \d\e F \|\ H:i', strtotime($noti['noti_fecha'])) ?></h4>
                     <h4><?= $noti['noti_detalle'] ?></h4>
-                    <?php if ($noti['noti_vista'] == 0) : ?>
-                        <a href="validaciones/notificacionVisual.php?id=<?= $noti['noti_id'] ?>" class="btn btn-secondary">Marcar como vista</a>
+                    <?php if ($noti['notiVis_vista'] == 0) : ?>
+                        <a href="validaciones/notificacionVisual.php?id=<?= $noti['noti_id'] ?>&dni=<?= $noti['notiVis_cedula'] ?>" class="btn btn-secondary">Marcar como vista</a>
                     <?php endif ?>
                 </div>
                 </li>

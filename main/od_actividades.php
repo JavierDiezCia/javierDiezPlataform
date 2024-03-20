@@ -12,6 +12,14 @@ if (!isset($_SESSION["user"])) {
 // Declarar variables
 $error = null;
 $id = isset($_GET["id"]) ? $_GET["id"] : null;
+$idAct = isset($_GET["idAct"]) ? $_GET["idAct"] : null;
+
+
+if (!empty($idAct)) {
+    $actividad = $conn->prepare("SELECT * FROM od_actividades WHERE odAct_id = :id");
+    $actividad->execute([":id" => $idAct]);
+    $actividadEdit = $actividad->fetch(PDO::FETCH_ASSOC);
+}
 
 // Verificar el rol del usuario
 if ($_SESSION["user"]["usu_rol"] && ($_SESSION["user"]["usu_rol"] == 2 || $_SESSION["user"]["usu_rol"] == 3 || $_SESSION["user"]["usu_rol"] == 1)) {
@@ -27,6 +35,60 @@ if ($_SESSION["user"]["usu_rol"] && ($_SESSION["user"]["usu_rol"] == 2 || $_SESS
         // Validar que no se envíen datos vacíos
         if (empty($_POST["detalle"])) {
             $error = "POR FAVOR RELLENA TODOS LOS CAMPOS.";
+        } elseif ($idAct) {
+            // proceso de editar una actividad
+            $detalle = strtoupper($_POST["detalle"]);
+            $statement = $conn->prepare("SELECT COUNT(*) FROM od_actividades WHERE od_id = :od_id AND odAct_estado = 0 AND UPPER(odAct_detalle) = :detalle");
+            $statement->execute([
+                ":od_id" => $id,
+                ":detalle" => $detalle
+            ]);
+            $count = $statement->fetchColumn();
+
+            $detalleEdit = strtoupper($_POST["detalle"]);
+
+            $stmt = $conn->prepare("UPDATE od_actividades SET odAct_detalle = :detalle, odAct_fechaEntrega = :fechaEntrega WHERE odAct_id = :id");
+            $stmt->execute([
+                ":detalle" => $detalleEdit,
+                ":fechaEntrega" => $_POST["fechaEntrega"],
+                ":id" => $idAct
+            ]);
+
+            //si la actividad tenia registros con el detalle anterior, actualizar el detalle
+            $stmt = $conn->prepare("UPDATE registros_disenio SET rd_detalle = :detalle WHERE od_id = :id AND rd_detalle = :detalleAnterior AND rd_delete = 0");
+            $stmt->execute([
+                ":detalle" => $detalleEdit,
+                ":id" => $id,
+                ":detalleAnterior" => $actividadEdit["odAct_detalle"]
+            ]);
+
+
+            // notificaciones para lso diseniadores rol 3
+            $conn->prepare("INSERT INTO notificaciones (noti_cedula, noti_destinatario, noti_detalle, noti_fecha) VALUES (:cedula, :destinatario, :detalle, :fecha)")->execute([
+                ":cedula" => $_SESSION["user"]["cedula"],
+                ":destinatario" => 3,
+                ":detalle" => "Se ha editado la actividad " . "<b>$detalle</b>." . " de la orden de diseño " . "#" . $id . " " . $orden["od_detalle"],
+                ":fecha" => date("Y-m-d H:i:s"),
+            ]);
+            // notificaciones con visualizaciones en la tabla noti_visualizaciones
+            $notiId = $conn->lastInsertId();
+            $usuarios = $conn->prepare("SELECT P.cedula FROM personas P
+                                        JOIN usuarios U ON P.cedula = U.cedula
+                                        WHERE usu_rol = 3");
+            $usuarios->execute();
+            $usuarios = $usuarios->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($usuarios as $usuario) {
+                $notiVisualizacion = $conn->prepare("INSERT INTO noti_visualizaciones (noti_id, notiVis_cedula) VALUES (:noti_id, :cedula)");
+                $notiVisualizacion->execute([
+                    ":noti_id" => $notiId,
+                    ":cedula" => $usuario["cedula"]
+                ]);
+            }
+            // Registramos el movimiento en el kardex
+            registrarEnKardex($_SESSION['user']['cedula'], "EDITÓ", 'ACTIVIDAD', "Actividad: " . $detalle . " de la orden de diseño " . "#" . $idAct . " " . $orden['od_detalle']);
+
+            header("Location: ./od_actividades.php?id=$id");
+            
         } else {
             // Convertir el detalle a mayúsculas
             $detalle = strtoupper($_POST["detalle"]);
@@ -50,18 +112,27 @@ if ($_SESSION["user"]["usu_rol"] && ($_SESSION["user"]["usu_rol"] == 2 || $_SESS
                     ":fechaEntrega" => $_POST["fechaEntrega"]
                 ]);
 
-                $stmt = $conn->prepare("SELECT od_detalle FROM orden_disenio WHERE od_id = :id LIMIT 1");
-                $stmt->bindParam(":id", $id);
-                $stmt->execute();
-                $orden = $stmt->fetch(PDO::FETCH_ASSOC);
-
-                // notificaciones para lso diseniadores rol 2
+                // notificaciones para lso diseniadores rol 3
                 $conn->prepare("INSERT INTO notificaciones (noti_cedula, noti_destinatario, noti_detalle, noti_fecha) VALUES (:cedula, :destinatario, :detalle, :fecha)")->execute([
                     ":cedula" => $_SESSION["user"]["cedula"],
                     ":destinatario" => 3,
                     ":detalle" => "Se ha agregado una nueva actividad " . "<b>$detalle</b>." . " a la orden de diseño " . "#" . $id . " " . $orden["od_detalle"],
                     ":fecha" => date("Y-m-d H:i:s"),
                 ]);
+                // notificaciones con visualizaciones en la tabla noti_visualizaciones
+                $notiId = $conn->lastInsertId();
+                $usuarios = $conn->prepare("SELECT P.cedula FROM personas P
+                                            JOIN usuarios U ON P.cedula = U.cedula
+                                            WHERE usu_rol = 3");
+                $usuarios->execute();
+                $usuarios = $usuarios->fetchAll(PDO::FETCH_ASSOC);
+                foreach ($usuarios as $usuario) {
+                    $notiVisualizacion = $conn->prepare("INSERT INTO noti_visualizaciones (noti_id, notiVis_cedula) VALUES (:noti_id, :cedula)");
+                    $notiVisualizacion->execute([
+                        ":noti_id" => $notiId,
+                        ":cedula" => $usuario["cedula"]
+                    ]);
+                }
                 
                 // Registramos el movimiento en el kardex
                 registrarEnKardex($_SESSION['user']['cedula'], "AGREGÓ", 'ACTIVIDAD', "Actividad: " . $detalle . " a la orden de diseño " . "#" . $id . " " . $orden['od_detalle']);
@@ -111,17 +182,33 @@ if ($_SESSION["user"]["usu_rol"] && ($_SESSION["user"]["usu_rol"] == 2 || $_SESS
                         <?php endif; ?>
                         <!-- PERMITIMOS EL FORMULARIO SOLO SI $stmt es PROPUESTA, OP, OP CREADA -->
                         <?php if ($estado["od_estado"] == "PROPUESTA" || $estado["od_estado"] == "OP" || $estado["od_estado"] == "OP CREADA"): ?>
-                            <form method="POST">
+                            <?php if ($idAct): ?>
+                                <h3>Editar Actividad</h3>
+                                <form method="POST">
                                 <div class="mb-3">
                                     <label for="detalle" class="form-label">Detalle de la Actividad</label>
-                                    <input type="text" class="form-control" id="detalle" name="detalle" required>
+                                    <input value="<?= $actividadEdit['odAct_detalle'] ?>" type="text" class="form-control" id="detalle" name="detalle" required>
                                 </div>
                                 <div class="mb-3">
                                     <label for="fechaEntrega" class="form-label">Fecha de Entrega</label>
-                                    <input type="datetime-local" class="form-control" id="fechaEntrega" name="fechaEntrega" >
+                                    <input value="<?= $actividadEdit['odAct_fechaEntrega'] ?>" type="datetime-local" class="form-control" id="fechaEntrega" name="fechaEntrega" >
                                 </div>
                                 <button type="submit" class="btn btn-primary">Agregar Actividad</button>
                             </form>
+                            <?php else: ?>
+                                <h3>Agregar Actividad</h3>
+                                <form method="POST">
+                                    <div class="mb-3">
+                                        <label for="detalle" class="form-label">Detalle de la Actividad</label>
+                                        <input type="text" class="form-control" id="detalle" name="detalle" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="fechaEntrega" class="form-label">Fecha de Entrega</label>
+                                        <input type="datetime-local" class="form-control" id="fechaEntrega" name="fechaEntrega" >
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Agregar Actividad</button>
+                                </form>
+                            <?php endif; ?>
                         <?php else: ?>
                             <p class="text-danger">No puedes agregar actividades a esta orden de diseño.</p>
                         <?php endif; ?>
@@ -136,6 +223,13 @@ if ($_SESSION["user"]["usu_rol"] && ($_SESSION["user"]["usu_rol"] == 2 || $_SESS
                                     <p><?= $contador-- ?></p>
                                     <?php echo $actividad['odAct_detalle']; ?>
                                     <span class="badge bg-primary rounded-pill"><?php echo $actividad['odAct_fechaEntrega']; ?></span>
+                                    <!-- boton de editar -->
+                                    <a href="./od_actividades.php?idAct=<?= $actividad["odAct_id"] ?>&id=<?= $actividad["od_id"] ?>" class="text-rigth">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="gray" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                            <path d="M0 1a1 1 0 0 1 1-1h5.586a1 1 0 0 1 .707.293l8.914 8.914a1 1 0 0 1 0 1.414l-3.586 3.586a1 1 0 0 1-1.414 0l-8.914-8.914a1 1 0 0 1-.293-.707V1z"/>
+                                            <path d="M0 2v13h13V2H0z"/>
+                                        </svg>
+                                    </a>
                                     <!-- si la actividad no tiene registro permitir borrar, caso contrario no mostrar el boton -->
                                     <?php
                                     //VERIFICAR SI HAY REGISTROS SIN ACTIVIDADES

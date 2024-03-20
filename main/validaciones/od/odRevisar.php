@@ -52,6 +52,21 @@ if (empty($detallesSinRegistro)) {
         ":fecha" => date("Y-m-d H:i:s"),
     ]);
 
+    // notificaciones con visualizaciones en la tabla noti_visualizaciones
+    $notiId = $conn->lastInsertId();
+    $usuarios = $conn->prepare("SELECT P.cedula FROM personas P
+                                JOIN usuarios U ON P.cedula = U.cedula
+                                WHERE usu_rol = 2");
+    $usuarios->execute();
+    $usuarios = $usuarios->fetchAll(PDO::FETCH_ASSOC);
+    foreach ($usuarios as $usuario) {
+        $notiVisualizacion = $conn->prepare("INSERT INTO noti_visualizaciones (noti_id, notiVis_cedula) VALUES (:noti_id, :cedula)");
+        $notiVisualizacion->execute([
+            ":noti_id" => $notiId,
+            ":cedula" => $usuario["cedula"]
+        ]);
+    }
+
     // Registramos el movimiento en el kardex
     registrarEnKardex($_SESSION["user"]["ID_USER"], "PASÓ A MATERIALIDAD", 'ORDEN DISEÑO', "PRODUCTO: " . $orden_diseño["od_detalle"]);
 }

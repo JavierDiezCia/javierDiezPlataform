@@ -57,7 +57,7 @@ if ($_SESSION["user"]["usu_rol"] && in_array($_SESSION["user"]["usu_rol"], [1, 2
         <h5 class="card-title">Actividades</h5>
         <?php if (empty($actividades)) : ?>
             <p class="card-text">No hay actividades registradas para esta orden de diseño.</p>
-        <?php endif; ?>
+        <?php else : ?>
         <table id="activitiesTable" class="table datatable">
             <thead>
                 <tr>
@@ -81,6 +81,7 @@ if ($_SESSION["user"]["usu_rol"] && in_array($_SESSION["user"]["usu_rol"], [1, 2
                 <?php endforeach; ?>
             </tbody>
         </table>
+        <?php endif; ?>
     </div>
 </div>
 

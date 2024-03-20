@@ -147,6 +147,21 @@ if (($_SESSION["user"]["usu_rol"]) || ($_SESSION["user"]["usu_rol"] == 1) || ($_
                     ":fecha" => date("Y-m-d H:i:s"),
                 ]);
 
+                // notificaciones con visualizaciones en la tabla noti_visualizaciones
+                $notiId = $conn->lastInsertId();
+                $usuarios = $conn->prepare("SELECT P.cedula FROM personas P
+                                            JOIN usuarios U ON P.cedula = U.cedula
+                                            WHERE usu_rol = 2");
+                $usuarios->execute();
+                $usuarios = $usuarios->fetchAll(PDO::FETCH_ASSOC);
+                foreach ($usuarios as $usuario) {
+                    $notiVisualizacion = $conn->prepare("INSERT INTO noti_visualizaciones (noti_id, notiVis_cedula) VALUES (:noti_id, :cedula)");
+                    $notiVisualizacion->execute([
+                        ":noti_id" => $notiId,
+                        ":cedula" => $usuario["cedula"]
+                    ]);
+                }
+
                 // registramos las notificaciones para PRODUCCION
                 $conn->prepare("INSERT INTO notificaciones (noti_cedula, noti_destinatario, noti_detalle, noti_fecha) VALUES (:cedula, :destinatario, :detalle, :fecha)")->execute([
                     ":cedula" => $_SESSION["user"]["cedula"],
@@ -154,6 +169,21 @@ if (($_SESSION["user"]["usu_rol"]) || ($_SESSION["user"]["usu_rol"] == 1) || ($_
                     ":detalle" => "Se ha creado una nueva OP para la orden de diseño " . "#" . $od_id . " " . $od_detalle,
                     ":fecha" => date("Y-m-d H:i:s"),
                 ]);
+
+                // notificaciones con visualizaciones en la tabla noti_visualizaciones
+                $notiId = $conn->lastInsertId();
+                $usuarios = $conn->prepare("SELECT P.cedula FROM personas P
+                                            JOIN usuarios U ON P.cedula = U.cedula
+                                            WHERE usu_rol = 4");
+                $usuarios->execute();
+                $usuarios = $usuarios->fetchAll(PDO::FETCH_ASSOC);
+                foreach ($usuarios as $usuario) {
+                    $notiVisualizacion = $conn->prepare("INSERT INTO noti_visualizaciones (noti_id, notiVis_cedula) VALUES (:noti_id, :cedula)");
+                    $notiVisualizacion->execute([
+                        ":noti_id" => $notiId,
+                        ":cedula" => $usuario["cedula"]
+                    ]);
+                }
 
 
                 // Registramos el movimiento en el kardex
