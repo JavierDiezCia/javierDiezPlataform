@@ -31,12 +31,7 @@ if ($_SESSION["user"]["usu_rol"] && in_array($_SESSION["user"]["usu_rol"], [1, 2
     $actividades = $conn->prepare("SELECT * FROM od_actividades WHERE od_id = :od_id AND odAct_estado = 0 ORDER BY odAct_id DESC");
     $actividades->bindParam(":od_id", $id);
     $actividades->execute();
-
-    //VERIFICAR SI HAY REGISTROS SIN ACTIVIDADES
-    $detallesSinRegistro = $conn->prepare("SELECT odAct_detalle FROM od_actividades WHERE od_id = :id AND odAct_estado = 0 AND odAct_detalle NOT IN (SELECT rd_detalle FROM registros_disenio WHERE od_id = :id AND rd_hora_fin IS NOT NULL)");
-    $detallesSinRegistro->execute([":id" => $orden["od_id"]]);
-    $detallesSinRegistro = $detallesSinRegistro->fetchAll(PDO::FETCH_ASSOC);
-
+    $actividades = $actividades->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
 
@@ -72,7 +67,7 @@ if ($_SESSION["user"]["usu_rol"] && in_array($_SESSION["user"]["usu_rol"], [1, 2
                     <tr>
                         <td><?= $actividad["odAct_detalle"] ?></td>
                         <?php
-                        $registros = $conn->prepare("SELECT COUNT(*) AS total_registros FROM registros_disenio WHERE od_id = :od_id AND rd_detalle = :detalle");
+                        $registros = $conn->prepare("SELECT COUNT(*) AS total_registros FROM registros_disenio WHERE od_id = :od_id AND rd_detalle = :detalle AND rd_hora_fin IS NOT NULL AND rd_delete = 0");
                         $registros->bindParam(":od_id", $id);
                         $registros->bindParam(":detalle", $actividad["odAct_detalle"]);
                         $registros->execute();

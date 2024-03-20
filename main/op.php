@@ -169,6 +169,9 @@ if (($_SESSION["user"]["usu_rol"]) || ($_SESSION["user"]["usu_rol"] == 1) || ($_
                 $stament->execute([
                     ":estado" => $estadoOd
                 ]);
+                //redirigimos a aniadir planos
+                header("Location: planosAddtest.php?id=$lastInsertId");
+                return;
             }
             //REDIRIGIREMOS AHOME.PHP
             header("Location: op.php");

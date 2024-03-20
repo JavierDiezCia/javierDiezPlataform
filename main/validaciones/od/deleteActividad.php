@@ -27,7 +27,7 @@ $statement = $conn->prepare("UPDATE od_actividades SET odAct_estado = :estado WH
 $statement->execute([":id" => $id, ":od_id" => $od_id, ":estado" => $estado]);
 
 // Redirigir al usuario de regreso a la página de actividades
-header("Location: ../od_actividades.php?id=$od_id");
+header("Location: ../../od_actividades.php?id=$od_id");
 // Finalizar el script para evitar que se ejecute más código
 return;
 ?>

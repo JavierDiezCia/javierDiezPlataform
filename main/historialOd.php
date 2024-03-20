@@ -33,7 +33,7 @@ if ($_SESSION["user"]["usu_rol"] != 2) {
                         <div class="card">
                             <div class="card-body">
                                 <div class="card-header">
-                                    <h5 class="card-tittle">ORDENES DE DISEÑO</h5>
+                                    <h5 class="card-tittle">ÓRDENES DE DISEÑO</h5>
                                     <ul class="nav nav-tabs" id="myTabs" role="tablist">
                                         <li class="nav-item">
                                             <a class="nav-link active" id="tab1" data-toggle="tab" href="#content1" role="tab" aria-controls="content1" aria-selected="true">HISTORIAL</a>

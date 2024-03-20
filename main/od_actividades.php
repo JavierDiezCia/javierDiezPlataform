@@ -16,6 +16,12 @@ $id = isset($_GET["id"]) ? $_GET["id"] : null;
 // Verificar el rol del usuario
 if ($_SESSION["user"]["usu_rol"] && ($_SESSION["user"]["usu_rol"] == 2 || $_SESSION["user"]["usu_rol"] == 3 || $_SESSION["user"]["usu_rol"] == 1)) {
 
+    // verificamos que el estado sea PROPUESTA, OP, OP CREADA PARA REALIZAR ACCIONES
+    $stmt = $conn->prepare("SELECT od_estado FROM orden_disenio WHERE od_id = :id");
+    $stmt->bindParam(":id", $id);
+    $stmt->execute();
+    $estado = $stmt->fetch(PDO::FETCH_ASSOC);
+
     // Verificar el método de solicitud HTTP
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Validar que no se envíen datos vacíos
@@ -56,6 +62,10 @@ if ($_SESSION["user"]["usu_rol"] && ($_SESSION["user"]["usu_rol"] == 2 || $_SESS
                     ":detalle" => "Se ha agregado una nueva actividad " . "<b>$detalle</b>." . " a la orden de diseño " . "#" . $id . " " . $orden["od_detalle"],
                     ":fecha" => date("Y-m-d H:i:s"),
                 ]);
+                
+                // Registramos el movimiento en el kardex
+                registrarEnKardex($_SESSION['user']['cedula'], "AGREGÓ", 'ACTIVIDAD', "Actividad: " . $detalle . " a la orden de diseño " . "#" . $id . " " . $orden['od_detalle']);
+
             }
         }
     }
@@ -99,17 +109,22 @@ if ($_SESSION["user"]["usu_rol"] && ($_SESSION["user"]["usu_rol"] == 2 || $_SESS
                         <?php if ($error): ?>
                             <p class="text-danger"><?php echo $error; ?></p>
                         <?php endif; ?>
-                        <form method="POST">
-                            <div class="mb-3">
-                                <label for="detalle" class="form-label">Detalle de la Actividad</label>
-                                <input type="text" class="form-control" id="detalle" name="detalle" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="fechaEntrega" class="form-label">Fecha de Entrega</label>
-                                <input type="datetime-local" class="form-control" id="fechaEntrega" name="fechaEntrega" >
-                            </div>
-                            <button type="submit" class="btn btn-primary">Agregar Actividad</button>
-                        </form>
+                        <!-- PERMITIMOS EL FORMULARIO SOLO SI $stmt es PROPUESTA, OP, OP CREADA -->
+                        <?php if ($estado["od_estado"] == "PROPUESTA" || $estado["od_estado"] == "OP" || $estado["od_estado"] == "OP CREADA"): ?>
+                            <form method="POST">
+                                <div class="mb-3">
+                                    <label for="detalle" class="form-label">Detalle de la Actividad</label>
+                                    <input type="text" class="form-control" id="detalle" name="detalle" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="fechaEntrega" class="form-label">Fecha de Entrega</label>
+                                    <input type="datetime-local" class="form-control" id="fechaEntrega" name="fechaEntrega" >
+                                </div>
+                                <button type="submit" class="btn btn-primary">Agregar Actividad</button>
+                            </form>
+                        <?php else: ?>
+                            <p class="text-danger">No puedes agregar actividades a esta orden de diseño.</p>
+                        <?php endif; ?>
 
                         <hr>
 
@@ -121,11 +136,26 @@ if ($_SESSION["user"]["usu_rol"] && ($_SESSION["user"]["usu_rol"] == 2 || $_SESS
                                     <p><?= $contador-- ?></p>
                                     <?php echo $actividad['odAct_detalle']; ?>
                                     <span class="badge bg-primary rounded-pill"><?php echo $actividad['odAct_fechaEntrega']; ?></span>
-                                    <a class="text-rigth" href="./validaciones/deleteActividad.php?id=<?= $actividad["odAct_id"]?>&od_id=<?= $actividad["od_id"] ?>">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="red" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
-                                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293z"/>
-                                        </svg>
-                                    </a>
+                                    <!-- si la actividad no tiene registro permitir borrar, caso contrario no mostrar el boton -->
+                                    <?php
+                                    //VERIFICAR SI HAY REGISTROS SIN ACTIVIDADES
+                                    $detallesSinRegistro = $conn->prepare("SELECT rd_detalle FROM registros_disenio WHERE od_id = :id AND rd_hora_fin IS NOT NULL AND rd_delete = 0 AND rd_detalle = :detalle");
+                                    $detallesSinRegistro->execute([":id" => $id, ":detalle" => $actividad["odAct_detalle"]]);
+                                    $detallesSinRegistro = $detallesSinRegistro->fetchAll(PDO::FETCH_ASSOC);
+                                    ?>
+                                    <?php if (!empty($detallesSinRegistro)): ?>
+                                        <a class="text-rigth">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="gray" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
+                                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293z"/>
+                                            </svg>
+                                        </a>
+                                    <?php else : ?>
+                                        <a class="text-rigth disabled" href="./validaciones/od/deleteActividad.php?id=<?= $actividad["odAct_id"]?>&od_id=<?= $actividad["od_id"] ?>">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="red" class="bi bi-x-circle-fill" viewBox="0 0 16 16">
+                                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.354 4.646a.5.5 0 1 0-.708.708L7.293 8l-2.647 2.646a.5.5 0 0 0 .708.708L8 8.707l2.646 2.647a.5.5 0 0 0 .708-.708L8.707 8l2.647-2.646a.5.5 0 0 0-.708-.708L8 7.293z"/>
+                                            </svg>
+                                        </a>
+                                    <?php endif; ?>
                                 </li>
                             <?php endforeach; ?>
                         </ul>

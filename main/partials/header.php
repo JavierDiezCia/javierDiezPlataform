@@ -107,7 +107,7 @@ date_default_timezone_set('America/Lima');
             </li>
             
             <li class="text-center mb-1">
-                <a href="historialNotis.php" class='btn btn-secondary'>Ver todas las notificaciones</a>
+                <a href="historialNotis.php" class='btn btn-light'>Ver todas las notificaciones</a>
             </li>
             
             <li>

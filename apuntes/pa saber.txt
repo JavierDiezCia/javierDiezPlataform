@@ -1,0 +1,14 @@
+planos con sub planos
+
+reprocesos en areas definen el porcentaje en 0
+
+reprocesos en planos en disenio definen el porcentaje en 0 y produccion da los porcentajes
+
+reprocesos en produccion resetea todas las areas en 0
+
+
+
+los reprocesos copian los registros iniciados en caso de existir
+
+notificaciones por n usuarios de un rol
+
