@@ -162,5 +162,10 @@ if ($_SESSION["user"]["usu_rol"] != 1) {
                 <i class="bi bi-circle"></i><span>Ayuda</span>
             </a>
         </li>
+        <li>
+            <a href="registrosEmpleados.php">
+                <i class="bi bi-circle"></i><span>Historial de Regsitros Personal</span>
+            </a>
+        </li>
     </ul>
 </li>

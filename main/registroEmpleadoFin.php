@@ -85,6 +85,12 @@ if ($_SESSION["user"]["usu_rol"] == 3 || $_SESSION["user"]["usu_rol"] == 1) {
                             </div>
                         </div>
                         <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <input value="<?= $registro["reg_areaTrabajo"] ?>" class="form-control" id="reg_areaTrabajo" name="reg_areaTrabajo" placeholder="reg_areaTrabajo" require readonly></input>
+                                <label>AREA</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
                         <label for="reg_detalle" class="form-label">Actividades</label>
                             <div class="form-floating mb-3">
                             
