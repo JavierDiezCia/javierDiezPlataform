@@ -99,7 +99,6 @@ if ($_SESSION["user"]["usu_rol"] == 6 || $_SESSION["user"]["usu_rol"] == 1) {
 <?php require "./partials/header.php"; ?>
 <?php require "./partials/dashboard.php"; ?>
 <section class="section">
-
     <div class="row">
         <div class="">
             <div class="card">
@@ -112,6 +111,20 @@ if ($_SESSION["user"]["usu_rol"] == 6 || $_SESSION["user"]["usu_rol"] == 1) {
                         </p>
                     <?php endif ?>
                     <form class="row g-3" method="POST" action="registroEmpleadoAyuda.php">
+                    <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <select class="form-select" id="area" name="area" required onchange="obtenerActividades(this.value)">
+                                    <option selected disabled value="">SELECIONE EL AREA</option>
+                                    <option value="ACM">ACM</option>
+                                    <option value="ACRÍLICOS Y ACABADOS">ACRÍLICOS Y ACABADOS</option>
+                                    <option value="CARPINTERÍA">CARPINTERÍA</option>
+                                    <option value="MAQUINAS">MAQUINAS</option>
+                                    <option value="METALMECÁNICA">METALMECÁNICA</option>
+                                    <option value="PINTURA">PINTURA</option>
+                                </select>
+                                <label for="area">Área</label>
+                            </div>
+                        </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3">
                                 <select class="form-select" id="op_id" name="op_id" required onchange="cargarPlanos(document.getElementById('area').value, this.value)">
@@ -127,20 +140,6 @@ if ($_SESSION["user"]["usu_rol"] == 6 || $_SESSION["user"]["usu_rol"] == 1) {
                                     <option selected disabled value="">SELECIONE EL PLANO</option>
                                 </select>
                                 <label for="pla_id">Plano</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating mb-3">
-                                <select class="form-select" id="area" name="area" required onchange="obtenerActividades(this.value)">
-                                    <option selected disabled value="">SELECIONE EL AREA</option>
-                                    <option value="ACM">ACM</option>
-                                    <option value="ACRÍLICOS Y ACABADOS">ACRÍLICOS Y ACABADOS</option>
-                                    <option value="CARPINTERÍA">CARPINTERÍA</option>
-                                    <option value="MAQUINAS">MAQUINAS</option>
-                                    <option value="METALMECÁNICA">METALMECÁNICA</option>
-                                    <option value="PINTURA">PINTURA</option>
-                                </select>
-                                <label for="area">Área</label>
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -172,7 +171,6 @@ if ($_SESSION["user"]["usu_rol"] == 6 || $_SESSION["user"]["usu_rol"] == 1) {
                                 };
                                 xhr.send();
                             }
-
                             function cargarOrdenesProduccion(area) {
                                 var xhr = new XMLHttpRequest();
                                 xhr.open("GET", "ajax.php?areaOP=" + area, true);
@@ -181,7 +179,6 @@ if ($_SESSION["user"]["usu_rol"] == 6 || $_SESSION["user"]["usu_rol"] == 1) {
                                         if (this.status == 200) {
                                             if (this.responseText.trim() !== "") {
                                                 document.getElementById("op_id").innerHTML = this.responseText;
-                                                console.log("Respuesta del servidor:", this.responseText);
                                             } else {
                                                 console.error("La respuesta del servidor está vacía.");
                                             }
@@ -192,16 +189,14 @@ if ($_SESSION["user"]["usu_rol"] == 6 || $_SESSION["user"]["usu_rol"] == 1) {
                                 };
                                 xhr.send();
                             }
-
                             function cargarPlanos(area, op_id) {
                                 var xhr = new XMLHttpRequest();
-                                xhr.open("GET", "ajax.php?areaPlano=" + area + "&op_id=" + op_id, true);
+                                xhr.open("GET", "ajax.php?areaPlano=" + area + "&op_idPlanos=" + op_id, true);
                                 xhr.onreadystatechange = function() {
                                     if (this.readyState == 4) {
                                         if (this.status == 200) {
                                             if (this.responseText.trim() !== "") {
                                                 document.getElementById("pla_id").innerHTML = this.responseText;
-                                                console.log("Respuesta del servidor:", this.responseText);
                                             } else {
                                                 console.error("La respuesta del servidor está vacía.");
                                             }
@@ -214,7 +209,6 @@ if ($_SESSION["user"]["usu_rol"] == 6 || $_SESSION["user"]["usu_rol"] == 1) {
                                 xhr.send();
                             }
                         </script>
-
                         <div class="text-center">
                             <button type="submit" class="btn btn-primary">REGISTRAR</button>
                             <button type="reset" class="btn btn-secondary">LIMPIAR</button>
@@ -223,6 +217,5 @@ if ($_SESSION["user"]["usu_rol"] == 6 || $_SESSION["user"]["usu_rol"] == 1) {
             </div>
         </div>
     </div>
-
 </section>
 <?php require "./partials/footer.php"; ?>

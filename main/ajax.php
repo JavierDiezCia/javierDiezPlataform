@@ -156,7 +156,7 @@ if (isset($_GET['cedula'])) {
     }
 } elseif (isset($_GET['areaPlano'])) {
     $area = $_GET['areaPlano'];
-    $op_id = $_GET['op_id']; // Asegúrate de obtener el valor de op_id
+    $op_id = $_GET['op_idPlanos']; // Asegúrate de obtener el valor de op_id
     // Consulta SQL para obtener los datos de los planos asociados al área de trabajo del empleado
     $plaQuery = $conn->prepare("SELECT p.pla_id, p.pla_numero, pro.pro_id 
                 FROM planos p 
