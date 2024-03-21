@@ -29,7 +29,7 @@ if ($_SESSION["user"]["usu_rol"] && $_SESSION["user"]["usu_rol"] == 1) {
             $error = "POR FAVOR RELLENA TODOS LOS CAMPOS.";
         } else {
             // Verificamos si ya existe un registro para el usuario actual
-            $existingStatement = $conn->prepare("SELECT id_user FROM usuarios WHERE cedula = :cedula");
+            $existingStatement = $conn->prepare("SELECT id_user FROM usuarios WHERE cedula = :cedula AND usu_delete = 0");
             $existingStatement->execute([":cedula" => $_POST['cedula']]);
             $existingUsuario = $existingStatement->fetch(PDO::FETCH_ASSOC);
         

@@ -12,3 +12,6 @@ los reprocesos copian los registros iniciados en caso de existir
 
 notificaciones por n usuarios de un rol
 
+mpp\htdocs\javierDiezPlataform\main\partials\header.php on line
+
+http://localhost/javierdiezplataform/main/historialNotis.php

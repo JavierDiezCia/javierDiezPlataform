@@ -7,12 +7,6 @@ if (!isset($_SESSION["user"])) {
     return;
 }
 
-// Validamos los perfiles
-if ($_SESSION["user"]["usu_rol"] != 2) {
-    // Si el rol no es 2 (Diseñador ADMIN), redirigimos al usuario a la página de inicio
-    header("Location:../index.php");
-    return;
-}
 
 // Preparar la consulta base
 $query = "SELECT od.*, 
@@ -50,6 +44,9 @@ $ordenes_disenio->execute();
                 <th>FECHA DE REGISTRO</th>
                 <th>ESTADO</th>
                 <th></th>
+                <?php if ($_SESSION["user"]["usu_rol"] == 1) : ?>
+                    <th></th>
+                <?php endif ?>
             </tr>
         </thead>
         <tbody>
@@ -65,6 +62,11 @@ $ordenes_disenio->execute();
                     <td>
                         <a href="./detallesOd.php?id=<?= $orden["od_id"] ?>" class="btn btn-primary mb-2">VER REGISTROS</a>
                     </td>
+                    <?php if ($_SESSION["user"]["usu_rol"] == 1) : ?>
+                        <td>
+                            <a href="validaciones/odPropuesta.php?id=<?= $orden["od_id"] ?>" class="btn btn-warning mb-2">EDITAR</a>
+                        </td>
+                    <?php endif ?>
                 </tr>
             <?php endforeach ?>
         </tbody>

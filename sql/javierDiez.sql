@@ -33,6 +33,7 @@ CREATE TABLE usuarios (
     usu_password VARCHAR(255) NOT NULL,
     usu_rol INT NOT NULL,
     usu_registro DATETIME NOT NULL,
+    usu_delete BOOLEAN DEFAULT 0 NOT NULL,
     cedula VARCHAR(255) NOT NULL,
     Foreign Key (cedula) REFERENCES personas(cedula)
         ON UPDATE RESTRICT
@@ -135,9 +136,9 @@ CREATE TABLE planos (
     op_id INT UNSIGNED NOT NULL,
     pla_numero INT UNSIGNED NOT NULL,
     pla_descripcion VARCHAR(255) NOT NULL, 
-    pla_estado ENUM("ACTIVO", "PAUSADO", "ANULADO", "CONCLUIDO") NOT NULL,
-    pla_reproceso BOOLEAN NOT NULL, /* 0 no es reproceso, 1 si es reproceso */
-    pla_porcentaje DECIMAL(5, 2) UNSIGNED NOT NULL,
+    pla_estado ENUM("ACTIVO", "PAUSADO", "ANULADO", "CONCLUIDO") DEFAULT 'ACTIVO' NOT NULL,
+    pla_reproceso BOOLEAN DEFAULT false NOT NULL, /* 0 no es reproceso, 1 si es reproceso */
+    pla_porcentaje DECIMAL(5, 2) UNSIGNED DEFAULT 0 NOT NULL,
     Foreign Key (op_id) REFERENCES op(op_id)
         ON UPDATE RESTRICT
         ON DELETE RESTRICT,

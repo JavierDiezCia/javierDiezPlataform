@@ -47,7 +47,7 @@ if ($_SESSION["user"]["usu_rol"] != 1) {
             </a>
         </li>
         <li>
-            <a href="planosAdd.php">
+            <a href="planosAddtest.php">
                 <i class="bi bi-circle"></i><span>Añadir Planos</span>
             </a>
         </li>
