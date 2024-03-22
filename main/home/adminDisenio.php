@@ -10,12 +10,12 @@ if ($_SESSION["user"]["usu_rol"] == 2) {
     $dias_semana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 
     // Si el rol es 2 (Diseñador ADMIN), seleccionamos los registros donde el diseñador es el usuario actual, con información adicional de orden_disenio
-    $registros = $conn->prepare("SELECT R.*, O.od_detalle, O.od_cliente, P.per_nombres, P.per_apellidos 
+    $registros = $conn->prepare("SELECT R.od_id, R.rd_hora_ini, R.rd_hora_fin, R.rd_detalle, O.od_detalle, O.od_cliente, P.per_nombres, P.per_apellidos 
     FROM registros_disenio R 
     JOIN orden_disenio O ON R.od_id = O.od_id 
     JOIN personas P ON R.rd_diseniador = P.cedula
     JOIN usuarios U ON P.cedula = U.cedula
-    WHERE U.usu_rol = 3 AND R.rd_delete = 0
+    WHERE R.rd_delete = 0
     ORDER BY R.rd_id DESC
     LIMIT 6");
     $registros->execute();

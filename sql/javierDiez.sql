@@ -109,7 +109,7 @@ CREATE TABLE op (
     op_estado ENUM("OP CREADA", "EN PRODUCCION", "OP PAUSADA", "OP FINALIZADA", "OP ANULADA", "EN COBRANZA", "PRODUCCION GUAYAQUIL") NOT NULL,
     op_reproceso BOOLEAN NOT NULL, /* 0 nada 1 reproceso */
     op_porcentaje DECIMAL(5, 2) UNSIGNED NULL,
-    op_notiProFecha TIMESTAMP NULL,
+    op_notiProFecha TIMESTAMP NULL, /* fecha de notificacion de produccion */
     op_fechaFinalizacion DATETIME NULL,
     Foreign Key (od_id) REFERENCES orden_disenio(od_id)
         ON UPDATE RESTRICT
@@ -149,7 +149,7 @@ CREATE TABLE pla_actividades (
     id INT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     pla_id INT UNSIGNED NOT NULL,
     plaAct_detalle VARCHAR(255) NOT NULL,
-    plaAct_estado BOOLEAN NOT NULL,
+    plaAct_estado BOOLEAN NOT NULL, /* 0 no eliminado, 1 eliminado */
     plaAct_fechaEntrega DATETIME NOT NULL,
     Foreign Key (pla_id) REFERENCES planos(pla_id)
         ON UPDATE RESTRICT
@@ -179,9 +179,9 @@ CREATE TABLE produccion (
     /* areaaaaaaaas */
 CREATE TABLE pro_areas (
     pro_id INT UNSIGNED NOT NULL,
-    proAre_detalle VARCHAR(255) NOT NULL,
+    proAre_detalle VARCHAR(255) NOT NULL, /* nombre del area */
     proAre_fechaIni VARCHAR(255) NOT NULL,
-    proAre_fechaFin DATETIME NOT NULL,
+    proAre_fechaFin DATETIME NULL,
     proAre_porcentaje DECIMAL(5, 2) UNSIGNED NOT NULL,
     Foreign Key (pro_id) REFERENCES produccion(pro_id)
         ON UPDATE RESTRICT
@@ -247,6 +247,8 @@ CREATE TABLE notificaciones (
         ON UPDATE RESTRICT
         ON DELETE RESTRICT
 );
+
+/* atributo compuesto del que se generan las visualizaciones de las notificaciones */
 
 CREATE TABLE noti_visualizaciones (
     noti_id INT UNSIGNED NOT NULL,

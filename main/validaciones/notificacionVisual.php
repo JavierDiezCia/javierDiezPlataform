@@ -23,12 +23,39 @@ if (empty($id) || empty($dni)) {
   return;
 }
 
+$totalNotificaciones = 0;
+
+$notis = [];
+
+$tiempoTranscurrido = new DateTime('2022-01-01 00:00:00');
+$tiempoTranscurrido->modify('-1 day');
+
+// Prepara la consulta SQL
+$stmt = $conn->prepare("SELECT N.*, NV.* FROM notificaciones N
+                        JOIN noti_visualizaciones NV ON N.noti_id = NV.noti_id
+                        WHERE noti_destinatario = :destinatario AND notiVis_cedula = :cedula
+                        ORDER BY noti_fecha DESC LIMIT 50");
+$stmt->bindParam(':destinatario', $_SESSION['user']['usu_rol']);
+$stmt->bindParam(':cedula', $_SESSION["user"]["cedula"]);
+$stmt->execute();
+$resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+if ($resultado) {
+  $notis = $resultado;
+  $totalNotificaciones = 0;
+  foreach ($notis as $noti) {
+    if ($noti['notiVis_vista'] == 0) {
+      $totalNotificaciones++;
+    }
+  }
+}
+
+
 // Eliminar la actividad con el ID proporcionado
 $statement = $conn->prepare("UPDATE noti_visualizaciones SET notiVis_vista = :estado WHERE noti_id = :id AND notiVis_cedula = :dni");
 $statement->execute([":id" => $id, ":estado" => $estado, ":dni" => $dni]);
 
-// Redirigir al usuario de regreso a la página de actividades
-header("Location: ../index.php");
-// Finalizar el script para evitar que se ejecute más código
-return;
+// Devolver una respuesta en lugar de redirigir
+echo json_encode(["success" => true, "totalNotificaciones" => $totalNotificaciones]);
+
 ?>

@@ -71,7 +71,7 @@ if (empty($detallesSinRegistro)) {
     registrarEnKardex($_SESSION["user"]["ID_USER"], "PASÓ A MATERIALIDAD", 'ORDEN DISEÑO', "PRODUCTO: " . $orden_diseño["od_detalle"]);
 }
 
-
+die();
 
 // Redirigimos a la página de ordenes de diseño
 header("Location: ../../od.php");

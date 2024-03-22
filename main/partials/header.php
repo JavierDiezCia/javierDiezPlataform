@@ -71,6 +71,51 @@ date_default_timezone_set('America/Lima');
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
 
+  <!-- Jquery -->
+  <script refer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script>
+  $(document).ready(function(){
+      // Actualizar el número de notificaciones cada 5 segundos
+      setInterval(function(){
+          $.ajax({
+              url: 'get_notifications.php',
+              type: 'GET',
+              success: function(response) {
+                  // Actualizar la interfaz de usuario con el número de notificaciones
+                  $('#notification-count').text(response);
+              }
+          });
+      }, 5000); // Actualizar cada 5 segundos
+
+      // Manejar el clic en el enlace "Marcar como leída"
+      $(".mark-as-read").click(function(e){
+          e.preventDefault();
+
+          var href = $(this).attr('href');
+          var link = $(this); // Guardar una referencia al enlace
+
+          $.ajax({
+              url: href,
+              type: 'GET',
+              success: function(response) {
+                  // Usar la referencia al enlace en la función de éxito
+                  link.remove();
+
+                  // Actualizar el número de notificaciones
+                  $.ajax({
+                      url: 'get_notifications.php',
+                      type: 'GET',
+                      success: function(response) {
+                          // Actualizar la interfaz de usuario con el número de notificaciones
+                          $('#notification-count').text(response);
+                      }
+                  });
+              }
+          });
+      });
+  });
+  </script>
+
 </head>
 
 <body>
@@ -125,7 +170,7 @@ date_default_timezone_set('America/Lima');
                     <h4><?= date('l j \d\e F \|\ H:i', strtotime($noti['noti_fecha'])) ?></h4>
                     <h4><?= $noti['noti_detalle'] ?></h4>
                     <?php if ($noti['notiVis_vista'] == 0) : ?>
-                        <a href="validaciones/notificacionVisual.php?id=<?= $noti['noti_id'] ?>&dni=<?= $noti['notiVis_cedula'] ?>" class="btn btn-secondary">Marcar como vista</a>
+                      <a href="validaciones/notificacionVisual.php?id=<?= $noti['noti_id'] ?>&dni=<?= $noti['notiVis_cedula'] ?>" class="btn btn-secondary mark-as-read">Marcar como vista</a>
                     <?php endif ?>
                 </div>
                 </li>
