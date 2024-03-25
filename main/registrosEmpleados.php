@@ -74,8 +74,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["selectYear"]) && isset
                     <div class="col-md-3">
                         <label for="selectYear">AÑO:</label>
                         <select class="form-control" id="selectYear" name="selectYear">
-                             <!-- Agregado: name="selectYear" para identificar el campo en PHP -->
-                             <option value="">Seleccione el año</option>
+                            <!-- Agregado: name="selectYear" para identificar el campo en PHP -->
+                            <option value="">Seleccione el año</option>
                             <option value="2024">2024</option>
                             <option value="2025">2025</option>
                             <option value="2026">2026</option>
@@ -85,7 +85,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["selectYear"]) && isset
                     </div>
                     <div class="col-md-3">
                         <label for="selectMonth">MES:</label>
-                        <select class="form-control" id="selectMonth" name="selectMonth"> 
+                        <select class="form-control" id="selectMonth" name="selectMonth">
                             <!-- Agregado: name="selectMonth" para identificar el campo en PHP -->
                             <option value="">Selecione el mes</option>
                             <option value="1">ENERO</option>
@@ -165,7 +165,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["selectYear"]) && isset
                         <div class="card-header">
                             <h5 class="card-title text-center">Registro de Empleados por Area de ACM</h5>
                             <!-- Botón para exportar a Excel con ícono desde la carpeta exel y estilizado con Bootstrap -->
-                            <a href="./reporte_exel/exel_trabajador_registro.php" class="btn btn-success btn-xs">
+                            <a href="./reporte_exel/exel_trabajador_registro.php?year=<?= $year ?>&month=<?= $month ?>&area=<?= $area ?>" class="btn btn-success btn-xs">
                                 <img src="../exel/exel_icon.png" alt="Icono Excel" class="me-1" style="width: 25px; height: 25px;">
                                 EXPORTAR A EXCEL
                             </a>
@@ -255,7 +255,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["selectYear"]) && isset
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                    
+
                                                                 </form>
                                                             </div>
                                                             <div class="modal-footer">
