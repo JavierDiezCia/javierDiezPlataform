@@ -47,46 +47,7 @@ if ($_SESSION["user"]["usu_rol"] == 2||$_SESSION["user"]["usu_rol"] == 1) {
     }
 
 
-    // Consulta SQL para obtener las horas trabajadas por día
-    $sql = "SELECT 
-                R.rd_diseniador,
-                DAYOFWEEK(R.rd_hora_ini) AS dia_semana,
-                SUM(TIME_TO_SEC(TIMEDIFF(R.rd_hora_fin, R.rd_hora_ini))) AS total_segundos
-            FROM 
-                registros_disenio R
-                JOIN personas P ON R.rd_diseniador = P.cedula
-                JOIN usuarios U ON P.cedula = U.cedula
-            WHERE 
-                U.usu_rol = 3
-            GROUP BY 
-                R.rd_diseniador, dia_semana;
-            ";
 
-    $consulta_horas_trabajadas = $conn->prepare($sql);
-    $consulta_horas_trabajadas->execute();
-
-    // Inicializar array multidimensional para almacenar las horas trabajadas por día
-    $horas_trabajadas_por_dia = array(
-        1 => array(),
-        2 => array(),
-        3 => array(),
-        4 => array(),
-        5 => array(),
-        6 => array(),
-        7 => array()
-    );
-
-    while ($row = $consulta_horas_trabajadas->fetch(PDO::FETCH_ASSOC)) {
-        $dia_semana = $row['dia_semana'];
-        $total_segundos = $row['total_segundos'];
-
-        // Agregar los segundos trabajados al array del día correspondiente
-        $horas_trabajadas_por_dia[$dia_semana][] = $total_segundos;
-    }
-
-    // Verificar los resultados
-    // var_dump($horas_trabajadas_por_dia);
-    // die();
 
 } elseif ($_SESSION["user"]["usu_rol"] == 3) {
     // Si el rol es 3 (Diseñador), seleccionamos los registros donde el diseñador es el usuario actual, con información adicional de orden_disenio
@@ -172,62 +133,69 @@ if ($_SESSION["user"]["usu_rol"] == 2||$_SESSION["user"]["usu_rol"] == 1) {
                 <section class="section">
                     <div class="row">
                         <div class="col-lg-12">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="card-header">
-                                        <h5 class="card-tittle">REGISTROS</h5>
-                                        <button type="button" class="btn btn-success btn-xs" data-bs-toggle="modal" data-bs-target="#reporte">
-                                            <img src="../exel/exel_icon.png" alt="Icono Excel" class="me-1" style="width: 25px; height: 25px;">
-                                            Exportar a Excel
+                            <div class="card accordion" id="accordionExample">
+                                <div class="card-body accordion-item">
+                                    <h5 class="card-title accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                            REGISTROS
                                         </button>
-                                        <div class="modal fade" id="reporte" tabindex="-1" style="display: none;" aria-hidden="true">
-                                            <div class="modal-dialog modal-dialog-centered">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">REPORTE DE LAS ORDENES DE DISEÑO</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <p>ESTA SEGURO DE GENERAR EL REPORTE DE LAS ORDENES DE DISEÑO SI ES ASI POR FAVOR SELECCIONE EL AÑO Y EL MES DEL REPORTE QUE SE VA A GENERAR Y SELECCIONE GENERAR EL REPORTE</p>
-                                                        <form action="./reporte_exel/exel_disenio.php" method="post"> <!-- Modificado: Formulario que envía los datos mediante POST -->
-                                                            <div class="form-group">
-                                                                <label for="selectYear">AÑO:</label>
-                                                                <select class="form-control" id="selectYear" name="selectYear"> <!-- Agregado: name="selectYear" para identificar el campo en PHP -->
-                                                                    <option value="2024">2024</option>
-                                                                    <option value="2025">2025</option>
-                                                                    <option value="2026">2026</option>
-                                                                    <option value="2027">2027</option>
-                                                                    <!-- Agrega más opciones según sea necesario -->
-                                                                </select>
+                                    </h5>
+                                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                        <div class="accordion-body">
+                                                <button type="button" class="btn btn-success btn-xs" data-bs-toggle="modal" data-bs-target="#reporte">
+                                                    <img src="../exel/exel_icon.png" alt="Icono Excel" class="me-1" style="width: 25px; height: 25px;">
+                                                    Exportar a Excel
+                                                </button>
+                                                <div class="modal fade" id="reporte" tabindex="-1" style="display: none;" aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title">REPORTE DE LAS ORDENES DE DISEÑO</h5>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                                                             </div>
-                                                            <div class="form-group">
-                                                                <label for="selectMonth">MES:</label>
-                                                                <select class="form-control" id="selectMonth" name="selectMonth"> <!-- Agregado: name="selectMonth" para identificar el campo en PHP -->
-                                                                    <option value="1">ENERO</option>
-                                                                    <option value="2">FEBRERO</option>
-                                                                    <option value="3">MARZO</option>
-                                                                    <option value="4">ABRIL</option>
-                                                                    <option value="5">MAYO</option>
-                                                                    <option value="6">JUNIO</option>
-                                                                    <option value="7">JULIO</option>
-                                                                    <option value="8">AGOSTO</option>
-                                                                    <option value="9">SEPTIEMBRE</option>
-                                                                    <option value="10">OCTUBRE</option>
-                                                                    <option value="11">NOVIEMBRE</option>
-                                                                    <option value="12">DICIEMBRE</option>
-                                                                    <!-- Agrega más opciones según sea necesario -->
-                                                                </select>
+                                                            <div class="modal-body">
+                                                                <p>ESTA SEGURO DE GENERAR EL REPORTE DE LAS ORDENES DE DISEÑO SI ES ASI POR FAVOR SELECCIONE EL AÑO Y EL MES DEL REPORTE QUE SE VA A GENERAR Y SELECCIONE GENERAR EL REPORTE</p>
+                                                                <form action="./reporte_exel/exel_disenio.php" method="post"> <!-- Modificado: Formulario que envía los datos mediante POST -->
+                                                                    <div class="form-group">
+                                                                        <label for="selectYear">AÑO:</label>
+                                                                        <select class="form-control" id="selectYear" name="selectYear"> <!-- Agregado: name="selectYear" para identificar el campo en PHP -->
+                                                                            <option value="2024">2024</option>
+                                                                            <option value="2025">2025</option>
+                                                                            <option value="2026">2026</option>
+                                                                            <option value="2027">2027</option>
+                                                                            <!-- Agrega más opciones según sea necesario -->
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="form-group">
+                                                                        <label for="selectMonth">MES:</label>
+                                                                        <select class="form-control" id="selectMonth" name="selectMonth"> <!-- Agregado: name="selectMonth" para identificar el campo en PHP -->
+                                                                            <option value="1">ENERO</option>
+                                                                            <option value="2">FEBRERO</option>
+                                                                            <option value="3">MARZO</option>
+                                                                            <option value="4">ABRIL</option>
+                                                                            <option value="5">MAYO</option>
+                                                                            <option value="6">JUNIO</option>
+                                                                            <option value="7">JULIO</option>
+                                                                            <option value="8">AGOSTO</option>
+                                                                            <option value="9">SEPTIEMBRE</option>
+                                                                            <option value="10">OCTUBRE</option>
+                                                                            <option value="11">NOVIEMBRE</option>
+                                                                            <option value="12">DICIEMBRE</option>
+                                                                            <!-- Agrega más opciones según sea necesario -->
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CERRAR</button>
+                                                                        <button type="submit" class="btn btn-success">GENERAR REPORTE</button> <!-- Modificado: Botón submit para enviar el formulario -->
+                                                                    </div>
+                                                                </form>
                                                             </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CERRAR</button>
-                                                                <button type="submit" class="btn btn-success">GENERAR REPORTE</button> <!-- Modificado: Botón submit para enviar el formulario -->
-                                                            </div>
-                                                        </form>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
+                                    
+
                                     <h5 class="col-md-4 mx-auto mb-3"></h5>
 
                                     <?php if ($registros->rowCount() == 0) : ?>
@@ -275,6 +243,8 @@ if ($_SESSION["user"]["usu_rol"] == 2||$_SESSION["user"]["usu_rol"] == 1) {
                                             </tbody>
                                         </table>
                                     <?php endif ?>
+                                    </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -286,60 +256,9 @@ if ($_SESSION["user"]["usu_rol"] == 2||$_SESSION["user"]["usu_rol"] == 1) {
                                     <!-- Column Chart -->
                                     <div id="columnChart"></div>
 
-                                    <script>
-                                        document.addEventListener("DOMContentLoaded", () => {
-                                            new ApexCharts(document.querySelector("#columnChart"), {
-                                                series: [
-                                                    <?php foreach ($horas_trabajadas_por_dia as $dia => $segundos) : ?> {
-                                                            name: '<?php echo $dias_semana[$dia - 1]; ?>',
-                                                            data: [
-                                                                <?php foreach ($segundos as $hora) : ?>
-                                                                    <?php echo ($hora / 3600); ?>, // Convertir segundos a horas
-                                                                <?php endforeach ?>
-                                                            ]
-                                                        },
-                                                    <?php endforeach ?>
-                                                ],
-                                                chart: {
-                                                    type: 'bar',
-                                                    height: 350
-                                                },
-                                                plotOptions: {
-                                                    bar: {
-                                                        horizontal: false,
-                                                        columnWidth: '55%',
-                                                        endingShape: 'rounded'
-                                                    },
-                                                },
-                                                dataLabels: {
-                                                    enabled: false
-                                                },
-                                                stroke: {
-                                                    show: true,
-                                                    width: 2,
-                                                    colors: ['transparent']
-                                                },
-                                                xaxis: {
-                                                    categories: <?php echo json_encode($nombres_usuarios_rol_3); ?>
-                                                },
-                                                yaxis: {
-                                                    title: {
-                                                        text: 'HORAS AL DIA'
-                                                    }
-                                                },
-                                                fill: {
-                                                    opacity: 1
-                                                },
-                                                tooltip: {
-                                                    y: {
-                                                        formatter: function(val) {
-                                                            return val + " horas"
-                                                        }
-                                                    }
-                                                }
-                                            }).render();
-                                        });
-                                    </script>
+                                    <?php require "./partials/charts/registrosDisenio.php"; ?>
+                                    
+                                    
                                     <!-- End Column Chart -->
 
                                 </div>

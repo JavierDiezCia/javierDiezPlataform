@@ -34,7 +34,7 @@ if (!$orden_diseño) {
 
 //VERIFICAR SI HAY REGISTROS SIN ACTIVIDADES
 $detallesSinRegistro = $conn->prepare("SELECT odAct_detalle FROM od_actividades WHERE od_id = :id AND odAct_estado = 0 AND odAct_detalle NOT IN (SELECT rd_detalle FROM registros_disenio WHERE od_id = :id AND rd_hora_fin IS NOT NULL AND rd_delete = 0)");
-$detallesSinRegistro->execute([":id" => $orden["od_id"]]);
+$detallesSinRegistro->execute([":id" => $id]);
 $detallesSinRegistro = $detallesSinRegistro->fetchAll(PDO::FETCH_ASSOC);
 
 if (empty($detallesSinRegistro)) {
@@ -68,10 +68,8 @@ if (empty($detallesSinRegistro)) {
     }
 
     // Registramos el movimiento en el kardex
-    registrarEnKardex($_SESSION["user"]["ID_USER"], "PASÓ A MATERIALIDAD", 'ORDEN DISEÑO', "PRODUCTO: " . $orden_diseño["od_detalle"]);
+    registrarEnKardex($_SESSION["user"]["cedula"], "PASÓ A MATERIALIDAD", 'ORDEN DISEÑO', "PRODUCTO: " . $orden_diseño["od_detalle"]);
 }
-
-die();
 
 // Redirigimos a la página de ordenes de diseño
 header("Location: ../../od.php");

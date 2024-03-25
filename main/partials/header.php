@@ -68,6 +68,8 @@ date_default_timezone_set('America/Lima');
   <script refer src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
   <script refer src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 
+  <!-- APEX CHARTS -->
+  <script refer src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet">
 

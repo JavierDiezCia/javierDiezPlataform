@@ -189,5 +189,5 @@ if (isset($_GET['cedula'])) {
     }
 } else {
     // Si no se recibió ningún parámetro válido en la solicitud, devolver un mensaje de error
-    //echo json_encode(array('error' => 'No se recibió ningún parámetro válido'));
+    echo json_encode(array('error' => 'No se recibió ningún parámetro válido'));
 }

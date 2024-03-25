@@ -116,7 +116,7 @@ if ($_SESSION["user"]["usu_rol"] && ($_SESSION["user"]["usu_rol"] == 2 || $_SESS
                 $conn->prepare("INSERT INTO notificaciones (noti_cedula, noti_destinatario, noti_detalle, noti_fecha) VALUES (:cedula, :destinatario, :detalle, :fecha)")->execute([
                     ":cedula" => $_SESSION["user"]["cedula"],
                     ":destinatario" => 3,
-                    ":detalle" => "Se ha agregado una nueva actividad " . "<b>$detalle</b>." . " a la orden de diseño " . "#" . $id . " " . $orden["od_detalle"],
+                    ":detalle" => "Se ha agregado una nueva actividad " . "<b>$detalle</b>." . " a la orden de diseño " . "#" . $id ,
                     ":fecha" => date("Y-m-d H:i:s"),
                 ]);
                 // notificaciones con visualizaciones en la tabla noti_visualizaciones
@@ -135,7 +135,7 @@ if ($_SESSION["user"]["usu_rol"] && ($_SESSION["user"]["usu_rol"] == 2 || $_SESS
                 }
                 
                 // Registramos el movimiento en el kardex
-                registrarEnKardex($_SESSION['user']['cedula'], "AGREGÓ", 'ACTIVIDAD', "Actividad: " . $detalle . " a la orden de diseño " . "#" . $id . " " . $orden['od_detalle']);
+                registrarEnKardex($_SESSION['user']['cedula'], "AGREGÓ", 'ACTIVIDAD', "Actividad: " . $detalle . " a la orden de diseño " . "#" . $id);
 
             }
         }
