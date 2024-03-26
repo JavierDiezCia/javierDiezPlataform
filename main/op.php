@@ -34,8 +34,8 @@ if (($_SESSION["user"]["usu_rol"]) || ($_SESSION["user"]["usu_rol"] == 1) || ($_
     LEFT JOIN personas AS comercial ON orden.od_comercial = comercial.cedula
     LEFT JOIN ciudad_produccion ON op.lu_id = ciudad_produccion.lu_id
     LEFT JOIN planos ON op.op_id = planos.op_id
-    WHERE op.op_estado = 'OP CREADA'
-    GROUP BY op.op_id");
+    WHERE op.op_estado = 'OP CREADA' AND orden.od_responsable = {$_SESSION["user"]["cedula"]}
+    GROUP BY op.op_id ORDER BY op.op_id DESC");
 
     
 

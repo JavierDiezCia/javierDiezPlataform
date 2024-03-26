@@ -241,13 +241,7 @@ if ($_SESSION["user"]["usu_rol"] && ($_SESSION["user"]["usu_rol"] == 2 || $_SESS
                             <div class="card-body">
                                 <h5 class="card-title">ÓRDENES DE DISEÑO</h5>
                                 <!-- si el array asociativo $ordenes no tiene nada dentro, entonces imprimir el siguiente div -->
-                                <?php if ($ordenes->rowCount() == 0): ?>
-                                    <div class= "col-md-4 mx-auto mb-3">
-                                        <div class= "card card-body text-center">
-                                            <p>NO HAY ÓRDENES DE DISEÑO AÚN</p>
-                                        </div>
-                                    </div>
-                                <?php else: ?>
+                                
                                     <div class="card-header">
                                         <ul  class="nav nav-tabs" id="myTabs" role="tablist">
                                             <li class="nav-item">
@@ -262,12 +256,19 @@ if ($_SESSION["user"]["usu_rol"] && ($_SESSION["user"]["usu_rol"] == 2 || $_SESS
                                     <div class="tab-content" id="myTabContent">
                                         <div class="tab-pane fade show active" id="content1" role="tabpanel" arial-labelledby="tab1">
                                             <?php require "./partials/tables/od/diseniador/odPropuesta.php"; ?>
+                                            <?php if ($ordenes->rowCount() == 0): ?>
+                                                <div class= "col-md-4 mx-auto mb-3">
+                                                    <div class= "card card-body text-center">
+                                                        <p>NO HAY ÓRDENES DE DISEÑO AÚN</p>
+                                                    </div>
+                                                </div>
+                                            <?php endif ?>
                                         </div>
                                         <div class="tab-pane fade" id="content2" role="tabpanel" arial-labelledby="tab2">
                                             <?php require "./partials/tables/od/diseniador/odMine.php"; ?>
                                         </div>
                                     </div>
-                                <?php endif ?>
+                                
                             </div>
                         </div>
                     </div>
