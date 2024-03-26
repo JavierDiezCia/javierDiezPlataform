@@ -50,7 +50,6 @@
                                         ?>
                                     </td>
                                     <td><?= $opanulada["op_estado"] ?></td>
-                                    <td>
                                 </tr>
                             <?php endforeach ?>
                         </tbody>

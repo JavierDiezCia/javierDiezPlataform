@@ -46,7 +46,7 @@ $conn->prepare("UPDATE orden_disenio SET od_estado = 'EN COBRANZA' WHERE od_id =
 ]);
 
 // registramos la notificacion
-$conn->prepare("INSERT INTO notificacion (noti_cedula, noti_fecha, noti_detalle, noti_destinatario) VALUES (:cedula, :fecha, :detalle, :destinatario)")->execute([
+$conn->prepare("INSERT INTO notificaciones (noti_cedula, noti_fecha, noti_detalle, noti_destinatario) VALUES (:cedula, :fecha, :detalle, :destinatario)")->execute([
     ":cedula" => $_SESSION["user"]["cedula"],
     ":fecha" => date("Y-m-d H:i:s"),
     ":detalle" => "La orden de diseño # " . $id . " pasa a Cobranza.",
@@ -59,14 +59,17 @@ $usuarios = $conn->prepare("SELECT P.cedula FROM personas P
                             JOIN orden_disenio OD ON P.cedula = OD.od_responsable
                             JOIN usuarios U ON P.cedula = U.cedula
                             WHERE usu_rol = 3 AND OD.od_id = :id");
-$usuarios->execute();
+$usuarios->execute([":id" => $id]);
 $usuarios = $usuarios->fetchAll(PDO::FETCH_ASSOC);
 
 $notiVisualizacion = $conn->prepare("INSERT INTO noti_visualizaciones (noti_id, notiVis_cedula) VALUES (:noti_id, :cedula)");
-$notiVisualizacion->execute([
-    ":noti_id" => $notiId,
-    ":cedula" => $usuarios["cedula"]
-]);
+
+foreach ($usuarios as $usuario) {
+    $notiVisualizacion->execute([
+        ":noti_id" => $notiId,
+        ":cedula" => $usuario["cedula"]
+    ]);
+}
 
 // Registramos el movimiento en el kardex
 registrarEnKardex($_SESSION["user"]["cedula"], "COBRÓ", 'ORDEN DISEÑO', "Producto: " . $orden_diseño["od_producto"]);
