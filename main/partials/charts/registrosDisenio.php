@@ -28,6 +28,7 @@
             JOIN usuarios U ON P.cedula = U.cedula
         WHERE 
             U.usu_rol = 3 AND
+            rd_delete = 0 AND
             R.rd_hora_ini >= :fechaInicio AND
             R.rd_hora_fin <= DATE_ADD(:fechaFin, INTERVAL '23:59:59' HOUR_SECOND)
         GROUP BY 
@@ -70,6 +71,7 @@
             JOIN usuarios U ON P.cedula = U.cedula
         WHERE 
             U.usu_rol = 3 AND
+            rd_delete = 0 AND
             R.rd_hora_ini >= :fechaInicio AND
             R.rd_hora_fin <= DATE_ADD(:fechaFin, INTERVAL '23:59:59' HOUR_SECOND)
         GROUP BY 
