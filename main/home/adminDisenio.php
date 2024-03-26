@@ -170,7 +170,7 @@ if ($_SESSION["user"]["usu_rol"] == 2) {
 
             <div class="activity">
             
-            <?php foreach($kardex as $kar) : ?>
+            <!-- <?php foreach($kardex as $kar) : ?>
                 <?php
                 // PARA CALCULAR EL TIEMPO DE CADA ACCION
                 $fechaMovimiento = new DateTime($kar["kar_fecha"]);
@@ -210,9 +210,9 @@ if ($_SESSION["user"]["usu_rol"] == 2) {
                 DATO : <?= $kar["kar_idRow"]?><br>
                 FECHA: <?= $kar["kar_fecha"]?>
                 </div>
-            </div><!-- End activity item-->
+            </div> End activity item
 
-            <?php endforeach ?>
+            <?php endforeach ?> -->
 
             </div>
 
