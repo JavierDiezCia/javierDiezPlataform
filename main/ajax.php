@@ -187,6 +187,19 @@ if (isset($_GET['cedula'])) {
         echo '<option selected disabled value="">No hay órdenes de producción disponibles</option>';
         echo '</select>';
     }
+} elseif (isset($_GET["pla_idActi"])) {
+    $pla_id = $_GET["pla_idActi"];
+
+    // Consulta SQL para obtener las actividades basadas en el pla_id seleccionado
+    $query = "SELECT id, plaAct_detalle, plaAct_fechaEntrega FROM pla_actividades WHERE pla_id = :pla_id AND plaAct_estado = 0";
+    $statement = $conn->prepare($query);
+    $statement->bindParam(':pla_id', $pla_id);
+    $statement->execute();
+    $actividades = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+    // Formatear los datos como JSON y devolverlos
+    echo json_encode($actividades);
+
 } else {
     // Si no se recibió ningún parámetro válido en la solicitud, devolver un mensaje de error
     echo json_encode(array('error' => 'No se recibió ningún parámetro válido'));

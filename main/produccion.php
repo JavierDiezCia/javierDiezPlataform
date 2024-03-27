@@ -10,7 +10,7 @@ if (!isset($_SESSION["user"])) {
 }
 
 // Validación para el usuario tipo diseñador
-if ($_SESSION["user"]["usu_rol"] == 3 || $_SESSION["user"]["usu_rol"] == 1) {
+if ($_SESSION["user"]["usu_rol"] == 3 || $_SESSION["user"]["usu_rol"] == 1 || $_SESSION["user"]["usu_rol"] == 4) {
     // Obtener el diseñador de la sesión activa
     $diseniador = $_SESSION["user"]["cedula"];
 
@@ -119,6 +119,14 @@ $error = null;
                                 <label for="pla_id">Plano</label>
                             </div>
                         </div>
+                        <!-- Agregar las actividades de los planos -->
+                        <div class="col-md-6">
+                            <div class="form-floating mb-3">
+                                <select class="form-select" id="actividad_id" name="actividad_id" required>
+                                    <!-- Aquí se cargarán las actividades de los planos seleccionados mediante JavaScript -->
+                                </select>
+                                <label for="actividad_id">Actividad</label>
+                            </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3">
                                 <input class="form-control" type="datetime-local" id="fecha_fin" name="fecha_fin" required>
@@ -212,6 +220,34 @@ $error = null;
                     option.text = plano.pla_numero;
                     option.value = plano.pla_id;
                     pla_id_select.add(option);
+                });
+            }
+        }
+        xhr.send();
+    });
+</script>
+
+<!-- peticion al ajax para cargar las actividades -->
+
+<script>
+    // Cargar las actividades correspondientes al plano seleccionado
+    document.getElementById('pla_id').addEventListener('change', function() {
+        var pla_id = this.value;
+        var actividad_id_select = document.getElementById('actividad_id');
+        // Limpiar el select de actividades
+        actividad_id_select.innerHTML = '<option selected disabled value="">Selecciona la Actividad</option>';
+        // Hacer una petición AJAX para obtener las actividades del plano seleccionado
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'Ajax.php?pla_idActi=' + pla_id, true);
+        xhr.onload = function() {
+            if (this.status == 200) {
+                var actividades = JSON.parse(this.responseText);
+                actividades.forEach(function(actividad) {
+                    var option = document.createElement('option');
+                    option.text = actividad.plaAct_detalle;
+                    option.value = actividad.plaAct_id;
+                    actividad_id_select.add(option);
+                    console.log(actividad);
                 });
             }
         }

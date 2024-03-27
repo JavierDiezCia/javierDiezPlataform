@@ -11,6 +11,15 @@ if (!isset($_SESSION["user"])) {
 
 // Declarar variables
 $idop = $_GET["id"] ?? null;
+$pla_id = $_GET["pla_id"] ?? null;
+
+if ($pla_id) {
+    $query = "SELECT pla_descripcion,pla_numero FROM planos WHERE pla_id = :pla_id";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(":pla_id", $pla_id);
+    $stmt->execute();
+    $planoDesc = $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
 // buscar op por id
 if ($_SESSION["user"]["usu_rol"] && $_SESSION["user"]["usu_rol"] == 1 || $_SESSION["user"]["usu_rol"] == 2 || $_SESSION["user"]["usu_rol"] == 3) {
@@ -43,10 +52,22 @@ if ($_SESSION["user"]["usu_rol"] && $_SESSION["user"]["usu_rol"] == 1 || $_SESSI
         if (empty($_POST["pla_numero"]) || empty($_POST["pla_descripcion"])) {
             $error = "Por favor, llene todos los campos.";
             
-        } elseif ($plano) {
+        } elseif ($plano && empty($pla_id)) {
             $error = "El número de plano " . $_POST['pla_numero'] . " ya existe en la OP.";
 
-        } else {
+        } elseif ($pla_id) {
+            $pla_numero = $_POST["pla_numero"];
+            $pla_descripcion = $_POST["pla_descripcion"];
+            $query = "UPDATE planos SET pla_descripcion = :pla_descripcion WHERE pla_id = :pla_id";
+            $stmt = $conn->prepare($query);
+            $stmt->bindParam(":pla_descripcion", $pla_descripcion);
+            $stmt->bindParam(":pla_id", $pla_id);
+            $stmt->execute();
+
+            header("Location: ./planosAddtest.php?id=$idop");
+            die();
+
+        } elseif (!$pla_id && !$plano) {
             $pla_numero = $_POST["pla_numero"];
             $pla_descripcion = $_POST["pla_descripcion"];
             $query = "INSERT INTO planos (op_id, pla_numero, pla_descripcion) VALUES (:op_id, :pla_numero, :pla_descripcion)";
@@ -145,23 +166,43 @@ if ($_SESSION["user"]["usu_rol"] && $_SESSION["user"]["usu_rol"] == 1 || $_SESSI
                                     </div>
                                     <!-- seccion de la derecha con el form -->
                                     <div class="col-lg-6 text-right">
-                                        <h3>INGRESAR PLANOS</h3>
-                                        <?php if ($error) : ?>
-                                            <div class="alert alert-danger"><?= $error ?></div>
+                                        <?php if ($pla_id): ?>
+                                            <h3>EDITAR PLANO</h3>
+                                            <?php if ($error) : ?>
+                                                <div class="alert alert-danger"><?= $error ?></div>
+                                            <?php endif ?>
+                                            <form action="planosAddtest.php?id=<?= $idop ?>&pla_id=<?= $pla_id?>" method="post">
+                                                <div class="form-group">
+                                                    <label for="pla_numero">Número de Plano</label>
+                                                    <input value="<?= $planoDesc['pla_numero'] ?>" type="text" name="pla_numero" id="pla_numero" class="form-control" readonly>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="pla_descripcion">Descripción</label>
+                                                    <input value="<?= $planoDesc['pla_descripcion'] ?>" type="text" name="pla_descripcion" id="pla_descripcion" class="form-control"></input>
+                                                </div>
+                                                <div class="form-group">
+                                                    <button type="submit" class="btn btn-primary">ACTUALIZAR PLANO</button>
+                                                </div>
+                                            </form>
+                                        <?php else: ?>
+                                            <h3>INGRESAR PLANOS</h3>
+                                            <?php if ($error) : ?>
+                                                <div class="alert alert-danger"><?= $error ?></div>
+                                            <?php endif ?>
+                                            <form action="planosAddtest.php?id=<?= $idop ?>" method="post">
+                                                <div class="form-group">
+                                                    <label for="pla_numero">Número de Plano</label>
+                                                    <input type="text" name="pla_numero" id="pla_numero" class="form-control">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="pla_descripcion">Descripción</label>
+                                                    <input type="text" name="pla_descripcion" id="pla_descripcion" class="form-control"></input>
+                                                </div>
+                                                <div class="form-group">
+                                                    <button type="submit" class="btn btn-primary">AGREGAR PLANO</button>
+                                                </div>
+                                            </form>
                                         <?php endif ?>
-                                        <form action="planosAddtest.php?id=<?= $idop ?>" method="post">
-                                            <div class="form-group">
-                                                <label for="pla_numero">Número de Plano</label>
-                                                <input type="text" name="pla_numero" id="pla_numero" class="form-control">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="pla_descripcion">Descripción</label>
-                                                <input type="text" name="pla_descripcion" id="pla_descripcion" class="form-control"></input>
-                                            </div>
-                                            <div class="form-group">
-                                                <button type="submit" class="btn btn-primary">AGREGAR PLANO</button>
-                                            </div>
-                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -186,6 +227,7 @@ if ($_SESSION["user"]["usu_rol"] && $_SESSION["user"]["usu_rol"] == 1 || $_SESSI
                                                 <th>Descripción</th>
                                                 <th>Estado</th>
                                                 <th>Acciones</th>
+                                                <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -196,6 +238,10 @@ if ($_SESSION["user"]["usu_rol"] && $_SESSION["user"]["usu_rol"] == 1 || $_SESSI
                                                     <td><?= $plano["pla_estado"] ?></td>
                                                     <td>
                                                         <a href="./planosActividades.php?id=<?= $plano["pla_id"] ?>" class="btn btn-primary">VER ACTIVIDADES</a>
+                                                    </td>
+                                                    <td>
+                                                        <!-- hipervinculo para editar un plano en el mismo form -->
+                                                        <a href="planosAddtest.php?id=<?= $idop ?>&pla_id=<?= $plano["pla_id"] ?>" class="btn btn-warning">EDITAR</a>
                                                     </td>
                                                 </tr>
                                             <?php endforeach ?>
