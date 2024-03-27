@@ -289,7 +289,6 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
                 'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
             ],
         ];
-
         // Aplicar los estilos a los diferentes rangos de celdas
         $nuevaHoja->getStyle('C2:H6')->applyFromArray($styles);
         $nuevaHoja->getStyle('L2:O6')->applyFromArray($styles);
@@ -297,19 +296,15 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
         $nuevaHoja->getStyle('AF2:AI6')->applyFromArray($styles);
         $nuevaHoja->getStyle('AP2:AS6')->applyFromArray($styles);
         $nuevaHoja->getStyle('BA2:BD6')->applyFromArray($styles);
-
         // Ajustar el alto de la fila 1 después de haber insertado todas las imágenes
         $nuevaHoja->getRowDimension('1')->setRowHeight(20); // Establecer el alto de la fila 1
-
         // Ajustar el alto de la fila 1 después de haber insertado todas las imágenes
         $nuevaHoja->getRowDimension('1')->setRowHeight(20); // Establecer el alto de la fila 1
-
         // Definir la fecha límite para la primera semana del mes
         $fecha_limite = date('Y-m-01', strtotime($year . '-' . $month));
         $fecha_limite1 = date('Y-m-08', strtotime($year . '-' . $month));
         $fecha_limite2 = date('Y-m-15', strtotime($year . '-' . $month));
         $fecha_limite3 = date('Y-m-22', strtotime($year . '-' . $month));
-
         $fecha_limite4 = date('Y-m-29', strtotime($year . '-' . $month));
 
 
@@ -1443,17 +1438,16 @@ if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["ROL"]) || ($_SESSION[
             // Mostrar los datos de la segunda consulta si están disponibles
             if ($rowPrimeraSemHora4) {
                 // Mostrar el diseñador en la columna AZ
-
                 $hojaHora->setCellValue('AZ' . $filahojaHora, $rowPrimeraSemHora4['CEDULA_NOMBRES'] . ' ' . $rowPrimeraSemHora4['CEDULA_APELLIDOS']);
 
                 // Mostrar la cantidad de registros por día de la semana
-                $hojaHora->setCellValue($columna_29 . $filahojaHora, $rowPrimeraSemHora4['registros_29']);
-                $hojaHora->setCellValue($columna_30 . $filahojaHora, $rowPrimeraSemHora4['registros_30']);
-                $hojaHora->setCellValue($columna_31 . $filahojaHora, $rowPrimeraSemHora4['registros_31']);
+                $hojaHora->setCellValue($columna_29 . $filahojaHora, gmdate("H:i:s", $rowPrimeraSemHora4['tiempo_29']));
+                $hojaHora->setCellValue($columna_30 . $filahojaHora, gmdate("H:i:s", $rowPrimeraSemHora4['tiempo_30']));
+                $hojaHora->setCellValue($columna_31 . $filahojaHora, gmdate("H:i:s", $rowPrimeraSemHora4['tiempo_31']));
             }
             $filahojaHora++;
         }
-        
+
         $hojaHora->getColumnDimension('AA')->setWidth(25);
         $hojaHora->getColumnDimension('AB')->setWidth(25);
         $hojaHora->getColumnDimension('A')->setAutoSize(true);
