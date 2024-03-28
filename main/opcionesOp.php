@@ -55,38 +55,41 @@ if ($_SESSION["user"]["usu_rol"] == 1 || $_SESSION["user"]["usu_rol"] == 2) {
 <?php require "./partials/dashboard.php"; ?>
 <section class="section">
     <div class="row">
-        <div class="">
+        <div class="col-lg-12">
             <div class="card">
-                <h5 class="card-title">LISTAS DE LOS TIPOS DE OP'S</h5>
-                <ul class="nav nav-tabs" id="myTab" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="estado-tab" data-bs-toggle="tab" data-bs-target="#estado" type="button" role="tab" aria-controls="estado" aria-selected="true">CAMBIO DE LOS ESTADOS DE LA OP</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="finalizada-tab" data-bs-toggle="tab" data-bs-target="#finalizado" type="button" role="tab" aria-controls="finalizado" aria-selected="false" tabindex="-1">OP FINALIZADAS</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="anulado-tab" data-bs-toggle="tab" data-bs-target="#anulado" type="button" role="tab" aria-controls="anulado" aria-selected="false" tabindex="-2">OP ANULADAS</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="op-tab" data-bs-toggle="tab" data-bs-target="#op" type="button" role="tab" aria-controls="op" aria-selected="false" tabindex="-3">OP</button>
-                    </li>
-                </ul>
-                <div class="tab-content pt-2" id="myTabContent">
-                    <div class="tab-pane fade show active" id="estado" role="tabpanel" aria-labelledby="estado-tab">
-                        <?php require "./partials/tables/op/cambioEstado.php"; ?>
+                <div class="card-body">
+                    <div class="card-header">
+                        <h5 class="card-title">LISTAS DE LOS TIPOS DE OP'S</h5>
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="estado-tab" data-bs-toggle="tab" data-bs-target="#estado" type="button" role="tab" aria-controls="estado" aria-selected="true">CAMBIO DE LOS ESTADOS DE LA OP</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="finalizada-tab" data-bs-toggle="tab" data-bs-target="#finalizado" type="button" role="tab" aria-controls="finalizado" aria-selected="false" tabindex="-1">OP FINALIZADAS</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="anulado-tab" data-bs-toggle="tab" data-bs-target="#anulado" type="button" role="tab" aria-controls="anulado" aria-selected="false" tabindex="-2">OP ANULADAS</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="op-tab" data-bs-toggle="tab" data-bs-target="#op" type="button" role="tab" aria-controls="op" aria-selected="false" tabindex="-3">OP</button>
+                            </li>
+                        </ul>
                     </div>
-                    <div class="tab-pane fade" id="finalizado" role="tabpanel" aria-labelledby="finalizado-tab">
-                        <?php require "./partials/tables/op/opFinalizada.php"; ?>
-                    </div>
-                    <div class="tab-pane fade" id="anulado" role="tabpanel" aria-labelledby="anulado-tab">
-                        <?php require "./partials/tables/op/opAnulada.php"; ?>
-                    </div>
-                    <div class="tab-pane fade" id="op" role="tabpanel" aria-labelledby="op-tab">
-                       <?php require "./partials/tables/op/op.php"; ?>
+                    <div class="tab-content pt-2" id="myTabContent">
+                        <div class="tab-pane fade show active" id="estado" role="tabpanel" aria-labelledby="estado-tab">
+                            <?php require "./partials/tables/op/cambioEstado.php"; ?>
+                        </div>
+                        <div class="tab-pane fade" id="finalizado" role="tabpanel" aria-labelledby="finalizado-tab">
+                            <?php require "./partials/tables/op/opFinalizada.php"; ?>
+                        </div>
+                        <div class="tab-pane fade" id="anulado" role="tabpanel" aria-labelledby="anulado-tab">
+                            <?php require "./partials/tables/op/opAnulada.php"; ?>
+                        </div>
+                        <div class="tab-pane fade" id="op" role="tabpanel" aria-labelledby="op-tab">
+                        <?php require "./partials/tables/op/op.php"; ?>
+                        </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>

@@ -1,1 +1,17 @@
 LGSUSJK IN COMMING
+pendiente crear perfil de produccion 
+eliminar el admin de produccion(dejar un solo rol que sea produccion)
+
+crear perfil de empleados
+pagina de resitros de empleados (crear el rol y los componentes de home y dashbord,con sus respectivas validaciones)
+
+notificacion
+el historial de notificaciones tiene que tener un boton para marcar como leido
+
+perfil de super administrador
+falta realizar el kardex (todos los movimientos realizados en la empresa)
+
+create a filter in the historial of od and op like ./home/admin.php with switch
+
+
+

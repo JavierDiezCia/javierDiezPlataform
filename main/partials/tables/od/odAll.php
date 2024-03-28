@@ -36,7 +36,7 @@ $ordenes_disenio->execute();
     <table class="table datatable">
         <thead>
             <tr>
-                <th># OD</th>
+                <th>#OD</th>
                 <th>RESPONSABLE</th>
                 <th>DETALLE</th>
                 <th>CLIENTE</th>

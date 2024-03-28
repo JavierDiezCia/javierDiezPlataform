@@ -42,16 +42,6 @@ if ($_SESSION["user"]["usu_rol"] != 1) {
             </a>
         </li>
         <li>
-            <a href="op.php">
-                <i class="bi bi-circle"></i><span>Registro de OP</span>
-            </a>
-        </li>
-        <li>
-            <a href="planosAddtest.php">
-                <i class="bi bi-circle"></i><span>Añadir Planos</span>
-            </a>
-        </li>
-        <li>
             <a href="opcionesOp.php">
                 <i class="bi bi-circle"></i><span>Estados de las Op</span>
             </a>
@@ -121,28 +111,6 @@ if ($_SESSION["user"]["usu_rol"] != 1) {
         <li>
             <a href="opcionesOP.php">
                 <i class="bi bi-circle"></i><span>Estados de OP</span>
-            </a>
-        </li>
-    </ul>
-</li>
-<li class="nav-item">
-    <a class="nav-link collapsed" data-bs-target="#forms-nav-disenio" data-bs-toggle="collapse" href="#">
-        <i class="bi bi-journal-text"></i><span>Registros</span><i class="bi bi-chevron-down ms-auto"></i>
-    </a>
-    <ul id="forms-nav-disenio" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-        <li>
-            <a href="registroOd.php">
-                <i class="bi bi-circle"></i><span>Nuevo Registro</span>
-            </a>
-        </li>
-        <li>
-            <a href="historialRegistros.php">
-                <i class="bi bi-circle"></i><span>Historial de mis Registros</span>
-            </a>
-        </li>
-        <li>
-            <a href="od.php">
-                <i class="bi bi-circle"></i><span>Crear una nueva Orden de Diseño</span>
             </a>
         </li>
     </ul>
