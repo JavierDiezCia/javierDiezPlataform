@@ -108,8 +108,8 @@ $op = $conn->query("SELECT op.*,
                     <?php foreach($op as $op) : ?>
                     <tr>
                         <th scope="row"><a href="#"><?= $op["op_id"] ?> </a></th>
-                        <td><?= $op["op_cliente"] ?></td>
-                        <td><a href="#" class="text-primary"><?= $op["op_detalle"] ?></a></td>
+                        <td><?= $op["cliente"] ?></td>
+                        <td><a href="#" class="text-primary"><?= $op["detalle"] ?></a></td>
                         <td><?= $op["numero_planos"] ?></td>
                         <td><?= $op["op_estado"] ?></td>
                     </tr>
