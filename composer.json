@@ -1,0 +1,26 @@
+{
+  "name": "javierdiez/javierdiez",
+  "description": "This is a project from INT students",
+  "type": "project",
+  "require": {
+    "illuminate/database": "12.x-dev",
+    "dompdf/dompdf": "dev-master",
+    "vlucas/phpdotenv": "^5.6@dev"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "11.2.x-dev"
+  },
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Src\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "marisak98",
+      "email": "sanchezjordan.sh@gmail.com"
+    }
+  ],
+  "minimum-stability": "dev"
+}

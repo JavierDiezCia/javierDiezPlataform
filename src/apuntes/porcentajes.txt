@@ -1,0 +1,64 @@
+NOTIFICACION CORREO
+
+aniadir un estado para generar la notificacion y el cambiar el estado a produccion
+aniadir actualizaciones en disenio, time and primary key
+
+PORCENTAJE
+
+op
+--planos
+----asignacion de areas
+------porcentaje de produccion por asignacion de un area
+
+primero se define op
+
+op
+
+luego planos
+
+op (1)
+--planos (3)
+
+luego cada plano se asigna a diferentes areas
+
+op(1)
+--plano(#1)
+----area1
+----area2
+----area3
+--plano(#2)
+----area1
+----area3
+--plano(#3)
+----area2
+----area3
+----area5
+
+luego produccion me da el porcentaje por area asignada
+
+op(1)
+--plano(#1)
+----area1 (50%)
+----area2
+----area3
+--plano(#2)
+----area1 (23%)
+----area3
+--plano(#3)
+----area2 (100%)
+----area3 (45%)
+----area5 
+
+formulas:
+ porcentaje de plano =   
+	(suma de areas n+= ) / (numero de planos [n] )   // teniendo en cuenta que las areas se definiran en 0 tinyint
+
+ ejemplo: plano(#1) =  (50+0+0)/3 = 16.67%
+	  plano(#1) =  (23+0)/2 = 11.50%
+	  plano(#1) =  (100+45+0)/3 = 48.33%
+____________________________________________________________________________________________________________________________
+ porcentaje de op =   
+	(suma de planos n+= ) / (numero de planos [n] )             
+
+ ejemplo: op(#1)    =  (16.67 + 11.50 + 48.33) / 3  =  25.50% 
+			

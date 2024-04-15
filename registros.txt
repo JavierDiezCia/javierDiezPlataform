@@ -1,0 +1,4 @@
+op -> planos -> produccion -> areas -> registro -> actividades
+
+
+
