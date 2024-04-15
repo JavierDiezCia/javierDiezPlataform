@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'javierdiez/javierdiez',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => null,
+        'pretty_version' => 'dev-testing',
+        'version' => 'dev-testing',
+        'reference' => '2b44669b51a73e0f2e68339586e1d1f4d0a0386c',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -137,9 +137,9 @@
             'dev_requirement' => false,
         ),
         'javierdiez/javierdiez' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => null,
+            'pretty_version' => 'dev-testing',
+            'version' => 'dev-testing',
+            'reference' => '2b44669b51a73e0f2e68339586e1d1f4d0a0386c',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

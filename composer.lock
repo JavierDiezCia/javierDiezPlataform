@@ -3699,6 +3699,7 @@
     "stability-flags": {
         "illuminate/database": 20,
         "dompdf/dompdf": 20,
+        "vlucas/phpdotenv": 20,
         "phpunit/phpunit": 20
     },
     "prefer-stable": false,

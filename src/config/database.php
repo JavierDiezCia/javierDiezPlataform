@@ -4,7 +4,7 @@ namespace Src\config;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 
-use Dotenv\Dotenv;
+use Dotenv\Dotenv as Dotenv;
 use mysqli as mysqli;
 
 class database
