@@ -20,18 +20,14 @@ class database
 
   public function __construct()
   {
+    // Cargar variables de entorno del archiov .env en el directorio raíz.
+    $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
+    $dotenv->load();
 
-    try {
-      $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
-      $dotenv->load();
-    } catch (\Exception $e) {
-      die('Error al cargar el archivo .env' . $e->getMessage());
-    }
-
-    $this->hostname = $_ENV('DB_HOST', 'localhost');
-    $this->database = $_ENV('DB_NAME', 'javierdiez');
-    $this->username = $_ENV('DB_USER', 'root');
-    $this->password = $_ENV('DB_PASS', '');
+    $this->hostname = $_ENV['DB_HOST'];
+    $this->database = $_ENV['DB_DATABASE'];
+    $this->username = $_ENV['DB_USERNAME'];
+    $this->password = $_ENV['DB_PASSWORD'];
 
 
 
@@ -47,4 +43,22 @@ class database
   {
     return $this->connection;
   }
+
+  /*Funcion para chequear la conexion a la base datos*/
+  public function checkConnection()
+  {
+    $result = $this->connection->query('SELECT 1');
+    if (!$result) {
+      die('Error de conexión: ' . $this->connection->connect_error);
+    } else {
+      echo 'Conexión exitosa';
+    }
+  }
 }
+
+/* Test the connection
+ * Ejecuta esta instancia para verficar la conexión con la base de datos
+ * Descomenta la siguiente línea
+ */
+//$check = new database();
+//$check->checkConnection();
