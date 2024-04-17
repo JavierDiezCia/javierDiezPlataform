@@ -5,9 +5,26 @@ namespace Src\loginform;
 require_once __DIR__ . "/../config/database.php";
 
 use Src\config\database as database;
+use Illuminate\Support\Facades\Auth;
 
 $Database = new database();
 $conn = $Database->getConnection();
+
+class Login
+{
+  private string $username;
+  private string $password;
+
+  public function __construct(string $username, string $password)
+  {
+    $this->username = $username;
+    $this->password = $password;
+  }
+
+  public function authenticate($username, $password)
+  {
+  }
+}
 
 
 $error = null;

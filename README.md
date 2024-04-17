@@ -1,10 +1,13 @@
 # javierDiezPlataform
 
-<<<<<<< HEAD
-LGSUS COMMING
-=======
+This Branch is to testing.
 
-edit jefers
-aaa
-Test2
->>>>>>> 741050f1095a9c968dbde958f25e5e42f632f424
+----INSTALLL----
+Comands
+-> composer update
+-> composer install
+
+-> npm install
+
+----PHP Version----
+php -v 8.2.17
